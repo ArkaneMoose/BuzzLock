@@ -10,11 +10,11 @@ using System.Windows.Forms;
 
 namespace BuzzLockGui
 {
-    public partial class Form2 : Form
+    public partial class FormOptions : Form
     {
-        private Form1 _f1;
-        private Form2 _f2;
-        public Form2(Form1 f1)
+        private FormStart _f1;
+        private FormOptions _f2;
+        public FormOptions(FormStart f1)
         {
             InitializeComponent();
             

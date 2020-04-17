@@ -1,6 +1,6 @@
 ﻿namespace BuzzLockGui
 {
-    partial class Form2
+    partial class FormOptions
     {
         /// <summary>
         /// Required designer variable.
@@ -44,14 +44,14 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // Form2
+            // FormOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.button2);
-            this.Name = "Form2";
-            this.Text = "Form2";
+            this.Name = "FormOptions";
+            this.Text = "BuzzLock Options";
             this.ResumeLayout(false);
 
         }

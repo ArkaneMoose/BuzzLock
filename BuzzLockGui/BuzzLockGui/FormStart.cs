@@ -8,20 +8,21 @@ namespace BuzzLockGui
     {
         Uninitialized,
         Initializing,
-        Idle
+        Idle,
+        Options
     }
 
-    public partial class Form1 : Form
+    public partial class FormStart : Form
     {
-        private Form1 _f1;
-        private Form2 _f2;
+        private FormStart _formStart;
+        private FormOptions _formOptions;
         private State _state;
 
         // state = 0: uninitialized
         // state = 1: after swiping card to initialize, but before finishing init process
         // state = 2: idle, showing time
 
-        public Form1()
+        public FormStart()
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
@@ -29,17 +30,17 @@ namespace BuzzLockGui
             this.Width = Screen.PrimaryScreen.WorkingArea.Width;
             this.Height = Screen.PrimaryScreen.WorkingArea.Height;
 
-            _f1 = this;
-            _f2 = new Form2(this);
+            _formStart = this;
+            _formOptions = new FormOptions(this);
 
-            // Query database and set flags
+            // Query database and set state
             _state = State.Uninitialized;
 
             // Update visibility of form components
             UpdateComponents();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void FormStart_Load(object sender, EventArgs e)
         {
 
             this.WindowState = FormWindowState.Normal;
@@ -48,36 +49,50 @@ namespace BuzzLockGui
             //this.WindowState = FormWindowState.Maximized;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnOptionsSave_Click(object sender, EventArgs e)
         {
             if (_state == State.Initializing)
             {
-                // Save initial user preferences
+                //TODO: Save initial user preferences to database
                 
-                //TODO: Send user name and permissinons to database
+                // Go to idle state
                 _state = State.Idle;
                 UpdateComponents();
 
-            } else if (_state == State.Idle)
+            } 
+            else if (_state == State.Idle)
             {
-                _f2.Show();
+                // Show options form
+                _state = State.Options;
+                _formOptions.Show();
                 this.Hide();
             }   
+        }
+
+        private void UserInputValidation()
+        {
+            tbxUserName.Tag = "Please enter your full name.";
+            tbxUserPhone.Tag = "Please enter your phone number";
+            errNewUser.BlinkStyle = ErrorBlinkStyle.NeverBlink;
+
+            ValidateTextBox(tbxUserName, EventArgs.Empty);
+            ValidateTextBox(tbxUserPhone, EventArgs.Empty);
         }
 
         private HashSet<Control> errorControls = new HashSet<Control>();
 
         private void ValidateTextBox(object sender, EventArgs e)
         {
+            //TODO: InstanceOF Check and exception handling / equals instanceOf
             var textBox = sender as TextBox;
             if (textBox.Text == "")
             {
-                errorProvider1.SetError(textBox, (string)textBox.Tag);
+                errNewUser.SetError(textBox, (string)textBox.Tag);
                 errorControls.Add(textBox);
             }
             else
             {
-                errorProvider1.SetError(textBox, null);
+                errNewUser.SetError(textBox, null);
                 errorControls.Remove(textBox);
             }
             btnOptionsSave.Enabled = errorControls.Count == 0;
@@ -88,13 +103,13 @@ namespace BuzzLockGui
             var comboBox = sender as ComboBox;
             if (comboBox.SelectedItem != null)
             {
-                label7.Visible = true;
+                txtSecAuth.Visible = true;
                 cbxSecAuth.Visible = true;
             }
             if (comboBox.SelectedItem.ToString() == "Bluetooth")
             {
-                label5.Visible = true;
-                comboBox3.Visible = true;
+                txtPrimChooseDev.Visible = true;
+                cbxBTSelect1.Visible = true;
                 //TODO: get bluetooth devices and place them in the combo box with their names
 
                 // Add Card to Secondary Auth if it has been removed
@@ -120,8 +135,8 @@ namespace BuzzLockGui
             }
             else if (comboBox.SelectedItem.ToString() == "Card")
             {
-                label5.Visible = false;
-                comboBox3.Visible = false;
+                txtPrimChooseDev.Visible = false;
+                cbxBTSelect1.Visible = false;
 
                 // Add Blutetooth to Secondary Auth if it has been removed
                 if (!cbxSecAuth.Items.Contains("Bluetooth"))
@@ -149,10 +164,10 @@ namespace BuzzLockGui
             var comboBox = sender as ComboBox;
             if (comboBox.SelectedItem.ToString() == "Bluetooth")
             {
-                label8.Text = "Choose device:";
-                label8.Visible = true;
-                comboBox4.Visible = true;
-                textBox2.Visible = false;
+                txtSecChooseDevOrPin.Text = "Choose device:";
+                txtSecChooseDevOrPin.Visible = true;
+                cbxBTSelect2.Visible = true;
+                tbxPin.Visible = false;
 
                 //// if Bluetooth is selected as primary, make primary Card instead
                 //if (cbxPrimAuth.SelectedItem.ToString() == "Bluetooth")
@@ -163,16 +178,17 @@ namespace BuzzLockGui
             }
             else if (comboBox.SelectedItem.ToString() == "Pin")
             {
-                label8.Text = "Insert PIN:";
-                label8.Visible = true;
-                comboBox4.Visible = false;
-                textBox2.Visible = true;
+                //TODO: Limit number of characters to 4 or 6 for PIN w/ validation
+                txtSecChooseDevOrPin.Text = "Insert PIN:";
+                txtSecChooseDevOrPin.Visible = true;
+                cbxBTSelect2.Visible = false;
+                tbxPin.Visible = true;
             }
             else if (comboBox.SelectedItem.ToString() == "Card")
             {
-                label8.Visible = false;
-                comboBox4.Visible = false;
-                textBox2.Visible = false;
+                txtSecChooseDevOrPin.Visible = false;
+                cbxBTSelect2.Visible = false;
+                tbxPin.Visible = false;
 
                 //// if Card is selected as primary, make primary bluetooth instead
                 //if (cbxPrimAuth.SelectedItem.ToString() == "Card")
@@ -183,19 +199,9 @@ namespace BuzzLockGui
             }
         }
 
-        private void UserInputValidation()
-        {
-            txtCard.Tag = "Please swipe your card.";
-            txtUserName.Tag = "Please enter your full name.";
-            txtUserPhone.Tag = "Please enter your phone number";
-            errorProvider1.BlinkStyle = ErrorBlinkStyle.NeverBlink;
-
-            ValidateTextBox(txtCard, EventArgs.Empty);
-            ValidateTextBox(txtUserName, EventArgs.Empty);
-            ValidateTextBox(txtUserPhone, EventArgs.Empty);
-        }
-
-        private void button3_Click(object sender, EventArgs e)
+        //TODO: Auto detect mag stripe (keyboard) input that looks like a card
+        //See idle state to-do
+        private void btnDebugSwipe_Click(object sender, EventArgs e)
         {
             if (_state == 0)
             {
@@ -203,7 +209,7 @@ namespace BuzzLockGui
                 UpdateComponents();
 
                 // Open initial setup page
-                txtCard.Text = "%B6011001002725218^GAUKER/ANDREW";
+                tbxCard.Text = "%B6011001002725218^GAUKER/ANDREW";
 
             }
             else
@@ -222,45 +228,48 @@ private void UpdateComponents()
                 case State.Uninitialized:
                     break;
                 case State.Initializing:
-                    label2.Visible = true;
-                    label3.Visible = true;
-                    label4.Visible = true;
-                    label5.Visible = false;
-                    label6.Visible = true;
-                    label7.Visible = false;
-                    label8.Visible = false;
                     txtCard.Visible = true;
                     txtUserName.Visible = true;
                     txtUserPhone.Visible = true;
+                    txtPrimChooseDev.Visible = false;
+                    txtPrimAuth.Visible = true;
+                    txtSecAuth.Visible = false;
+                    txtSecChooseDevOrPin.Visible = false;
+                    tbxCard.Visible = true;
+                    tbxUserName.Visible = true;
+                    tbxUserPhone.Visible = true;
                     cbxPrimAuth.Visible = true;
                     cbxSecAuth.Visible = false;
-                    comboBox3.Visible = false;
-                    comboBox4.Visible = false;
+                    cbxBTSelect1.Visible = false;
+                    cbxBTSelect2.Visible = false;
                     btnOptionsSave.Visible = true;
                     btnOptionsSave.Text = "Save";
-                    label1.Text = "Create your profile and choose how you want to unlock the door:";
+                    tbxStatus.Text = "Create your profile and choose how you want to unlock the door:";
                     UserInputValidation();
-                    timer1.Enabled = true;
+                    timerDateTime.Enabled = true;
                     break;
                 case State.Idle:
-                    label2.Visible = false;
-                    label3.Visible = false;
-                    label4.Visible = false;
-                    label5.Visible = false;
-                    label6.Visible = false;
-                    label7.Visible = false;
-                    label8.Visible = false;
+                    
+                    //TODO: Combo box for selecting bluetooth devices already in database that are also in range
+                    //TODO: Swipe from idle screen for primary authentication
                     txtCard.Visible = false;
-                    textBox2.Visible = false;
                     txtUserName.Visible = false;
                     txtUserPhone.Visible = false;
+                    txtPrimChooseDev.Visible = false;
+                    txtPrimAuth.Visible = false;
+                    txtSecAuth.Visible = false;
+                    txtSecChooseDevOrPin.Visible = false;
+                    tbxCard.Visible = false;
+                    tbxPin.Visible = false;
+                    tbxUserName.Visible = false;
+                    tbxUserPhone.Visible = false;
                     cbxPrimAuth.Visible = false;
                     cbxSecAuth.Visible = false;
-                    comboBox3.Visible = false;
-                    comboBox4.Visible = false;
+                    cbxBTSelect1.Visible = false;
+                    cbxBTSelect2.Visible = false;
                     btnOptionsSave.Visible = true;
                     btnOptionsSave.Text = "Options";
-                    label1.Text = "Hello! Please swipe your card to authenticate.";
+                    tbxStatus.Text = "Hello! Please swipe your card to authenticate.";
                     txtDate.Visible = true;
                     txtTime.Visible = true;
                     break;
@@ -270,13 +279,13 @@ private void UpdateComponents()
             }
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private void timerDateTime_Tick(object sender, EventArgs e)
         {
             txtTime.Text = DateTime.Now.ToShortTimeString();
             txtDate.Text = DateTime.Now.ToLongDateString();
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
+        private void btnExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
