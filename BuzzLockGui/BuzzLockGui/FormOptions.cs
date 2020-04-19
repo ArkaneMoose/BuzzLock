@@ -27,10 +27,18 @@ namespace BuzzLockGui
             _f2 = this;
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnOptionsSave_Click(object sender, EventArgs e)
         {
+            _f1._state = State.Authenticated;
+            _f1.UpdateComponents();
             _f1.Show();
             this.Hide();
         }
+
+        private void FormOptions_Load(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

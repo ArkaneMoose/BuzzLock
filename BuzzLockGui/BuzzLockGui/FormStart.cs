@@ -5,12 +5,16 @@ using System.Windows.Forms;
 
 namespace BuzzLockGui
 {
-    enum State
+    //TODO: currently, State and _state are public. Place them in a BuzzLock class, 
+    //      and make _formOptions and _formStart instance variables of that class instead.
+    public enum State
     {
         Uninitialized,
         Initializing,
         Idle,
-        Options
+        GenericOptions,
+        Authenticated, //TODO: spin servo to unlock door in Authenticated, and keep it unlocked during UserOptions
+        UserOptions    //      and in Authenticated until timeout happens.
     }
 
     // reading card swipe, verification for combo box authentication
@@ -19,7 +23,7 @@ namespace BuzzLockGui
     {
         private FormStart _formStart;
         private FormOptions _formOptions;
-        private State _state;
+        public State _state;
 
         // state = 0: uninitialized
         // state = 1: after swiping card to initialize, but before finishing init process
@@ -49,7 +53,7 @@ namespace BuzzLockGui
         {
 
             this.WindowState = FormWindowState.Normal;
-            this.ActiveControl = tbxStatus; 
+            this.ActiveControl = txtStatus; 
             //this.TopMost = true;
             //this.FormBorderStyle = FormBorderStyle.None;
             //this.WindowState = FormWindowState.Maximized;
@@ -60,19 +64,26 @@ namespace BuzzLockGui
             if (_state == State.Initializing)
             {
                 //TODO: Save initial user preferences to database
-                
+
                 // Go to idle state
                 _state = State.Idle;
                 UpdateComponents();
 
-            } 
+            }
             else if (_state == State.Idle)
             {
-                // Show options form
-                _state = State.Options;
+                //TODO: Show generic options form
+
+                //_state = State.GenericOptions;
+                
+            }
+            else if (_state == State.Authenticated)
+            {
+                _state = State.UserOptions;
                 _formOptions.Show();
                 this.Hide();
-            }   
+            }
+
         }
 
         private void UserInputValidation()
@@ -302,8 +313,13 @@ namespace BuzzLockGui
         }
 
       
-private void UpdateComponents()
+//TODO: Find out a way to make this private, like placing this functions inside of BuzzLock class instead
+public void UpdateComponents()
         {
+
+            //TODO: instead of using a switch statement, statements like this are better for generalizability
+            btnDebugAuthUser.Enabled = (_state == State.Idle);
+
             switch (_state)
             {
                 case State.Uninitialized:
@@ -325,7 +341,7 @@ private void UpdateComponents()
                     cbxBTSelect2.Visible = false;
                     btnOptionsSave.Visible = true;
                     btnOptionsSave.Text = "Save";
-                    tbxStatus.Text = "Create your profile and choose how you want to unlock the door:";
+                    txtStatus.Text = "Create your profile and choose how you want to unlock the door:";
                     UserInputValidation();
                     timerDateTime.Enabled = true;
                     break;
@@ -350,15 +366,43 @@ private void UpdateComponents()
                     cbxBTSelect2.Visible = false;
                     btnOptionsSave.Visible = true;
                     btnOptionsSave.Text = "Options";
-                    tbxStatus.Text = "Hello! Please swipe your card or choose your device.";
+                    txtStatus.Text = "Hello! Please swipe your card or choose your device.";
                     txtDate.Visible = true;
                     txtTime.Visible = true;
                     listIdleBTDevices.Visible = true;
                     btnConfirmBTDevices.Visible = true;
                     txtChooseBTDevice.Visible = true;
-                    this.ActiveControl = tbxStatus;
+                    this.ActiveControl = txtStatus;
                     break;
-                
+                case State.Authenticated:
+                    txtCard.Visible = false;
+                    txtUserName.Visible = false;
+                    txtUserPhone.Visible = false;
+                    txtPrimChooseDev.Visible = false;
+                    txtPrimAuth.Visible = false;
+                    txtSecAuth.Visible = false;
+                    txtSecChooseDevOrPin.Visible = false;
+                    tbxCard.Visible = false;
+                    tbxPin.Visible = false;
+                    tbxUserName.Visible = false;
+                    tbxUserPhone.Visible = false;
+                    cbxPrimAuth.Visible = false;
+                    cbxSecAuth.Visible = false;
+                    cbxBTSelect1.Visible = false;
+                    cbxBTSelect2.Visible = false;
+                    btnOptionsSave.Visible = true;
+                    btnOptionsSave.Text = "Options";
+                    //TODO: display user name here
+                    txtStatus.Text = "Welcome, <user>. Door is unlocked.";
+                    txtAuthStatus.Visible = true;
+                    //TODO: update timeout in seconds here. Start with 10.
+                    txtDate.Visible = false;
+                    txtTime.Visible = false;
+                    listIdleBTDevices.Visible = false;
+                    btnConfirmBTDevices.Visible = false;
+                    txtChooseBTDevice.Visible = false;
+                    this.ActiveControl = txtStatus;
+                    break;
                 default:
                     break;
             }
@@ -520,6 +564,12 @@ private void UpdateComponents()
         private void FormStart_Activated(object sender, EventArgs e)
         {
             Console.WriteLine("Form Start Activated");
+        }
+
+        private void btnDebugAuthUser_Click(object sender, EventArgs e)
+        {
+            _state = State.Authenticated;
+            UpdateComponents();
         }
     }
 }
