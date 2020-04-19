@@ -350,9 +350,12 @@ private void UpdateComponents()
                     cbxBTSelect2.Visible = false;
                     btnOptionsSave.Visible = true;
                     btnOptionsSave.Text = "Options";
-                    tbxStatus.Text = "Hello! Please swipe your card to authenticate.";
+                    tbxStatus.Text = "Hello! Please swipe your card or choose your device.";
                     txtDate.Visible = true;
                     txtTime.Visible = true;
+                    listIdleBTDevices.Visible = true;
+                    btnConfirmBTDevices.Visible = true;
+                    txtChooseBTDevice.Visible = true;
                     this.ActiveControl = tbxStatus;
                     break;
                 

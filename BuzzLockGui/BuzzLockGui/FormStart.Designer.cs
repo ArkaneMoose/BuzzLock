@@ -53,15 +53,18 @@
             this.txtTime = new System.Windows.Forms.Label();
             this.timerDateTime = new System.Windows.Forms.Timer(this.components);
             this.btnExit = new System.Windows.Forms.Button();
+            this.listIdleBTDevices = new System.Windows.Forms.ListBox();
+            this.btnConfirmBTDevices = new System.Windows.Forms.Button();
+            this.txtChooseBTDevice = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.errNewUser)).BeginInit();
             this.SuspendLayout();
             // 
             // btnOptionsSave
             // 
-            this.btnOptionsSave.Location = new System.Drawing.Point(477, 263);
+            this.btnOptionsSave.Location = new System.Drawing.Point(577, 211);
             this.btnOptionsSave.Name = "btnOptionsSave";
             this.btnOptionsSave.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.btnOptionsSave.Size = new System.Drawing.Size(119, 41);
+            this.btnOptionsSave.Size = new System.Drawing.Size(119, 32);
             this.btnOptionsSave.TabIndex = 2;
             this.btnOptionsSave.Text = "Options";
             this.btnOptionsSave.UseVisualStyleBackColor = true;
@@ -72,7 +75,7 @@
             // 
             this.tbxStatus.AutoSize = true;
             this.tbxStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.5F);
-            this.tbxStatus.Location = new System.Drawing.Point(32, 35);
+            this.tbxStatus.Location = new System.Drawing.Point(6, 9);
             this.tbxStatus.Name = "tbxStatus";
             this.tbxStatus.Size = new System.Drawing.Size(499, 26);
             this.tbxStatus.TabIndex = 5;
@@ -81,7 +84,7 @@
             // btnDebugSwipe
             // 
             this.btnDebugSwipe.CausesValidation = false;
-            this.btnDebugSwipe.Location = new System.Drawing.Point(174, 263);
+            this.btnDebugSwipe.Location = new System.Drawing.Point(577, 75);
             this.btnDebugSwipe.Name = "btnDebugSwipe";
             this.btnDebugSwipe.Size = new System.Drawing.Size(112, 23);
             this.btnDebugSwipe.TabIndex = 6;
@@ -91,7 +94,7 @@
             // 
             // btnDebugBluetooth
             // 
-            this.btnDebugBluetooth.Location = new System.Drawing.Point(292, 263);
+            this.btnDebugBluetooth.Location = new System.Drawing.Point(577, 104);
             this.btnDebugBluetooth.Name = "btnDebugBluetooth";
             this.btnDebugBluetooth.Size = new System.Drawing.Size(137, 23);
             this.btnDebugBluetooth.TabIndex = 7;
@@ -101,7 +104,7 @@
             // txtCard
             // 
             this.txtCard.AutoSize = true;
-            this.txtCard.Location = new System.Drawing.Point(30, 91);
+            this.txtCard.Location = new System.Drawing.Point(10, 48);
             this.txtCard.Name = "txtCard";
             this.txtCard.Size = new System.Drawing.Size(32, 13);
             this.txtCard.TabIndex = 8;
@@ -111,7 +114,7 @@
             // txtUserName
             // 
             this.txtUserName.AutoSize = true;
-            this.txtUserName.Location = new System.Drawing.Point(29, 117);
+            this.txtUserName.Location = new System.Drawing.Point(9, 74);
             this.txtUserName.Name = "txtUserName";
             this.txtUserName.Size = new System.Drawing.Size(38, 13);
             this.txtUserName.TabIndex = 9;
@@ -121,7 +124,7 @@
             // txtUserPhone
             // 
             this.txtUserPhone.AutoSize = true;
-            this.txtUserPhone.Location = new System.Drawing.Point(29, 143);
+            this.txtUserPhone.Location = new System.Drawing.Point(9, 100);
             this.txtUserPhone.Name = "txtUserPhone";
             this.txtUserPhone.Size = new System.Drawing.Size(41, 13);
             this.txtUserPhone.TabIndex = 10;
@@ -130,7 +133,7 @@
             // 
             // tbxCard
             // 
-            this.tbxCard.Location = new System.Drawing.Point(76, 88);
+            this.tbxCard.Location = new System.Drawing.Point(56, 45);
             this.tbxCard.Name = "tbxCard";
             this.tbxCard.ReadOnly = true;
             this.tbxCard.Size = new System.Drawing.Size(455, 20);
@@ -140,7 +143,7 @@
             // 
             // tbxUserName
             // 
-            this.tbxUserName.Location = new System.Drawing.Point(76, 114);
+            this.tbxUserName.Location = new System.Drawing.Point(56, 71);
             this.tbxUserName.Name = "tbxUserName";
             this.tbxUserName.Size = new System.Drawing.Size(210, 20);
             this.tbxUserName.TabIndex = 12;
@@ -149,7 +152,7 @@
             // 
             // tbxUserPhone
             // 
-            this.tbxUserPhone.Location = new System.Drawing.Point(76, 140);
+            this.tbxUserPhone.Location = new System.Drawing.Point(56, 97);
             this.tbxUserPhone.Name = "tbxUserPhone";
             this.tbxUserPhone.Size = new System.Drawing.Size(210, 20);
             this.tbxUserPhone.TabIndex = 13;
@@ -162,7 +165,7 @@
             this.cbxPrimAuth.Items.AddRange(new object[] {
             "Card",
             "Bluetooth"});
-            this.cbxPrimAuth.Location = new System.Drawing.Point(149, 193);
+            this.cbxPrimAuth.Location = new System.Drawing.Point(129, 150);
             this.cbxPrimAuth.Name = "cbxPrimAuth";
             this.cbxPrimAuth.Size = new System.Drawing.Size(137, 21);
             this.cbxPrimAuth.TabIndex = 14;
@@ -177,7 +180,7 @@
             this.cbxSecAuth.Items.AddRange(new object[] {
             "Bluetooth",
             "Pin"});
-            this.cbxSecAuth.Location = new System.Drawing.Point(458, 193);
+            this.cbxSecAuth.Location = new System.Drawing.Point(438, 150);
             this.cbxSecAuth.Name = "cbxSecAuth";
             this.cbxSecAuth.Size = new System.Drawing.Size(138, 21);
             this.cbxSecAuth.TabIndex = 15;
@@ -188,7 +191,7 @@
             // txtPrimAuth
             // 
             this.txtPrimAuth.AutoSize = true;
-            this.txtPrimAuth.Location = new System.Drawing.Point(29, 196);
+            this.txtPrimAuth.Location = new System.Drawing.Point(9, 153);
             this.txtPrimAuth.Name = "txtPrimAuth";
             this.txtPrimAuth.Size = new System.Drawing.Size(114, 13);
             this.txtPrimAuth.TabIndex = 17;
@@ -198,7 +201,7 @@
             // txtSecAuth
             // 
             this.txtSecAuth.AutoSize = true;
-            this.txtSecAuth.Location = new System.Drawing.Point(321, 196);
+            this.txtSecAuth.Location = new System.Drawing.Point(301, 153);
             this.txtSecAuth.Name = "txtSecAuth";
             this.txtSecAuth.Size = new System.Drawing.Size(131, 13);
             this.txtSecAuth.TabIndex = 18;
@@ -212,7 +215,7 @@
             // txtPrimChooseDev
             // 
             this.txtPrimChooseDev.AutoSize = true;
-            this.txtPrimChooseDev.Location = new System.Drawing.Point(29, 222);
+            this.txtPrimChooseDev.Location = new System.Drawing.Point(9, 179);
             this.txtPrimChooseDev.Name = "txtPrimChooseDev";
             this.txtPrimChooseDev.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtPrimChooseDev.Size = new System.Drawing.Size(81, 13);
@@ -223,7 +226,7 @@
             // cbxBTSelect1
             // 
             this.cbxBTSelect1.FormattingEnabled = true;
-            this.cbxBTSelect1.Location = new System.Drawing.Point(149, 219);
+            this.cbxBTSelect1.Location = new System.Drawing.Point(129, 176);
             this.cbxBTSelect1.Name = "cbxBTSelect1";
             this.cbxBTSelect1.Size = new System.Drawing.Size(137, 21);
             this.cbxBTSelect1.TabIndex = 22;
@@ -232,7 +235,7 @@
             // 
             // tbxPin
             // 
-            this.tbxPin.Location = new System.Drawing.Point(458, 220);
+            this.tbxPin.Location = new System.Drawing.Point(438, 177);
             this.tbxPin.MaxLength = 6;
             this.tbxPin.Name = "tbxPin";
             this.tbxPin.Size = new System.Drawing.Size(138, 20);
@@ -243,7 +246,7 @@
             // cbxBTSelect2
             // 
             this.cbxBTSelect2.FormattingEnabled = true;
-            this.cbxBTSelect2.Location = new System.Drawing.Point(458, 219);
+            this.cbxBTSelect2.Location = new System.Drawing.Point(438, 176);
             this.cbxBTSelect2.Name = "cbxBTSelect2";
             this.cbxBTSelect2.Size = new System.Drawing.Size(138, 21);
             this.cbxBTSelect2.TabIndex = 24;
@@ -253,7 +256,7 @@
             // txtSecChooseDevOrPin
             // 
             this.txtSecChooseDevOrPin.AutoSize = true;
-            this.txtSecChooseDevOrPin.Location = new System.Drawing.Point(321, 222);
+            this.txtSecChooseDevOrPin.Location = new System.Drawing.Point(301, 179);
             this.txtSecChooseDevOrPin.Name = "txtSecChooseDevOrPin";
             this.txtSecChooseDevOrPin.Size = new System.Drawing.Size(57, 13);
             this.txtSecChooseDevOrPin.TabIndex = 25;
@@ -264,7 +267,7 @@
             // 
             this.txtDate.AutoSize = true;
             this.txtDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.5F);
-            this.txtDate.Location = new System.Drawing.Point(32, 78);
+            this.txtDate.Location = new System.Drawing.Point(186, 75);
             this.txtDate.Name = "txtDate";
             this.txtDate.Size = new System.Drawing.Size(80, 26);
             this.txtDate.TabIndex = 26;
@@ -275,7 +278,7 @@
             // 
             this.txtTime.AutoSize = true;
             this.txtTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.5F);
-            this.txtTime.Location = new System.Drawing.Point(32, 111);
+            this.txtTime.Location = new System.Drawing.Point(186, 108);
             this.txtTime.Name = "txtTime";
             this.txtTime.Size = new System.Drawing.Size(80, 26);
             this.txtTime.TabIndex = 27;
@@ -289,7 +292,7 @@
             // 
             // btnExit
             // 
-            this.btnExit.Location = new System.Drawing.Point(93, 263);
+            this.btnExit.Location = new System.Drawing.Point(577, 48);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(75, 23);
             this.btnExit.TabIndex = 28;
@@ -297,11 +300,47 @@
             this.btnExit.UseVisualStyleBackColor = true;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
+            // listIdleBTDevices
+            // 
+            this.listIdleBTDevices.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.listIdleBTDevices.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.listIdleBTDevices.FormattingEnabled = true;
+            this.listIdleBTDevices.ItemHeight = 16;
+            this.listIdleBTDevices.Location = new System.Drawing.Point(13, 75);
+            this.listIdleBTDevices.Name = "listIdleBTDevices";
+            this.listIdleBTDevices.Size = new System.Drawing.Size(160, 130);
+            this.listIdleBTDevices.TabIndex = 29;
+            this.listIdleBTDevices.Visible = false;
+            // 
+            // btnConfirmBTDevices
+            // 
+            this.btnConfirmBTDevices.Location = new System.Drawing.Point(13, 211);
+            this.btnConfirmBTDevices.Name = "btnConfirmBTDevices";
+            this.btnConfirmBTDevices.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.btnConfirmBTDevices.Size = new System.Drawing.Size(119, 32);
+            this.btnConfirmBTDevices.TabIndex = 30;
+            this.btnConfirmBTDevices.Text = "Confirm bluetooth";
+            this.btnConfirmBTDevices.UseVisualStyleBackColor = true;
+            this.btnConfirmBTDevices.Visible = false;
+            // 
+            // txtChooseBTDevice
+            // 
+            this.txtChooseBTDevice.AutoSize = true;
+            this.txtChooseBTDevice.Location = new System.Drawing.Point(10, 57);
+            this.txtChooseBTDevice.Name = "txtChooseBTDevice";
+            this.txtChooseBTDevice.Size = new System.Drawing.Size(128, 13);
+            this.txtChooseBTDevice.TabIndex = 31;
+            this.txtChooseBTDevice.Text = "Choose bluetooth device:";
+            this.txtChooseBTDevice.Visible = false;
+            // 
             // FormStart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 442);
+            this.Controls.Add(this.txtChooseBTDevice);
+            this.Controls.Add(this.btnConfirmBTDevices);
+            this.Controls.Add(this.listIdleBTDevices);
             this.Controls.Add(this.txtTime);
             this.Controls.Add(this.txtDate);
             this.Controls.Add(this.btnExit);
@@ -363,6 +402,9 @@
         private System.Windows.Forms.Label txtDate;
         private System.Windows.Forms.Timer timerDateTime;
         private System.Windows.Forms.Button btnExit;
+        private System.Windows.Forms.ListBox listIdleBTDevices;
+        private System.Windows.Forms.Label txtChooseBTDevice;
+        private System.Windows.Forms.Button btnConfirmBTDevices;
     }
 }
 
