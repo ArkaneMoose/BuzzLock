@@ -298,7 +298,7 @@ private void UpdateComponents()
         }
 
         private bool newCardEntry = false;
-        private string input = "";
+        private string cardInput = "";
         private bool shift = false;
         private void FormStart_KeyDown(object sender, KeyEventArgs e)
         {
@@ -309,99 +309,128 @@ private void UpdateComponents()
             }
             if (e.KeyCode == Keys.OemSemicolon || (e.KeyCode == Keys.D5 && e.Shift))
             {
+                // TODO: Check database to see if this is a new card entry or a recognized card associated with a user.
                 newCardEntry = true;
-                //shift = false;
             }
 
-            Console.WriteLine("Form Start Key Down");
-            Console.WriteLine("Pressed: " + e.KeyCode);
-            Console.WriteLine("Shift: " + shift);
-            Console.WriteLine("New Card Entry: " + newCardEntry);
+            //Console.WriteLine("Form Start Key Down");
+            //Console.WriteLine("Pressed: " + e.KeyCode);
+            //Console.WriteLine("Shift: " + shift);
+            //Console.WriteLine("New Card Entry: " + newCardEntry);
 
             if (newCardEntry)
             {
                 Keys key = e.KeyCode;
+
+                // Decode key press and add to card input string
                 switch(key)
                 {
                     case Keys.Oem1:
-                        input += ";";
+                        cardInput += shift == true ? ":" : ";";
+                        break;
+                    case Keys.Oem5:
+                        cardInput += shift == true ? "~" : "`";
+                        break;
+                    case Keys.Oem6:
+                        cardInput += shift == true ? "}" : "]";
+                        break;
+                    case Keys.Oem7:
+                        cardInput += shift == true ? "|" : "\\";
+                        break;
+                    case Keys.OemQuestion:
+                        cardInput += shift == true ? "?" : "/";
+                        break;
+                    case Keys.Oemplus:
+                        cardInput += shift == true ? "+" : "=";
+                        break;
+                    case Keys.OemMinus:
+                        cardInput += shift == true ? "_" : "-";
+                        break;
+                    case Keys.Oemtilde:
+                        cardInput += shift == true ? "\"" : "'";
+                        break;
+                    case Keys.Oemcomma:
+                        cardInput += shift == true ? "<" : ",";
+                        break;
+                    case Keys.OemPeriod:
+                        cardInput += shift == true ? ">" : ".";
+                        break;
+                    case Keys.OemOpenBrackets:
+                        cardInput += shift == true ? "{" : "[";
+                        break;
+                    case Keys.D0:
+                        cardInput += shift == true ? ")" : "0";
+                        break;
+                    case Keys.D1:
+                        cardInput += shift == true ? "!" : "1";
+                        break;
+                    case Keys.D2:
+                        cardInput += shift == true ? "@" : "2";
+                        break;
+                    case Keys.D3:
+                        cardInput += shift == true ? "#" : "3";
+                        break;
+                    case Keys.D4:
+                        cardInput += shift == true ? "$" : "4";
+                        break;
+                    case Keys.D5:
+                        cardInput += shift == true ? "%" : "5";
+                        break;
+                    case Keys.D6:
+                        cardInput += shift == true ? "^" : "6";
+                        break;
+                    case Keys.D7:
+                        cardInput += shift == true ? "&" : "7";
+                        break;
+                    case Keys.D8:
+                        cardInput += shift == true ? "*" : "8";
+                        break;
+                    case Keys.D9:
+                        cardInput += shift == true ? "(" : "9";
+                        break;
+                    case Keys.Space:
+                        cardInput += " ";
                         break;
                     case Keys.ShiftKey:
                         break;
-                    case Keys.OemQuestion:
-                        input += "?";
-                        break;
-                    case Keys.Oemplus:
-                        input += "=";
-                        break;
-                    case Keys.D0:
-                        input += shift == true ? ")" : "0";
-                        Console.WriteLine(shift == true ? ")" : "0");
-                        shift = false;
-                        break;
-                    case Keys.D1:
-                        input += shift == true ? "!" : "1";
-                        Console.WriteLine(shift == true ? "!" : "1");
-                        shift = false;
-                        break;
-                    case Keys.D2:
-                        input += shift == true ? "@" : "2";
-                        Console.WriteLine(shift == true ? "@" : "2");
-                        shift = false;
-                        break;
-                    case Keys.D3:
-                        input += shift == true ? "#" : "3";
-                        Console.WriteLine(shift == true ? "#" : "3");
-                        shift = false;
-                        break;
-                    case Keys.D4:
-                        input += shift == true ? "$" : "4";
-                        Console.WriteLine(shift == true ? "$" : "4");
-                        shift = false;
-                        break;
-                    case Keys.D5:
-                        input += shift == true ? "%" : "5";
-                        Console.WriteLine(shift == true ? "%" : "5");
-                        shift = false;
-                        break;
-                    case Keys.D6:
-                        input += shift == true ? "^" : "6";
-                        Console.WriteLine(shift == true ? "^" : "6");
-                        shift = false;
-                        break;
-                    case Keys.D7:
-                        input += shift == true ? "&" : "7";
-                        shift = false;
-                        break;
-                    case Keys.D8:
-                        input += shift == true ? "*" : "8";
-                        shift = false;
-                        break;
-                    case Keys.D9:
-                        input += shift == true ? "(" : "9";
-                        shift = false;
-                        break;
                     case Keys.Return:
                         break;
-                    case Keys.Space:
-                        input += " ";
-                        shift = false;
-                        break;
                     default:
-                        input += key.ToString();
-                        shift = false;
+                        cardInput += key.ToString();
                         break;
                 }
-                //Console.WriteLine(key);
+
+                // Stop adding to card input string when "Return" is entered
                 if (e.KeyCode == Keys.Return)
                 {
+                    tbxCard.Text = cardInput;
+                    Console.WriteLine(cardInput);
                     newCardEntry = false;
-                    Console.WriteLine(input);
-                    input = "";
+                    cardInput = "";
+
+                    if (_state == 0)
+                    {
+                        _state = State.Initializing;
+                        UpdateComponents();
+                        // Open initial setup page
+                    }
+                    else
+                    {
+                        // Test authentication
+                    }
                 } else
                 {
                     newCardEntry = true;
                 }
+            }
+        }
+        private void FormStart_KeyUp(object sender, KeyEventArgs e)
+        {
+            // When shift key is released, adjust "shift" value to false
+            if (e.KeyCode == Keys.ShiftKey)
+            {
+                //Console.WriteLine("Shift key released");
+                shift = false;
             }
         }
 
@@ -410,46 +439,9 @@ private void UpdateComponents()
             Console.WriteLine("Form Start Clicked");
         }
 
-       // private void FormStart_KeyPress(object sender, KeyPressEventArgs e)
-       // {
-       //     System.Diagnostics.Debug.WriteLine("Form Start Key Press");
-       //     //String input = "";
-       //     //do
-       //     //{
-       //     //    input += e.KeyChar.ToString();
-       //     //} while (e.KeyChar != "\n");
-       //     //System.Diagnostics.Debug.WriteLine(input);
-       //     System.Diagnostics.Debug.WriteLine(e.KeyChar);
-       // }
-
         private void FormStart_Activated(object sender, EventArgs e)
         {
             Console.WriteLine("Form Start Activated");
         }
-
-        private void tbxUserName_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar.ToString().Equals("%"))
-            {
-                Console.WriteLine("Percent entered");
-            }
-        }
-        //newCardEntry = false;
-        //input = "";
-        //if (e.KeyCode == Keys.OemSemicolon || (e.KeyCode == Keys.D5 && e.Shift))
-        //{
-        //    //System.Diagnostics.Debug.WriteLine("Pressed ; or %");
-        //    //Console.WriteLine("Pressed ; or %");
-        //    newCardEntry = true;
-        //    input += e.KeyCode.ToString();
-        //}
-        //if (newCardEntry)
-        //{
-        //    do
-        //    {
-        //        input += e.KeyCode.ToString();
-        //    } while (e.KeyCode != Keys.Enter);
-        //    tbxCard.Text = input;
-        //}
     }
 }

@@ -83,6 +83,7 @@
             // btnDebugSwipe
             // 
             this.btnDebugSwipe.CausesValidation = false;
+            this.btnDebugSwipe.Enabled = false;
             this.btnDebugSwipe.Location = new System.Drawing.Point(348, 506);
             this.btnDebugSwipe.Margin = new System.Windows.Forms.Padding(6);
             this.btnDebugSwipe.Name = "btnDebugSwipe";
@@ -155,7 +156,6 @@
             this.tbxUserName.TabIndex = 12;
             this.tbxUserName.Visible = false;
             this.tbxUserName.TextChanged += new System.EventHandler(this.ValidateTextBox);
-            this.tbxUserName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbxUserName_KeyPress);
             // 
             // tbxUserPhone
             // 
@@ -348,6 +348,7 @@
             this.Activated += new System.EventHandler(this.FormStart_Activated);
             this.Load += new System.EventHandler(this.FormStart_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormStart_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.FormStart_KeyUp);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.FormStart_MouseClick);
             ((System.ComponentModel.ISupportInitialize)(this.errNewUser)).EndInit();
             this.ResumeLayout(false);
