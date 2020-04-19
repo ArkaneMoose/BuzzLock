@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace BuzzLockGui
@@ -77,11 +78,17 @@ namespace BuzzLockGui
         private void UserInputValidation()
         {
             tbxUserName.Tag = "Please enter your full name.";
-            tbxUserPhone.Tag = "Please enter your phone number";
+            tbxUserPhone.Tag = "Please enter your phone number, no spaces or dashes.";
+            cbxPrimAuth.Tag = "Please choose a primary authentication method.";
+            cbxSecAuth.Tag = "Please choose a secondary authentication method.";
+            cbxBTSelect1.Tag = cbxBTSelect2.Tag = "Please choose your bluetooth device.";
+            tbxPin.Tag = "Please enter a 6-digit pin you will remember.";
+
             errNewUser.BlinkStyle = ErrorBlinkStyle.NeverBlink;
 
             ValidateTextBox(tbxUserName, EventArgs.Empty);
             ValidateTextBox(tbxUserPhone, EventArgs.Empty);
+            ValidateComboBox(cbxPrimAuth, EventArgs.Empty);
 
             // TODO: Validate combo boxes for authentication
         }
@@ -105,18 +112,78 @@ namespace BuzzLockGui
             btnOptionsSave.Enabled = errorControls.Count == 0;
         }
 
+        private void ValidatePinBox(object sender, EventArgs e)
+        {
+            //TODO: InstanceOF Check and exception handling / equals instanceOf
+            var textBox = sender as TextBox;
+            string errorMessage;
+            if (!ValidPin(textBox.Text, out errorMessage))
+            {
+                errNewUser.SetError(textBox, errorMessage);
+                errorControls.Add(textBox);
+            }
+            else
+            {
+                errNewUser.SetError(textBox, null);
+                errorControls.Remove(textBox);
+            }
+            btnOptionsSave.Enabled = errorControls.Count == 0;
+        }
+
+
+
+        private bool ValidPin(string pin, out string errorMessage)
+        {
+            // Confirm that the pin is the correct length
+            if (pin.Length < 6)
+            {
+                errorMessage = "Pin must be exactly 6 digits long";
+                return false;
+            }
+
+            // Confirim that the pin contains only numbers
+            if (!Regex.IsMatch(pin, @"^\d+$"))
+            {
+                errorMessage = "Pin must be all numbers.";
+                return false;
+            }
+
+            errorMessage = "";
+            return true;
+        }
+
+        private void ValidateComboBox(object sender, EventArgs e)
+        {
+            //TODO: InstanceOF Check and exception handling / equals instanceOf
+            var comboBox = sender as ComboBox;
+            if (comboBox.SelectedItem == null)
+            {
+                errNewUser.SetError(comboBox, (string)comboBox.Tag);
+                errorControls.Add(comboBox);
+            }
+            else
+            {
+                errNewUser.SetError(comboBox, null);
+                errorControls.Remove(comboBox);
+            }
+            btnOptionsSave.Enabled = errorControls.Count == 0;
+        }
+
         private void SetupPrimaryAuthConfiguration(object sender, EventArgs e)
         {
+            ValidateComboBox(sender, e);
             var comboBox = sender as ComboBox;
             if (comboBox.SelectedItem != null)
             {
                 txtSecAuth.Visible = true;
                 cbxSecAuth.Visible = true;
+                ValidateComboBox(cbxSecAuth, EventArgs.Empty);
             }
             if (comboBox.SelectedItem.ToString() == "Bluetooth")
             {
                 txtPrimChooseDev.Visible = true;
                 cbxBTSelect1.Visible = true;
+                ValidateComboBox(cbxBTSelect1, EventArgs.Empty);
                 //TODO: get bluetooth devices and place them in the combo box with their names
 
                 // Add Card to Secondary Auth if it has been removed
@@ -144,6 +211,7 @@ namespace BuzzLockGui
             {
                 txtPrimChooseDev.Visible = false;
                 cbxBTSelect1.Visible = false;
+                errorControls.Remove(cbxBTSelect1); 
 
                 // Add Blutetooth to Secondary Auth if it has been removed
                 if (!cbxSecAuth.Items.Contains("Bluetooth"))
@@ -168,6 +236,7 @@ namespace BuzzLockGui
 
         private void SetupSecondaryAuthConfiguration(object sender, EventArgs e)
         {
+            ValidateComboBox(sender, e);
             var comboBox = sender as ComboBox;
             if (comboBox.SelectedItem.ToString() == "Bluetooth")
             {
@@ -175,7 +244,8 @@ namespace BuzzLockGui
                 txtSecChooseDevOrPin.Visible = true;
                 cbxBTSelect2.Visible = true;
                 tbxPin.Visible = false;
-
+                errorControls.Remove(tbxPin);
+                ValidateComboBox(cbxBTSelect2, EventArgs.Empty);
                 //// if Bluetooth is selected as primary, make primary Card instead
                 //if (cbxPrimAuth.SelectedItem.ToString() == "Bluetooth")
                 //{
@@ -189,13 +259,17 @@ namespace BuzzLockGui
                 txtSecChooseDevOrPin.Text = "Insert PIN:";
                 txtSecChooseDevOrPin.Visible = true;
                 cbxBTSelect2.Visible = false;
+                errorControls.Remove(cbxBTSelect2);
                 tbxPin.Visible = true;
+                ValidateTextBox(tbxPin, EventArgs.Empty);
             }
             else if (comboBox.SelectedItem.ToString() == "Card")
             {
                 txtSecChooseDevOrPin.Visible = false;
                 cbxBTSelect2.Visible = false;
+                errorControls.Remove(cbxBTSelect2);
                 tbxPin.Visible = false;
+                errorControls.Remove(tbxPin);
 
                 //// if Card is selected as primary, make primary bluetooth instead
                 //if (cbxPrimAuth.SelectedItem.ToString() == "Card")
@@ -216,7 +290,7 @@ namespace BuzzLockGui
                 UpdateComponents();
 
                 // Open initial setup page
-                //tbxCard.Text = "%B6011001002725218^GAUKER/ANDREW";
+                tbxCard.Text = "Test Card for people without card swipers";
 
             }
             else
@@ -279,6 +353,7 @@ private void UpdateComponents()
                     tbxStatus.Text = "Hello! Please swipe your card to authenticate.";
                     txtDate.Visible = true;
                     txtTime.Visible = true;
+                    this.ActiveControl = tbxStatus;
                     break;
                 
                 default:
