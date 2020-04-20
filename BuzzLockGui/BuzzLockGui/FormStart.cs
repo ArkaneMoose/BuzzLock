@@ -92,12 +92,14 @@ namespace BuzzLockGui
             tbxUserPhone.Tag = "Please enter your phone number, no spaces or dashes.";
             cbxPrimAuth.Tag = "Please choose a primary authentication method.";
             cbxSecAuth.Tag = "Please choose a secondary authentication method.";
-            cbxBTSelect1.Tag = cbxBTSelect2.Tag = "Please choose your bluetooth device.";
-            tbxPin.Tag = "Please enter a 6-digit pin you will remember.";
+            cbxBTSelect1.Tag = cbxBTSelect2.Tag = "Please choose your Bluetooth device.";
+            tbxPin.Tag = "Please enter a 6-digit PIN you will remember.";
 
             errNewUser.BlinkStyle = ErrorBlinkStyle.NeverBlink;
 
+            // Call these so that the red exclamations will appear immediately
             ValidateTextBox(tbxUserName, EventArgs.Empty);
+            //TODO: ValidatePhoneBox
             ValidateTextBox(tbxUserPhone, EventArgs.Empty);
             ValidateComboBox(cbxPrimAuth, EventArgs.Empty);
 
@@ -148,14 +150,14 @@ namespace BuzzLockGui
             // Confirm that the pin is the correct length
             if (pin.Length < 6)
             {
-                errorMessage = "Pin must be exactly 6 digits long";
+                errorMessage = "PIN must be exactly 6 digits long.";
                 return false;
             }
 
-            // Confirim that the pin contains only numbers
+            // Confirm that the pin contains only numbers
             if (!Regex.IsMatch(pin, @"^\d+$"))
             {
-                errorMessage = "Pin must be all numbers.";
+                errorMessage = "PIN must be all numbers.";
                 return false;
             }
 
@@ -264,7 +266,7 @@ namespace BuzzLockGui
                 //    cbxPrimAuth.Update();
                 //}
             }
-            else if (comboBox.SelectedItem.ToString() == "Pin")
+            else if (comboBox.SelectedItem.ToString() == "PIN")
             {
                 //TODO: Limit number of characters to 4 or 6 for PIN w/ validation
                 txtSecChooseDevOrPin.Text = "Insert PIN:";
@@ -570,6 +572,11 @@ public void UpdateComponents()
         {
             _state = State.Authenticated;
             UpdateComponents();
+        }
+
+        private void btnConfirmBTDevices_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

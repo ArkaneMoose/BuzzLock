@@ -79,9 +79,9 @@
             this.txtStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.5F);
             this.txtStatus.Location = new System.Drawing.Point(12, 9);
             this.txtStatus.Name = "txtStatus";
-            this.txtStatus.Size = new System.Drawing.Size(499, 26);
+            this.txtStatus.Size = new System.Drawing.Size(507, 26);
             this.txtStatus.TabIndex = 5;
-            this.txtStatus.Text = "Hello! Please swipe your buzzcard to begin set up.";
+            this.txtStatus.Text = "Hello! Please swipe your BuzzCard to begin set up.";
             // 
             // btnDebugSwipe
             // 
@@ -181,7 +181,7 @@
             this.cbxSecAuth.FormattingEnabled = true;
             this.cbxSecAuth.Items.AddRange(new object[] {
             "Bluetooth",
-            "Pin"});
+            "PIN"});
             this.cbxSecAuth.Location = new System.Drawing.Point(444, 150);
             this.cbxSecAuth.Name = "cbxSecAuth";
             this.cbxSecAuth.Size = new System.Drawing.Size(138, 21);
@@ -321,9 +321,10 @@
             this.btnConfirmBTDevices.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.btnConfirmBTDevices.Size = new System.Drawing.Size(119, 32);
             this.btnConfirmBTDevices.TabIndex = 30;
-            this.btnConfirmBTDevices.Text = "Confirm bluetooth";
+            this.btnConfirmBTDevices.Text = "Confirm Bluetooth";
             this.btnConfirmBTDevices.UseVisualStyleBackColor = true;
             this.btnConfirmBTDevices.Visible = false;
+            this.btnConfirmBTDevices.Click += new System.EventHandler(this.btnConfirmBTDevices_Click);
             // 
             // txtChooseBTDevice
             // 
@@ -348,7 +349,7 @@
             // txtAuthStatus
             // 
             this.txtAuthStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.txtAuthStatus.Location = new System.Drawing.Point(16, 39);
+            this.txtAuthStatus.Location = new System.Drawing.Point(15, 39);
             this.txtAuthStatus.Name = "txtAuthStatus";
             this.txtAuthStatus.Size = new System.Drawing.Size(390, 36);
             this.txtAuthStatus.TabIndex = 34;
