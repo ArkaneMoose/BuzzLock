@@ -324,7 +324,6 @@
             this.btnConfirmBTDevices.Text = "Confirm Bluetooth";
             this.btnConfirmBTDevices.UseVisualStyleBackColor = true;
             this.btnConfirmBTDevices.Visible = false;
-            this.btnConfirmBTDevices.Click += new System.EventHandler(this.btnConfirmBTDevices_Click);
             // 
             // txtChooseBTDevice
             // 
@@ -389,12 +388,12 @@
             this.Controls.Add(this.cbxBTSelect1);
             this.Controls.Add(this.tbxPin);
             this.Controls.Add(this.cbxBTSelect2);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "FormStart";
             this.Text = "BuzzLock";
             this.Activated += new System.EventHandler(this.FormStart_Activated);
             this.Load += new System.EventHandler(this.FormStart_Load);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormStart_KeyDown);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.FormStart_KeyUp);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FormStart_KeyPress);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.FormStart_MouseClick);
             ((System.ComponentModel.ISupportInitialize)(this.errNewUser)).EndInit();
             this.ResumeLayout(false);
