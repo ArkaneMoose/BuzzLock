@@ -403,7 +403,6 @@
             this.Controls.Add(this.btnDebugAuthUser);
             this.Controls.Add(this.txtChooseBTDevice);
             this.Controls.Add(this.btnConfirmBTDevices);
-            this.Controls.Add(this.listIdleBTDevices);
             this.Controls.Add(this.txtTime);
             this.Controls.Add(this.txtDate);
             this.Controls.Add(this.btnExit);
@@ -427,6 +426,7 @@
             this.Controls.Add(this.cbxBTSelect2);
             this.Controls.Add(this.txtAuthStatus);
             this.Controls.Add(this.tbxCard);
+            this.Controls.Add(this.listIdleBTDevices);
             this.Margin = new System.Windows.Forms.Padding(12);
             this.Name = "FormStart";
             this.Text = "BuzzLock";

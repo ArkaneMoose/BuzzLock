@@ -325,108 +325,71 @@ namespace BuzzLockGui
 //TODO: Find out a way to make this private, like placing this functions inside of BuzzLock class instead
 public void UpdateComponents()
         {
+            // Initializing State
+            txtCard.Visible = _state == State.Initializing;
+            tbxCard.Visible = _state == State.Initializing;
+            txtUserName.Visible = _state == State.Initializing;
+            tbxUserName.Visible = _state == State.Initializing;
+            txtUserPhone.Visible = _state == State.Initializing;
+            tbxUserPhone.Visible = _state == State.Initializing;
+            txtPrimAuth.Visible = _state == State.Initializing;
+            cbxPrimAuth.Visible = _state == State.Initializing;
+            txtPrimChooseDev.Visible = false;
+            cbxBTSelect1.Visible = false;
+            txtSecAuth.Visible = false;
+            cbxSecAuth.Visible = false;
+            txtSecChooseDevOrPin.Visible = false;
+            tbxPin.Visible = false;
+            cbxBTSelect2.Visible = false;
+            timerDateTime.Enabled = _state == State.Initializing;
 
-            //TODO: instead of using a switch statement, statements like this are better for generalizability
+            // Idle State
             btnDebugAuthUser.Enabled = (_state == State.Idle);
+            txtDate.Visible = _state == State.Idle;
+            txtTime.Visible = _state == State.Idle;
+            listIdleBTDevices.Visible = _state == State.Idle;
+            btnConfirmBTDevices.Visible = _state == State.Idle;
+            txtChooseBTDevice.Visible = _state == State.Idle;
+
+            // Authenticated State
+            txtAuthStatus.Visible = _state == State.Authenticated;
+            timerAuthTimeout.Enabled = _state == State.Authenticated;
+            timerTxtAuthStatus.Enabled = _state == State.Authenticated;
+
+            // Multiple States
+            btnOptionsSave.Visible = _state == State.Initializing || _state == State.Idle || _state == State.Authenticated;
 
             switch (_state)
             {
                 case State.Uninitialized:
                     break;
                 case State.Initializing:
-                    txtCard.Visible = true;
-                    txtUserName.Visible = true;
-                    txtUserPhone.Visible = true;
-                    txtPrimChooseDev.Visible = false;
-                    txtPrimAuth.Visible = true;
-                    txtSecAuth.Visible = false;
-                    txtSecChooseDevOrPin.Visible = false;
-                    tbxCard.Visible = true;
-                    tbxUserName.Visible = true;
-                    tbxUserPhone.Visible = true;
-                    cbxPrimAuth.Visible = true;
-                    cbxSecAuth.Visible = false;
-                    cbxBTSelect1.Visible = false;
-                    cbxBTSelect2.Visible = false;
-                    btnOptionsSave.Visible = true;
                     btnOptionsSave.Text = "Save";
                     txtStatus.Text = "Create your profile and choose how you want to unlock the door:";
                     UserInputValidation();
-                    timerDateTime.Enabled = true;
                     break;
                 case State.Idle:
                     
                     //TODO: Combo box for selecting bluetooth devices already in database that are also in range
                     //TODO: Swipe from idle screen for primary authentication
-                    txtCard.Visible = false;
-                    txtUserName.Visible = false;
-                    txtUserPhone.Visible = false;
-                    txtPrimChooseDev.Visible = false;
-                    txtPrimAuth.Visible = false;
-                    txtSecAuth.Visible = false;
-                    txtSecChooseDevOrPin.Visible = false;
-                    tbxCard.Visible = false;
-                    tbxPin.Visible = false;
-                    tbxUserName.Visible = false;
-                    tbxUserPhone.Visible = false;
-                    cbxPrimAuth.Visible = false;
-                    cbxSecAuth.Visible = false;
-                    cbxBTSelect1.Visible = false;
-                    cbxBTSelect2.Visible = false;
-                    btnOptionsSave.Visible = true;
                     btnOptionsSave.Text = "Options";
                     txtStatus.Text = "Hello! Please swipe your card or choose your device.";
-                    txtAuthStatus.Visible = false;
-                    timerAuthTimeout.Enabled = false;
-                    timerTxtAuthStatus.Enabled = false;
-                    txtDate.Visible = true;
-                    txtTime.Visible = true;
-                    listIdleBTDevices.Visible = true;
-                    btnConfirmBTDevices.Visible = true;
-                    txtChooseBTDevice.Visible = true;
                     this.ActiveControl = txtStatus;
                     break;
                 case State.Authenticated:
-                    txtCard.Visible = false;
-                    txtUserName.Visible = false;
-                    txtUserPhone.Visible = false;
-                    txtPrimChooseDev.Visible = false;
-                    txtPrimAuth.Visible = false;
-                    txtSecAuth.Visible = false;
-                    txtSecChooseDevOrPin.Visible = false;
-                    tbxCard.Visible = false;
-                    tbxPin.Visible = false;
-                    tbxUserName.Visible = false;
-                    tbxUserPhone.Visible = false;
-                    cbxPrimAuth.Visible = false;
-                    cbxSecAuth.Visible = false;
-                    cbxBTSelect1.Visible = false;
-                    cbxBTSelect2.Visible = false;
-                    btnOptionsSave.Visible = true;
                     btnOptionsSave.Text = "Options";
                     //TODO: display user name here
                     txtStatus.Text = "Welcome, <user>. Door is unlocked.";
-                    txtAuthStatus.Visible = true;
 
-                    //TODO: update timeout in seconds here. Start with 10.
+                    // Timeout stopwatch
                     txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, this screen will timeout in 10 seconds.";
                     stopWatchAuthStatus.Start();
-                    timerAuthTimeout.Enabled = true;
-                    timerTxtAuthStatus.Enabled = true;
 
-
-                    txtDate.Visible = false;
-                    txtTime.Visible = false;
-                    listIdleBTDevices.Visible = false;
-                    btnConfirmBTDevices.Visible = false;
-                    txtChooseBTDevice.Visible = false;
                     this.ActiveControl = txtStatus;
                     break;
                 case State.UserOptions:
                     stopWatchAuthStatus.Stop();
                     stopWatchAuthStatus.Reset();
-                    timerAuthTimeout.Enabled = false;
-                    timerTxtAuthStatus.Enabled = false;
                     break;
                 default:
                     break;
