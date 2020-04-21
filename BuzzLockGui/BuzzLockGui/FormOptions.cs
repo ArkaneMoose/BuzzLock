@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -12,9 +13,11 @@ namespace BuzzLockGui
 {
     public partial class FormOptions : Form
     {
-        private FormStart _f1;
-        private FormOptions _f2;
-        public FormOptions(FormStart f1)
+        private FormStart _formStart;
+        private FormOptions _formOptions;
+        public Stopwatch stopWatchOptionsStatus = new Stopwatch();
+
+        public FormOptions(FormStart formStart)
         {
             InitializeComponent();
             
@@ -23,15 +26,20 @@ namespace BuzzLockGui
             this.Width = Screen.PrimaryScreen.WorkingArea.Width;
             this.Height = Screen.PrimaryScreen.WorkingArea.Height;
 
-            _f1 = f1;
-            _f2 = this;
+            _formStart = formStart;
+            _formOptions = this;
         }
 
         private void btnOptionsSave_Click(object sender, EventArgs e)
         {
-            _f1._state = State.Authenticated;
-            _f1.UpdateComponents();
-            _f1.Show();
+            txtOptionsStatus.Text = "30 seconds until timeout.";
+            stopWatchOptionsStatus.Stop();
+            stopWatchOptionsStatus.Reset();
+            timerOptionsTimeout.Enabled = false;
+            timerOptionsStatus.Enabled = false;
+            _formStart._state = State.Authenticated;
+            _formStart.UpdateComponents();
+            _formStart.Show();
             this.Hide();
         }
 
@@ -40,5 +48,21 @@ namespace BuzzLockGui
 
         }
 
+        private void timerOptionsTimeout_Tick(object sender, EventArgs e)
+        {
+            stopWatchOptionsStatus.Stop();
+            stopWatchOptionsStatus.Reset();
+            timerOptionsTimeout.Enabled = false;
+            timerOptionsStatus.Enabled = false;
+            _formStart._state = State.Idle;
+            _formStart.UpdateComponents();
+            _formStart.Show();
+            this.Hide();
+        }
+
+        private void timerOptionsStatus_Tick(object sender, EventArgs e)
+        {
+            txtOptionsStatus.Text = (30 - stopWatchOptionsStatus.Elapsed.Seconds) + " seconds until timeout.";
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -80,6 +81,13 @@ namespace BuzzLockGui
             else if (_state == State.Authenticated)
             {
                 _state = State.UserOptions;
+                UpdateComponents();
+
+                // Update FormOptions Components
+                _formOptions.timerOptionsTimeout.Enabled = true;
+                _formOptions.timerOptionsStatus.Enabled = true;
+                _formOptions.stopWatchOptionsStatus.Start();
+
                 _formOptions.Show();
                 this.Hide();
             }
@@ -142,8 +150,6 @@ namespace BuzzLockGui
             }
             btnOptionsSave.Enabled = errorControls.Count == 0;
         }
-
-
 
         private bool ValidPin(string pin, out string errorMessage)
         {
@@ -314,6 +320,7 @@ namespace BuzzLockGui
             }
         }
 
+    private Stopwatch stopWatchAuthStatus = new Stopwatch();
       
 //TODO: Find out a way to make this private, like placing this functions inside of BuzzLock class instead
 public void UpdateComponents()
@@ -369,6 +376,9 @@ public void UpdateComponents()
                     btnOptionsSave.Visible = true;
                     btnOptionsSave.Text = "Options";
                     txtStatus.Text = "Hello! Please swipe your card or choose your device.";
+                    txtAuthStatus.Visible = false;
+                    timerAuthTimeout.Enabled = false;
+                    timerTxtAuthStatus.Enabled = false;
                     txtDate.Visible = true;
                     txtTime.Visible = true;
                     listIdleBTDevices.Visible = true;
@@ -397,13 +407,26 @@ public void UpdateComponents()
                     //TODO: display user name here
                     txtStatus.Text = "Welcome, <user>. Door is unlocked.";
                     txtAuthStatus.Visible = true;
+
                     //TODO: update timeout in seconds here. Start with 10.
+                    txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, this screen will timeout in 10 seconds.";
+                    stopWatchAuthStatus.Start();
+                    timerAuthTimeout.Enabled = true;
+                    timerTxtAuthStatus.Enabled = true;
+
+
                     txtDate.Visible = false;
                     txtTime.Visible = false;
                     listIdleBTDevices.Visible = false;
                     btnConfirmBTDevices.Visible = false;
                     txtChooseBTDevice.Visible = false;
                     this.ActiveControl = txtStatus;
+                    break;
+                case State.UserOptions:
+                    stopWatchAuthStatus.Stop();
+                    stopWatchAuthStatus.Reset();
+                    timerAuthTimeout.Enabled = false;
+                    timerTxtAuthStatus.Enabled = false;
                     break;
                 default:
                     break;
@@ -414,6 +437,19 @@ public void UpdateComponents()
         {
             txtTime.Text = DateTime.Now.ToShortTimeString();
             txtDate.Text = DateTime.Now.ToLongDateString();
+        }
+
+        private void timeoutAuth_Tick(object sender, EventArgs e)
+        {
+            stopWatchAuthStatus.Stop();
+            stopWatchAuthStatus.Reset();
+            _state = State.Idle;
+            UpdateComponents();
+        }
+
+        private void timerTxtAuthStatus_Tick(object sender, EventArgs e)
+        {
+            txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, this screen will timeout in " + (10 - stopWatchAuthStatus.Elapsed.Seconds) + " seconds.";
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -487,8 +523,6 @@ public void UpdateComponents()
                     newCardEntry = true;
                 }
             }
-
-
         }
     }
 }
