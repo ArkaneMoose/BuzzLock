@@ -55,23 +55,54 @@ namespace BuzzLockGui
 
         private void FormOptions_Load(object sender, EventArgs e)
         {
-
+            this.UpdateComponents();
         }
         private void UpdateComponents()
         {
+            //UserOptions
+            btnEditAuth.Visible = _formStart._state == State.UserOptions;
+            btnEditProfile.Visible = _formStart._state == State.UserOptions;
+            btnRemoveUser.Visible = _formStart._state == State.UserOptions;
+            txtEditAuth.Visible = _formStart._state == State.UserOptions;
+            txtEditProfile.Visible = _formStart._state == State.UserOptions;
+            txtRemoveUser.Visible = _formStart._state == State.UserOptions;
+
+
+            //EditProfile
+            txtCurrentName.Visible = _formStart._state == State.UserOptions_EditProfile;
+            txtCurrentPhone.Visible = _formStart._state == State.UserOptions_EditProfile;
+            txtNewName.Visible = _formStart._state == State.UserOptions_EditProfile;
+            txtNewPhone.Visible = _formStart._state == State.UserOptions_EditProfile;
+            tbxCurrentName.Visible = _formStart._state == State.UserOptions_EditProfile;
+            tbxCurrentPhone.Visible = _formStart._state == State.UserOptions_EditProfile;
+            tbxNewName.Visible = _formStart._state == State.UserOptions_EditProfile;
+            tbxNewPhone.Visible = _formStart._state == State.UserOptions_EditProfile;
+            btnChangeName.Visible = _formStart._state == State.UserOptions_EditProfile;
+            btnChangePhone.Visible = _formStart._state == State.UserOptions_EditProfile;
+            //dataCurrentPicture.Visible = _formStart._state == State.UserOptions_EditProfile;
+            //btnChangePictureOrTakePicture.Visible = _formStart._state == State.UserOptions_EditProfile;
+
+            //EditAuth
+            //txtPrimAuth.Visible = _formStart._state == State.UserOptions_EditAuth;
+            //txtSecAuth.Visible = _formStart._state == State.UserOptions_EditAuth;
+            //cbxPrimAuth.Visible = _formStart._state == State.UserOptions_EditAuth;
+            //cbxSecAuth.Visible = _formStart._state == State.UserOptions_EditAuth;
+
             switch (_formStart._state)
             {
                 case State.UserOptions:
                     txtOptionsTitle.Text = "BuzzLock Options Menu";
-                    btnOptionsSave.Text = "Save";
                     break;
                 case State.UserOptions_EditProfile:
                     txtOptionsTitle.Text = "Edit your profile:";
-                    btnOptionsSave.Text = "Apply";
+                    //TODO: Query database for current name and phone number and picture
+                    tbxCurrentName.Text = "<get from database>";
+                    tbxCurrentPhone.Text = "<get from database>";
+                    validateNewName(tbxNewName, EventArgs.Empty);
+                    validateNewPhone(tbxNewPhone, EventArgs.Empty);
                     break;
                 case State.UserOptions_EditAuth:
                     txtOptionsTitle.Text = "Edit your authentication methods:";
-                    btnOptionsSave.Text = "Apply";
                     break;
                 default:
                     break;
@@ -109,7 +140,7 @@ namespace BuzzLockGui
             if (result == DialogResult.Yes)
             {
                 //TODO: Remove the current user from the database.
-                
+
                 // Close options and stop both timers. Go back to IDLE
                 timerOptionsTimeout.Enabled = false;
                 timerOptionsStatus.Enabled = false;
@@ -139,6 +170,47 @@ namespace BuzzLockGui
         {
             _formStart._state = State.UserOptions_EditAuth;
             this.UpdateComponents();
+        }
+
+        private void tbxCurrentName_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtCurrentName_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnChangeName_Click(object sender, EventArgs e)
+        {
+            //TODO: Change user name in database
+
+            // Update current name textbox and reset new name textbox
+            tbxCurrentName.Text = tbxNewName.Text;
+            tbxNewName.Text = "";
+        }
+
+        private void validateNewName(object sender, EventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            btnChangeName.Enabled = textBox.TextLength > 0;
+        }
+
+        private void validateNewPhone(object sender, EventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            //TODO: implement phone number validation
+            btnChangePhone.Enabled = textBox.TextLength > 0;
+        }
+
+        private void btnChangePhone_Click(object sender, EventArgs e)
+        {
+            //TODO: Change user phone in database
+
+            // Update currentPhone textbox and reset new phone textbox
+            tbxCurrentPhone.Text = tbxNewPhone.Text;
+            tbxNewPhone.Text = "";
         }
     }
     
