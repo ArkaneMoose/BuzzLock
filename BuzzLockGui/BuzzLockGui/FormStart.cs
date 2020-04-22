@@ -25,6 +25,7 @@ namespace BuzzLockGui
         private FormStart _formStart;
         private FormOptions _formOptions;
         public State _state;
+        public int keyboard_on = 0; //1 means on 0 means off
 
         // state = 0: uninitialized
         // state = 1: after swiping card to initialize, but before finishing init process
@@ -436,6 +437,51 @@ public void UpdateComponents()
         {
             _state = State.Authenticated;
             UpdateComponents();
+        }
+
+        private void keyboard_Click(object sender, EventArgs e)
+        {
+            if (keyboard_on == 0)
+            {
+                var args = string.Format("florence & echo $!");
+                Process process = new Process();
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"{args}\"",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                };
+
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.StartInfo = startInfo;
+                process.Start();
+                keyboard_on = 1;
+                //string result = process.StandardOutput.ReadToEnd();
+                //Console.WriteLine(result);
+            }
+        }
+
+        private void keyboardClose_Leave(object sender, EventArgs e)
+        {
+            var args = string.Format("sudo killall florence");
+            Process process = new Process();
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = "/bin/bash",
+                Arguments = $"-c \"{args}\"",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            };
+
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            process.StartInfo = startInfo;
+            process.Start();
+            keyboard_on = 0;
+            //string result = process.StandardOutput.ReadToEnd();
+            //Console.WriteLine(result);
         }
 
         private void FormStart_KeyPress(object sender, KeyPressEventArgs e)
