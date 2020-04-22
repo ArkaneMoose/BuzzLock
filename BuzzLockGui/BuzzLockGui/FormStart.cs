@@ -114,35 +114,40 @@ namespace BuzzLockGui
 
         private void ValidateTextBox(object sender, EventArgs e)
         {
-            //TODO: InstanceOF Check and exception handling / equals instanceOf
-            var textBox = sender as TextBox;
-            if (textBox.Text == "")
-            {
-                errNewUser.SetError(textBox, (string)textBox.Tag);
-                errorControls.Add(textBox);
-            }
-            else
-            {
-                errNewUser.SetError(textBox, null);
-                errorControls.Remove(textBox);
+            // Type check to ensure passed in object is a TextBox
+            if (sender.GetType().Name == "TextBox") {
+                TextBox textBox = (TextBox) sender;
+                if (textBox.Text == "")
+                {
+                    errNewUser.SetError(textBox, (string)textBox.Tag);
+                    errorControls.Add(textBox);
+                }
+                else
+                {
+                    errNewUser.SetError(textBox, null);
+                    errorControls.Remove(textBox);
+                }
             }
             btnOptionsSave.Enabled = errorControls.Count == 0;
         }
 
         private void ValidatePinBox(object sender, EventArgs e)
         {
-            //TODO: InstanceOF Check and exception handling / equals instanceOf
-            var textBox = sender as TextBox;
-            string errorMessage;
-            if (!ValidPin(textBox.Text, out errorMessage))
+            // Type check to ensure passed in object is a TextBox
+            if (sender.GetType().Name == "TextBox")
             {
-                errNewUser.SetError(textBox, errorMessage);
-                errorControls.Add(textBox);
-            }
-            else
-            {
-                errNewUser.SetError(textBox, null);
-                errorControls.Remove(textBox);
+                TextBox textBox = (TextBox) sender;
+                string errorMessage;
+                if (!ValidPin(textBox.Text, out errorMessage))
+                {
+                    errNewUser.SetError(textBox, errorMessage);
+                    errorControls.Add(textBox);
+                }
+                else
+                {
+                    errNewUser.SetError(textBox, null);
+                    errorControls.Remove(textBox);
+                }
             }
             btnOptionsSave.Enabled = errorControls.Count == 0;
         }
@@ -169,17 +174,20 @@ namespace BuzzLockGui
 
         private void ValidateComboBox(object sender, EventArgs e)
         {
-            //TODO: InstanceOF Check and exception handling / equals instanceOf
-            var comboBox = sender as ComboBox;
-            if (comboBox.SelectedItem == null)
+            // Type check to ensure passed in object is a ComboBox
+            if (sender.GetType().Name == "ComboBox")
             {
-                errNewUser.SetError(comboBox, (string)comboBox.Tag);
-                errorControls.Add(comboBox);
-            }
-            else
-            {
-                errNewUser.SetError(comboBox, null);
-                errorControls.Remove(comboBox);
+                ComboBox comboBox = (ComboBox) sender;
+                if (comboBox.SelectedItem == null)
+                {
+                    errNewUser.SetError(comboBox, (string)comboBox.Tag);
+                    errorControls.Add(comboBox);
+                }
+                else
+                {
+                    errNewUser.SetError(comboBox, null);
+                    errorControls.Remove(comboBox);
+                }
             }
             btnOptionsSave.Enabled = errorControls.Count == 0;
         }
