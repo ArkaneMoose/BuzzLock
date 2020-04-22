@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ModernMessageBoxLib;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,7 +21,7 @@ namespace BuzzLockGui
         public FormOptions(FormStart formStart)
         {
             InitializeComponent();
-            
+
             this.StartPosition = FormStartPosition.Manual;
             this.Left = Top = 0;
             this.Width = Screen.PrimaryScreen.WorkingArea.Width;
@@ -32,20 +33,49 @@ namespace BuzzLockGui
 
         private void btnOptionsSave_Click(object sender, EventArgs e)
         {
-            txtOptionsStatus.Text = "30 seconds until timeout.";
-            stopWatchOptionsStatus.Stop();
-            stopWatchOptionsStatus.Reset();
-            timerOptionsTimeout.Enabled = false;
-            timerOptionsStatus.Enabled = false;
-            _formStart._state = State.Authenticated;
-            _formStart.UpdateComponents();
-            _formStart.Show();
-            this.Hide();
+            if (_formStart._state == State.UserOptions)
+            {
+                stopWatchOptionsStatus.Stop();
+                stopWatchOptionsStatus.Reset();
+                timerOptionsTimeout.Enabled = false;
+                timerOptionsStatus.Enabled = false;
+                _formStart._state = State.Authenticated;
+                _formStart.UpdateComponents();
+                _formStart.Show();
+                this.Hide();
+            }
+            else if (_formStart._state == State.UserOptions_EditProfile
+                     || _formStart._state == State.UserOptions_EditAuth)
+            {
+                //TODO: save new data to database
+                _formStart._state = State.UserOptions;
+                this.UpdateComponents();
+            }
         }
 
         private void FormOptions_Load(object sender, EventArgs e)
         {
 
+        }
+        private void UpdateComponents()
+        {
+            switch (_formStart._state)
+            {
+                case State.UserOptions:
+                    txtOptionsTitle.Text = "BuzzLock Options Menu";
+                    btnOptionsSave.Text = "Save";
+                    break;
+                case State.UserOptions_EditProfile:
+                    txtOptionsTitle.Text = "Edit your profile:";
+                    btnOptionsSave.Text = "Apply";
+                    break;
+                case State.UserOptions_EditAuth:
+                    txtOptionsTitle.Text = "Edit your authentication methods:";
+                    btnOptionsSave.Text = "Apply";
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void timerOptionsTimeout_Tick(object sender, EventArgs e)
@@ -69,14 +99,13 @@ namespace BuzzLockGui
 
         private void btnRemoveUser_Click(object sender, EventArgs e)
         {
-            // Initializes the variables to pass to the MessageBox.Show method.
-            string message = "Are you sure you want to remove your user? This cannot be undone.";
-            string caption = "Remove user";
-            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
-            DialogResult result;
-
-            // Displays the MessageBox.
-            result = MessageBox.Show(message, caption, buttons);
+            // Initializes and displays the AutoClosingMessageBox.
+            var result = AutoClosingMessageBox.Show(
+                text: "Are you sure you want to remove your user? This cannot be undone.",
+                caption: "Remove User",
+                timeout: 5000, //5 seconds
+                buttons: MessageBoxButtons.YesNo,
+                defaultResult: DialogResult.No);
             if (result == DialogResult.Yes)
             {
                 //TODO: Remove the current user from the database.
@@ -95,6 +124,21 @@ namespace BuzzLockGui
         {
             // Reset active control to default
             this.ActiveControl = tbxStatus;
+        }
+
+        //TODO: reset options timer every time the user moves, 
+        //      the mouse, clicks something or types something. 
+
+        private void btnEditProfile_Click(object sender, EventArgs e)
+        {
+            _formStart._state = State.UserOptions_EditProfile;
+            this.UpdateComponents();
+        }
+
+        private void btnEditAuth_Click(object sender, EventArgs e)
+        {
+            _formStart._state = State.UserOptions_EditAuth;
+            this.UpdateComponents();
         }
     }
     

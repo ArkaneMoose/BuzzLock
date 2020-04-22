@@ -15,7 +15,9 @@ namespace BuzzLockGui
         Idle,
         GenericOptions,
         Authenticated, //TODO: spin servo to unlock door in Authenticated, and keep it unlocked during UserOptions
-        UserOptions    //      and in Authenticated until timeout happens.
+        UserOptions,    //      and in Authenticated until timeout happens.
+        UserOptions_EditProfile,
+        UserOptions_EditAuth
     }
 
     // reading card swipe, verification for combo box authentication
@@ -50,7 +52,7 @@ namespace BuzzLockGui
         {
 
             this.WindowState = FormWindowState.Normal;
-            this.ActiveControl = txtStatus; 
+            loseFocus(); 
             //this.TopMost = true;
             //this.FormBorderStyle = FormBorderStyle.None;
             //this.WindowState = FormWindowState.Maximized;
@@ -368,7 +370,7 @@ public void UpdateComponents()
                     //TODO: Swipe from idle screen for primary authentication
                     btnOptionsSave.Text = "Options";
                     txtStatus.Text = "Hello! Please swipe your card or choose your device.";
-                    this.ActiveControl = txtStatus;
+                    loseFocus();
                     enableBtnConfirmBTDevice(listIdleBTDevices, EventArgs.Empty);
                     break;
                 case State.Authenticated:
@@ -380,7 +382,7 @@ public void UpdateComponents()
                     txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, this screen will timeout in 10 seconds.";
                     stopWatchAuthStatus.Start();
 
-                    this.ActiveControl = txtStatus;
+                    loseFocus();
                     break;
                 case State.UserOptions:
                     stopWatchAuthStatus.Stop();
@@ -390,6 +392,11 @@ public void UpdateComponents()
                 default:
                     break;
             }
+        }
+
+        private void loseFocus()
+        {
+            this.ActiveControl = txtStatus;
         }
 
         private void timerDateTime_Tick(object sender, EventArgs e)
@@ -422,7 +429,7 @@ public void UpdateComponents()
         {
             Console.WriteLine("Form Start Clicked");
             // If the user clicks on the form, then active control leaves whatever it was and goes to default
-            this.ActiveControl = txtStatus;
+            loseFocus();
         }
 
         private void FormStart_Activated(object sender, EventArgs e)

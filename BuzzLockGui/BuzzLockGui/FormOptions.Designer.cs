@@ -46,7 +46,7 @@
             // 
             // btnOptionsSave
             // 
-            this.btnOptionsSave.Location = new System.Drawing.Point(653, 398);
+            this.btnOptionsSave.Location = new System.Drawing.Point(653, 235);
             this.btnOptionsSave.Name = "btnOptionsSave";
             this.btnOptionsSave.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.btnOptionsSave.Size = new System.Drawing.Size(119, 32);
@@ -64,6 +64,7 @@
             this.btnEditProfile.TabIndex = 5;
             this.btnEditProfile.Text = "Profile";
             this.btnEditProfile.UseVisualStyleBackColor = true;
+            this.btnEditProfile.Click += new System.EventHandler(this.btnEditProfile_Click);
             // 
             // btnEditAuth
             // 
@@ -74,6 +75,7 @@
             this.btnEditAuth.TabIndex = 6;
             this.btnEditAuth.Text = "Authentication";
             this.btnEditAuth.UseVisualStyleBackColor = true;
+            this.btnEditAuth.Click += new System.EventHandler(this.btnEditAuth_Click);
             // 
             // btnRemoveUser
             // 
