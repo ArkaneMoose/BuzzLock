@@ -12,10 +12,9 @@ using System.Windows.Forms;
 
 namespace BuzzLockGui
 {
-    public partial class FormOptions : Form
+    public partial class FormOptions : FormBuzzLock
     {
         private FormStart _formStart;
-        private FormOptions _formOptions;
         public Stopwatch stopWatchOptionsStatus = new Stopwatch();
 
         public FormOptions(FormStart formStart)
@@ -26,69 +25,135 @@ namespace BuzzLockGui
             this.Left = Top = 0;
             this.Width = Screen.PrimaryScreen.WorkingArea.Width;
             this.Height = Screen.PrimaryScreen.WorkingArea.Height;
+            this.KeyPreview = true;
 
             _formStart = formStart;
-            _formOptions = this;
+
+            foreach (Control control in Controls)
+            {
+                control.MouseClick += OnAnyMouseClick;
+            }
+        }
+
+        private void FormOptions_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            RestartTimer();
+        }
+
+        public new void Show()
+        {
+            this.UpdateComponents();
+            RestartTimer();
+            base.Show();
+        }
+
+        public new void Hide()
+        {
+            StopTimer();
+            base.Hide();
+        }
+
+        private void OnAnyMouseClick(object sender, EventArgs e)
+        {
+            RestartTimer();
+        }
+
+        private void StopTimer()
+        {
+            stopWatchOptionsStatus.Reset();
+            timerOptionsTimeout.Enabled = false;
+            timerOptionsStatus.Enabled = false;
+        }
+
+        private void StartTimer()
+        {
+            timerOptionsStatus_Tick(timerOptionsStatus, EventArgs.Empty);
+            stopWatchOptionsStatus.Start();
+            timerOptionsTimeout.Enabled = true;
+            timerOptionsStatus.Enabled = true;
+        }
+
+        private void RestartTimer()
+        {
+            StopTimer();
+            StartTimer();
+        }
+
+        private void timerOptionsTimeout_Tick(object sender, EventArgs e)
+        {
+            stopWatchOptionsStatus.Stop();
+            stopWatchOptionsStatus.Reset();
+            timerOptionsTimeout.Enabled = false;
+            timerOptionsStatus.Enabled = false;
+            _globalState = State.Idle;
+            _formStart.UpdateComponents();
+            _formStart.Show();
+            this.Hide();
+
+            // Also close "remove user" message box if it is open
+        }
+
+        private void timerOptionsStatus_Tick(object sender, EventArgs e)
+        {
+            txtOptionsStatus.Text = Utility.Pluralize(30 - stopWatchOptionsStatus.Elapsed.Seconds, "second") + " until timeout.";
         }
 
         private void btnOptionsSave_Click(object sender, EventArgs e)
         {
-            if (_formStart._state == State.UserOptions)
+            if (_globalState == State.UserOptions)
             {
-                stopWatchOptionsStatus.Stop();
-                stopWatchOptionsStatus.Reset();
-                timerOptionsTimeout.Enabled = false;
-                timerOptionsStatus.Enabled = false;
-                _formStart._state = State.Authenticated;
+                // ResetTimer(false);
+                _globalState = State.Authenticated;
                 _formStart.UpdateComponents();
                 _formStart.Show();
                 this.Hide();
             }
-            else if (_formStart._state == State.UserOptions_EditProfile
-                     || _formStart._state == State.UserOptions_EditAuth)
+            else if (_globalState == State.UserOptions_EditProfile
+                     || _globalState == State.UserOptions_EditAuth)
             {
                 //TODO: save new data to database
-                _formStart._state = State.UserOptions;
+                // ResetTimer();
+                _globalState = State.UserOptions;
                 this.UpdateComponents();
             }
         }
 
         private void FormOptions_Load(object sender, EventArgs e)
         {
-            this.UpdateComponents();
         }
+
         private void UpdateComponents()
         {
             //UserOptions
-            btnEditAuth.Visible = _formStart._state == State.UserOptions;
-            btnEditProfile.Visible = _formStart._state == State.UserOptions;
-            btnRemoveUser.Visible = _formStart._state == State.UserOptions;
-            txtEditAuth.Visible = _formStart._state == State.UserOptions;
-            txtEditProfile.Visible = _formStart._state == State.UserOptions;
-            txtRemoveUser.Visible = _formStart._state == State.UserOptions;
+            btnEditAuth.Visible = _globalState == State.UserOptions;
+            btnEditProfile.Visible = _globalState == State.UserOptions;
+            btnRemoveUser.Visible = _globalState == State.UserOptions;
+            txtEditAuth.Visible = _globalState == State.UserOptions;
+            txtEditProfile.Visible = _globalState == State.UserOptions;
+            txtRemoveUser.Visible = _globalState == State.UserOptions;
 
 
             //EditProfile
-            txtCurrentName.Visible = _formStart._state == State.UserOptions_EditProfile;
-            txtCurrentPhone.Visible = _formStart._state == State.UserOptions_EditProfile;
-            txtNewName.Visible = _formStart._state == State.UserOptions_EditProfile;
-            txtNewPhone.Visible = _formStart._state == State.UserOptions_EditProfile;
-            tbxCurrentName.Visible = _formStart._state == State.UserOptions_EditProfile;
-            tbxCurrentPhone.Visible = _formStart._state == State.UserOptions_EditProfile;
-            tbxNewName.Visible = _formStart._state == State.UserOptions_EditProfile;
-            tbxNewPhone.Visible = _formStart._state == State.UserOptions_EditProfile;
-            btnChangeName.Visible = _formStart._state == State.UserOptions_EditProfile;
-            btnChangePhone.Visible = _formStart._state == State.UserOptions_EditProfile;
-            //dataCurrentPicture.Visible = _formStart._state == State.UserOptions_EditProfile;
-            //btnChangePictureOrTakePicture.Visible = _formStart._state == State.UserOptions_EditProfile;
+            txtCurrentName.Visible = _globalState == State.UserOptions_EditProfile;
+            txtCurrentPhone.Visible = _globalState == State.UserOptions_EditProfile;
+            txtNewName.Visible = _globalState == State.UserOptions_EditProfile;
+            txtNewPhone.Visible = _globalState == State.UserOptions_EditProfile;
+            tbxCurrentName.Visible = _globalState == State.UserOptions_EditProfile;
+            tbxCurrentPhone.Visible = _globalState == State.UserOptions_EditProfile;
+            tbxNewName.Visible = _globalState == State.UserOptions_EditProfile;
+            tbxNewPhone.Visible = _globalState == State.UserOptions_EditProfile;
+            btnChangeName.Visible = _globalState == State.UserOptions_EditProfile;
+            btnChangePhone.Visible = _globalState == State.UserOptions_EditProfile;
+            //dataCurrentPicture.Visible = _globalState == State.UserOptions_EditProfile;
+            //btnChangePictureOrTakePicture.Visible = _globalState == State.UserOptions_EditProfile;
 
             //EditAuth
-            //txtPrimAuth.Visible = _formStart._state == State.UserOptions_EditAuth;
-            //txtSecAuth.Visible = _formStart._state == State.UserOptions_EditAuth;
-            //cbxPrimAuth.Visible = _formStart._state == State.UserOptions_EditAuth;
-            //cbxSecAuth.Visible = _formStart._state == State.UserOptions_EditAuth;
+            //txtPrimAuth.Visible = _globalState == State.UserOptions_EditAuth;
+            //txtSecAuth.Visible = _globalState == State.UserOptions_EditAuth;
+            //cbxPrimAuth.Visible = _globalState == State.UserOptions_EditAuth;
+            //cbxSecAuth.Visible = _globalState == State.UserOptions_EditAuth;
 
-            switch (_formStart._state)
+            switch (_globalState)
             {
                 case State.UserOptions:
                     txtOptionsTitle.Text = "BuzzLock Options Menu";
@@ -109,25 +174,6 @@ namespace BuzzLockGui
             }
         }
 
-        private void timerOptionsTimeout_Tick(object sender, EventArgs e)
-        {
-            stopWatchOptionsStatus.Stop();
-            stopWatchOptionsStatus.Reset();
-            timerOptionsTimeout.Enabled = false;
-            timerOptionsStatus.Enabled = false;
-            _formStart._state = State.Idle;
-            _formStart.UpdateComponents();
-            _formStart.Show();
-            this.Hide();
-
-            // Also close "remove user" message box if it is open
-        }
-
-        private void timerOptionsStatus_Tick(object sender, EventArgs e)
-        {
-            txtOptionsStatus.Text = (30 - stopWatchOptionsStatus.Elapsed.Seconds) + " seconds until timeout.";
-        }
-
         private void btnRemoveUser_Click(object sender, EventArgs e)
         {
             // Initializes and displays the AutoClosingMessageBox.
@@ -144,17 +190,18 @@ namespace BuzzLockGui
                 // Close options and stop both timers. Go back to IDLE
                 timerOptionsTimeout.Enabled = false;
                 timerOptionsStatus.Enabled = false;
-                _formStart._state = State.Idle;
+                _globalState = State.Idle;
                 _formStart.UpdateComponents();
                 _formStart.Show();
                 this.Hide();
             }
         }
 
-        private void FormOptions_Click(object sender, EventArgs e)
+        private void FormOptions_MouseClick(object sender, EventArgs e)
         {
             // Reset active control to default
             this.ActiveControl = tbxStatus;
+            RestartTimer();
         }
 
         //TODO: reset options timer every time the user moves, 
@@ -162,13 +209,13 @@ namespace BuzzLockGui
 
         private void btnEditProfile_Click(object sender, EventArgs e)
         {
-            _formStart._state = State.UserOptions_EditProfile;
+            _globalState = State.UserOptions_EditProfile;
             this.UpdateComponents();
         }
 
         private void btnEditAuth_Click(object sender, EventArgs e)
         {
-            _formStart._state = State.UserOptions_EditAuth;
+            _globalState = State.UserOptions_EditAuth;
             this.UpdateComponents();
         }
 

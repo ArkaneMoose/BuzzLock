@@ -296,7 +296,8 @@
             this.Name = "FormOptions";
             this.Text = "BuzzLock Options";
             this.Load += new System.EventHandler(this.FormOptions_Load);
-            this.Click += new System.EventHandler(this.FormOptions_Click);
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.FormOptions_MouseClick);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FormOptions_KeyPress);
             this.ResumeLayout(false);
             this.PerformLayout();
 
