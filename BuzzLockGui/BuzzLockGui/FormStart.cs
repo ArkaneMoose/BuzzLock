@@ -15,7 +15,9 @@ namespace BuzzLockGui
         Idle,
         GenericOptions,
         Authenticated, //TODO: spin servo to unlock door in Authenticated, and keep it unlocked during UserOptions
-        UserOptions    //      and in Authenticated until timeout happens.
+        UserOptions,    //      and in Authenticated until timeout happens.
+        UserOptions_EditProfile,
+        UserOptions_EditAuth
     }
 
     // reading card swipe, verification for combo box authentication
@@ -26,10 +28,6 @@ namespace BuzzLockGui
         private FormOptions _formOptions;
         public State _state;
         public int keyboard_on = 0; //1 means on 0 means off
-
-        // state = 0: uninitialized
-        // state = 1: after swiping card to initialize, but before finishing init process
-        // state = 2: idle, showing time
 
         public FormStart()
         {
@@ -55,7 +53,7 @@ namespace BuzzLockGui
         {
 
             this.WindowState = FormWindowState.Normal;
-            this.ActiveControl = txtStatus; 
+            loseFocus(); 
             //this.TopMost = true;
             //this.FormBorderStyle = FormBorderStyle.None;
             //this.WindowState = FormWindowState.Maximized;
@@ -111,43 +109,46 @@ namespace BuzzLockGui
             //TODO: ValidatePhoneBox
             ValidateTextBox(tbxUserPhone, EventArgs.Empty);
             ValidateComboBox(cbxPrimAuth, EventArgs.Empty);
-
-            // TODO: Validate combo boxes for authentication
         }
 
         private HashSet<Control> errorControls = new HashSet<Control>();
 
         private void ValidateTextBox(object sender, EventArgs e)
         {
-            //TODO: InstanceOF Check and exception handling / equals instanceOf
-            var textBox = sender as TextBox;
-            if (textBox.Text == "")
-            {
-                errNewUser.SetError(textBox, (string)textBox.Tag);
-                errorControls.Add(textBox);
-            }
-            else
-            {
-                errNewUser.SetError(textBox, null);
-                errorControls.Remove(textBox);
+            // Type check to ensure passed in object is a TextBox
+            if (sender.GetType().Name == "TextBox") {
+                TextBox textBox = (TextBox) sender;
+                if (textBox.Text == "")
+                {
+                    errNewUser.SetError(textBox, (string)textBox.Tag);
+                    errorControls.Add(textBox);
+                }
+                else
+                {
+                    errNewUser.SetError(textBox, null);
+                    errorControls.Remove(textBox);
+                }
             }
             btnOptionsSave.Enabled = errorControls.Count == 0;
         }
 
         private void ValidatePinBox(object sender, EventArgs e)
         {
-            //TODO: InstanceOF Check and exception handling / equals instanceOf
-            var textBox = sender as TextBox;
-            string errorMessage;
-            if (!ValidPin(textBox.Text, out errorMessage))
+            // Type check to ensure passed in object is a TextBox
+            if (sender.GetType().Name == "TextBox")
             {
-                errNewUser.SetError(textBox, errorMessage);
-                errorControls.Add(textBox);
-            }
-            else
-            {
-                errNewUser.SetError(textBox, null);
-                errorControls.Remove(textBox);
+                TextBox textBox = (TextBox) sender;
+                string errorMessage;
+                if (!ValidPin(textBox.Text, out errorMessage))
+                {
+                    errNewUser.SetError(textBox, errorMessage);
+                    errorControls.Add(textBox);
+                }
+                else
+                {
+                    errNewUser.SetError(textBox, null);
+                    errorControls.Remove(textBox);
+                }
             }
             btnOptionsSave.Enabled = errorControls.Count == 0;
         }
@@ -174,17 +175,20 @@ namespace BuzzLockGui
 
         private void ValidateComboBox(object sender, EventArgs e)
         {
-            //TODO: InstanceOF Check and exception handling / equals instanceOf
-            var comboBox = sender as ComboBox;
-            if (comboBox.SelectedItem == null)
+            // Type check to ensure passed in object is a ComboBox
+            if (sender.GetType().Name == "ComboBox")
             {
-                errNewUser.SetError(comboBox, (string)comboBox.Tag);
-                errorControls.Add(comboBox);
-            }
-            else
-            {
-                errNewUser.SetError(comboBox, null);
-                errorControls.Remove(comboBox);
+                ComboBox comboBox = (ComboBox) sender;
+                if (comboBox.SelectedItem == null)
+                {
+                    errNewUser.SetError(comboBox, (string)comboBox.Tag);
+                    errorControls.Add(comboBox);
+                }
+                else
+                {
+                    errNewUser.SetError(comboBox, null);
+                    errorControls.Remove(comboBox);
+                }
             }
             btnOptionsSave.Enabled = errorControls.Count == 0;
         }
@@ -358,7 +362,7 @@ public void UpdateComponents()
             timerTxtAuthStatus.Enabled = _state == State.Authenticated;
 
             // Multiple States
-            btnOptionsSave.Visible = _state == State.Initializing || _state == State.Idle || _state == State.Authenticated;
+            btnOptionsSave.Visible = _state == State.Initializing || _state == State.Authenticated;
 
             switch (_state)
             {
@@ -375,7 +379,8 @@ public void UpdateComponents()
                     //TODO: Swipe from idle screen for primary authentication
                     btnOptionsSave.Text = "Options";
                     txtStatus.Text = "Hello! Please swipe your card or choose your device.";
-                    this.ActiveControl = txtStatus;
+                    loseFocus();
+                    enableBtnConfirmBTDevice(listIdleBTDevices, EventArgs.Empty);
                     break;
                 case State.Authenticated:
                     btnOptionsSave.Text = "Options";
@@ -386,15 +391,21 @@ public void UpdateComponents()
                     txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, this screen will timeout in 10 seconds.";
                     stopWatchAuthStatus.Start();
 
-                    this.ActiveControl = txtStatus;
+                    loseFocus();
                     break;
                 case State.UserOptions:
                     stopWatchAuthStatus.Stop();
                     stopWatchAuthStatus.Reset();
+
                     break;
                 default:
                     break;
             }
+        }
+
+        private void loseFocus()
+        {
+            this.ActiveControl = txtStatus;
         }
 
         private void timerDateTime_Tick(object sender, EventArgs e)
@@ -426,6 +437,8 @@ public void UpdateComponents()
         private void FormStart_MouseClick(object sender, MouseEventArgs e)
         {
             Console.WriteLine("Form Start Clicked");
+            // If the user clicks on the form, then active control leaves whatever it was and goes to default
+            loseFocus();
         }
 
         private void FormStart_Activated(object sender, EventArgs e)
@@ -532,6 +545,23 @@ public void UpdateComponents()
                     newCardEntry = true;
                 }
             }
+        }
+
+        private void enableBtnConfirmBTDevice(object sender, EventArgs e)
+        {
+            ListBox listBox = (ListBox) sender;
+            btnConfirmBTDevices.Enabled = listBox.SelectedItem != null;
+        }
+
+        private void btnDebugBluetooth_Click(object sender, EventArgs e)
+        {
+            listIdleBTDevices.Items.Add("Dummy BT device name or address");
+        }
+
+        private void btnConfirmBTDevices_Click(object sender, EventArgs e)
+        {
+            //TODO: Request user second authentication, either PIN or Card swipe.
+
         }
     }
 }
