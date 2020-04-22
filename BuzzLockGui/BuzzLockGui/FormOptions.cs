@@ -25,20 +25,84 @@ namespace BuzzLockGui
             this.Left = Top = 0;
             this.Width = Screen.PrimaryScreen.WorkingArea.Width;
             this.Height = Screen.PrimaryScreen.WorkingArea.Height;
+            this.KeyPreview = true;
 
             _formStart = formStart;
-            _formOptions = this;
+
+            foreach (Control control in Controls)
+            {
+                control.MouseClick += OnAnyMouseClick;
+            }
+        }
+
+        private void FormOptions_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            RestartTimer();
+        }
+
+        public new void Show()
+        {
+            this.UpdateComponents();
+            RestartTimer();
+            base.Show();
+        }
+
+        public new void Hide()
+        {
+            StopTimer();
+            base.Hide();
+        }
+
+        private void OnAnyMouseClick(object sender, EventArgs e)
+        {
+            RestartTimer();
+        }
+
+        private void StopTimer()
+        {
+            stopWatchOptionsStatus.Reset();
+            timerOptionsTimeout.Enabled = false;
+            timerOptionsStatus.Enabled = false;
+        }
+
+        private void StartTimer()
+        {
+            timerOptionsStatus_Tick(timerOptionsStatus, EventArgs.Empty);
+            stopWatchOptionsStatus.Start();
+            timerOptionsTimeout.Enabled = true;
+            timerOptionsStatus.Enabled = true;
+        }
+
+        private void RestartTimer()
+        {
+            StopTimer();
+            StartTimer();
+        }
+
+        private void timerOptionsTimeout_Tick(object sender, EventArgs e)
+        {
+            stopWatchOptionsStatus.Stop();
+            stopWatchOptionsStatus.Reset();
+            timerOptionsTimeout.Enabled = false;
+            timerOptionsStatus.Enabled = false;
+            _globalState = State.Idle;
+            _formStart.UpdateComponents();
+            _formStart.Show();
+            this.Hide();
+
+            // Also close "remove user" message box if it is open
+        }
+
+        private void timerOptionsStatus_Tick(object sender, EventArgs e)
+        {
+            txtOptionsStatus.Text = Utility.Pluralize(30 - stopWatchOptionsStatus.Elapsed.Seconds, "second") + " until timeout.";
         }
 
         private void btnOptionsSave_Click(object sender, EventArgs e)
         {
             if (_globalState == State.UserOptions)
             {
-                stopWatchOptionsStatus.Stop();
-                stopWatchOptionsStatus.Reset();
-                timerOptionsTimeout.Enabled = false;
-                timerOptionsStatus.Enabled = false;
-                _formStart._state = State.Authenticated;
+                // ResetTimer(false);
                 _globalState = State.Authenticated;
                 _formStart.UpdateComponents();
                 _formStart.Show();
@@ -48,6 +112,7 @@ namespace BuzzLockGui
                      || _globalState == State.UserOptions_EditAuth)
             {
                 //TODO: save new data to database
+                // ResetTimer();
                 _globalState = State.UserOptions;
                 this.UpdateComponents();
             }
@@ -55,7 +120,6 @@ namespace BuzzLockGui
 
         private void FormOptions_Load(object sender, EventArgs e)
         {
-            this.UpdateComponents();
         }
 
         private void UpdateComponents()
@@ -110,25 +174,6 @@ namespace BuzzLockGui
             }
         }
 
-        private void timerOptionsTimeout_Tick(object sender, EventArgs e)
-        {
-            stopWatchOptionsStatus.Stop();
-            stopWatchOptionsStatus.Reset();
-            timerOptionsTimeout.Enabled = false;
-            timerOptionsStatus.Enabled = false;
-            _formStart._state = State.Idle;
-            _formStart.UpdateComponents();
-            _formStart.Show();
-            this.Hide();
-
-            // Also close "remove user" message box if it is open
-        }
-
-        private void timerOptionsStatus_Tick(object sender, EventArgs e)
-        {
-            txtOptionsStatus.Text = (30 - stopWatchOptionsStatus.Elapsed.Seconds) + " seconds until timeout.";
-        }
-
         private void btnRemoveUser_Click(object sender, EventArgs e)
         {
             // Initializes and displays the AutoClosingMessageBox.
@@ -152,10 +197,11 @@ namespace BuzzLockGui
             }
         }
 
-        private void FormOptions_Click(object sender, EventArgs e)
+        private void FormOptions_MouseClick(object sender, EventArgs e)
         {
             // Reset active control to default
             this.ActiveControl = tbxStatus;
+            RestartTimer();
         }
 
         //TODO: reset options timer every time the user moves, 

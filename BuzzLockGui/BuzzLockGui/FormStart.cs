@@ -28,6 +28,11 @@ namespace BuzzLockGui
 
             // Update visibility of form components
             UpdateComponents();
+
+            foreach (Control control in Controls)
+            {
+                control.MouseClick += OnAnyMouseClick;
+            }
         }
 
         private void FormStart_Load(object sender, EventArgs e)
@@ -38,6 +43,48 @@ namespace BuzzLockGui
             //this.TopMost = true;
             //this.FormBorderStyle = FormBorderStyle.None;
             //this.WindowState = FormWindowState.Maximized;
+        }
+
+        public new void Show()
+        {
+            this.UpdateComponents();
+            RestartTimer();
+            base.Show();
+        }
+
+        public new void Hide()
+        {
+            StopTimer();
+            base.Hide();
+        }
+
+        private void OnAnyMouseClick(object sender, EventArgs e)
+        {
+            RestartTimer();
+        }
+
+        private void StopTimer()
+        {
+            stopWatchAuthStatus.Reset();
+            timerAuthTimeout.Enabled = false;
+            timerTxtAuthStatus.Enabled = false;
+        }
+
+        private void StartTimer()
+        {
+            if (_globalState == State.Authenticated)
+            {
+                timerTxtAuthStatus_Tick(timerTxtAuthStatus, EventArgs.Empty);
+                stopWatchAuthStatus.Start();
+                timerAuthTimeout.Enabled = true;
+                timerTxtAuthStatus.Enabled = true;
+            }
+        }
+
+        private void RestartTimer()
+        {
+            StopTimer();
+            StartTimer();
         }
 
         private void btnOptionsSave_Click(object sender, EventArgs e)
@@ -62,12 +109,6 @@ namespace BuzzLockGui
             {
                 _globalState = State.UserOptions;
                 UpdateComponents();
-
-                // Update FormOptions Components
-                _formOptions.timerOptionsTimeout.Enabled = true;
-                _formOptions.timerOptionsStatus.Enabled = true;
-                _formOptions.stopWatchOptionsStatus.Start();
-
                 _formOptions.Show();
                 this.Hide();
             }
@@ -370,14 +411,10 @@ public void UpdateComponents()
 
                     // Timeout stopwatch
                     txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, this screen will timeout in 10 seconds.";
+                    stopWatchAuthStatus.Reset();
                     stopWatchAuthStatus.Start();
 
                     loseFocus();
-                    break;
-                case State.UserOptions:
-                    stopWatchAuthStatus.Stop();
-                    stopWatchAuthStatus.Reset();
-
                     break;
                 default:
                     break;
@@ -397,7 +434,6 @@ public void UpdateComponents()
 
         private void timeoutAuth_Tick(object sender, EventArgs e)
         {
-            stopWatchAuthStatus.Stop();
             stopWatchAuthStatus.Reset();
             _globalState = State.Idle;
             UpdateComponents();
@@ -405,7 +441,7 @@ public void UpdateComponents()
 
         private void timerTxtAuthStatus_Tick(object sender, EventArgs e)
         {
-            txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, this screen will timeout in " + (10 - stopWatchAuthStatus.Elapsed.Seconds) + " seconds.";
+            txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, this screen will timeout in " + Utility.Pluralize((10 - stopWatchAuthStatus.Elapsed.Seconds), "second") + ".";
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -420,6 +456,7 @@ public void UpdateComponents()
             Console.WriteLine("Form Start Clicked");
             // If the user clicks on the form, then active control leaves whatever it was and goes to default
             loseFocus();
+            RestartTimer();
         }
 
         private void FormStart_Activated(object sender, EventArgs e)
@@ -439,6 +476,8 @@ public void UpdateComponents()
             Console.WriteLine("Pressed: " + e.KeyChar);
             //Console.WriteLine("Shift: " + shift);
             //Console.WriteLine("New Card Entry: " + newCardEntry);
+
+            RestartTimer();
 
             if (e.KeyChar == ';' || (e.KeyChar == '%'))
             {
