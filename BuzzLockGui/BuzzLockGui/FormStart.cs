@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace BuzzLockGui
 {
@@ -472,7 +473,7 @@ public void UpdateComponents()
 
         private void keyboard_Click(object sender, EventArgs e)
         {
-            if (keyboard_on == 0)
+            if (keyboard_on == 0 && IS_LINUX)
             {
                 var args = string.Format("florence & echo $!");
                 Process process = new Process();
@@ -494,25 +495,28 @@ public void UpdateComponents()
             }
         }
 
-        private void keyboardClose_Leave(object sender, EventArgs e)
+        private void KeyboardClose_Leave(object sender, EventArgs e)
         {
-            var args = string.Format("sudo killall florence");
-            Process process = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo
+            if (IS_LINUX)
             {
-                FileName = "/bin/bash",
-                Arguments = $"-c \"{args}\"",
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true,
-            };
+                var args = string.Format("sudo killall florence");
+                Process process = new Process();
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"{args}\"",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                };
 
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            process.StartInfo = startInfo;
-            process.Start();
-            keyboard_on = 0;
-            //string result = process.StandardOutput.ReadToEnd();
-            //Console.WriteLine(result);
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.StartInfo = startInfo;
+                process.Start();
+                keyboard_on = 0;
+                //string result = process.StandardOutput.ReadToEnd();
+                //Console.WriteLine(result);
+            }
         }
 
         private void FormStart_KeyPress(object sender, KeyPressEventArgs e)

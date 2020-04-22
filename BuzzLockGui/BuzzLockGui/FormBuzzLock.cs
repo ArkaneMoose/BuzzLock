@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace BuzzLockGui
 {
@@ -22,5 +23,7 @@ namespace BuzzLockGui
         }
 
         protected static State _globalState;
+        public static readonly bool IS_LINUX =
+            RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
     }
 }
