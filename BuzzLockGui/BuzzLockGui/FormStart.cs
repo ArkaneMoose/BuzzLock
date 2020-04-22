@@ -6,27 +6,10 @@ using System.Windows.Forms;
 
 namespace BuzzLockGui
 {
-    //TODO: currently, State and _state are public. Place them in a BuzzLock class, 
-    //      and make _formOptions and _formStart instance variables of that class instead.
-    public enum State
+    public partial class FormStart : FormBuzzLock
     {
-        Uninitialized,
-        Initializing,
-        Idle,
-        GenericOptions,
-        Authenticated, //TODO: spin servo to unlock door in Authenticated, and keep it unlocked during UserOptions
-        UserOptions,    //      and in Authenticated until timeout happens.
-        UserOptions_EditProfile,
-        UserOptions_EditAuth
-    }
-
-    // reading card swipe, verification for combo box authentication
-
-    public partial class FormStart : Form
-    {
-        private FormStart _formStart;
         private FormOptions _formOptions;
-        public State _state;
+        //public State _globalState;
 
         public FormStart()
         {
@@ -38,11 +21,10 @@ namespace BuzzLockGui
 
             this.KeyPreview = true;
 
-            _formStart = this;
             _formOptions = new FormOptions(this);
 
             // Query database and set state
-            _state = State.Uninitialized;
+            _globalState = State.Uninitialized;
 
             // Update visibility of form components
             UpdateComponents();
@@ -52,7 +34,7 @@ namespace BuzzLockGui
         {
 
             this.WindowState = FormWindowState.Normal;
-            loseFocus(); 
+            loseFocus();
             //this.TopMost = true;
             //this.FormBorderStyle = FormBorderStyle.None;
             //this.WindowState = FormWindowState.Maximized;
@@ -60,25 +42,25 @@ namespace BuzzLockGui
 
         private void btnOptionsSave_Click(object sender, EventArgs e)
         {
-            if (_state == State.Initializing)
+            if (_globalState == State.Initializing)
             {
                 //TODO: Save initial user preferences to database
 
                 // Go to idle state
-                _state = State.Idle;
+                _globalState = State.Idle;
                 UpdateComponents();
 
             }
-            else if (_state == State.Idle)
+            else if (_globalState == State.Idle)
             {
                 //TODO: Show generic options form
 
-                //_state = State.GenericOptions;
+                //_globalState = State.GenericOptions;
                 
             }
-            else if (_state == State.Authenticated)
+            else if (_globalState == State.Authenticated)
             {
-                _state = State.UserOptions;
+                _globalState = State.UserOptions;
                 UpdateComponents();
 
                 // Update FormOptions Components
@@ -307,9 +289,9 @@ namespace BuzzLockGui
         //See idle state to-do
         private void btnDebugSwipe_Click(object sender, EventArgs e)
         {
-            if (_state == 0)
+            if (_globalState == 0)
             {
-                _state = State.Initializing;
+                _globalState = State.Initializing;
                 UpdateComponents();
 
                 // Open initial setup page
@@ -330,14 +312,14 @@ namespace BuzzLockGui
 public void UpdateComponents()
         {
             // Initializing State
-            txtCard.Visible = _state == State.Initializing;
-            tbxCard.Visible = _state == State.Initializing;
-            txtUserName.Visible = _state == State.Initializing;
-            tbxUserName.Visible = _state == State.Initializing;
-            txtUserPhone.Visible = _state == State.Initializing;
-            tbxUserPhone.Visible = _state == State.Initializing;
-            txtPrimAuth.Visible = _state == State.Initializing;
-            cbxPrimAuth.Visible = _state == State.Initializing;
+            txtCard.Visible = _globalState == State.Initializing;
+            tbxCard.Visible = _globalState == State.Initializing;
+            txtUserName.Visible = _globalState == State.Initializing;
+            tbxUserName.Visible = _globalState == State.Initializing;
+            txtUserPhone.Visible = _globalState == State.Initializing;
+            tbxUserPhone.Visible = _globalState == State.Initializing;
+            txtPrimAuth.Visible = _globalState == State.Initializing;
+            cbxPrimAuth.Visible = _globalState == State.Initializing;
             txtPrimChooseDev.Visible = false;
             cbxBTSelect1.Visible = false;
             txtSecAuth.Visible = false;
@@ -345,25 +327,25 @@ public void UpdateComponents()
             txtSecChooseDevOrPin.Visible = false;
             tbxPin.Visible = false;
             cbxBTSelect2.Visible = false;
-            timerDateTime.Enabled = _state == State.Initializing;
+            timerDateTime.Enabled = _globalState == State.Initializing;
 
             // Idle State
-            btnDebugAuthUser.Enabled = (_state == State.Idle);
-            txtDate.Visible = _state == State.Idle;
-            txtTime.Visible = _state == State.Idle;
-            listIdleBTDevices.Visible = _state == State.Idle;
-            btnConfirmBTDevices.Visible = _state == State.Idle;
-            txtChooseBTDevice.Visible = _state == State.Idle;
+            btnDebugAuthUser.Enabled = (_globalState == State.Idle);
+            txtDate.Visible = _globalState == State.Idle;
+            txtTime.Visible = _globalState == State.Idle;
+            listIdleBTDevices.Visible = _globalState == State.Idle;
+            btnConfirmBTDevices.Visible = _globalState == State.Idle;
+            txtChooseBTDevice.Visible = _globalState == State.Idle;
 
             // Authenticated State
-            txtAuthStatus.Visible = _state == State.Authenticated;
-            timerAuthTimeout.Enabled = _state == State.Authenticated;
-            timerTxtAuthStatus.Enabled = _state == State.Authenticated;
+            txtAuthStatus.Visible = _globalState == State.Authenticated;
+            timerAuthTimeout.Enabled = _globalState == State.Authenticated;
+            timerTxtAuthStatus.Enabled = _globalState == State.Authenticated;
 
             // Multiple States
-            btnOptionsSave.Visible = _state == State.Initializing || _state == State.Authenticated;
+            btnOptionsSave.Visible = _globalState == State.Initializing || _globalState == State.Authenticated;
 
-            switch (_state)
+            switch (_globalState)
             {
                 case State.Uninitialized:
                     break;
@@ -417,7 +399,7 @@ public void UpdateComponents()
         {
             stopWatchAuthStatus.Stop();
             stopWatchAuthStatus.Reset();
-            _state = State.Idle;
+            _globalState = State.Idle;
             UpdateComponents();
         }
 
@@ -447,7 +429,7 @@ public void UpdateComponents()
 
         private void btnDebugAuthUser_Click(object sender, EventArgs e)
         {
-            _state = State.Authenticated;
+            _globalState = State.Authenticated;
             UpdateComponents();
         }
 
@@ -483,9 +465,9 @@ public void UpdateComponents()
                     newCardEntry = false;
                     cardInput = "";
 
-                    if (_state == 0)
+                    if (_globalState == 0)
                     {
-                        _state = State.Initializing;
+                        _globalState = State.Initializing;
                         UpdateComponents();
                         // Open initial setup page
                     }

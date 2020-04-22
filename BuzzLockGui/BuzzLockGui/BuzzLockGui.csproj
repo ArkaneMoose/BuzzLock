@@ -89,6 +89,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormBuzzLock.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FormStart.cs">
       <SubType>Form</SubType>
     </Compile>

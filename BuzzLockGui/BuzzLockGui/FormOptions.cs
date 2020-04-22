@@ -12,10 +12,9 @@ using System.Windows.Forms;
 
 namespace BuzzLockGui
 {
-    public partial class FormOptions : Form
+    public partial class FormOptions : FormBuzzLock
     {
         private FormStart _formStart;
-        private FormOptions _formOptions;
         public Stopwatch stopWatchOptionsStatus = new Stopwatch();
 
         public FormOptions(FormStart formStart)
@@ -33,22 +32,23 @@ namespace BuzzLockGui
 
         private void btnOptionsSave_Click(object sender, EventArgs e)
         {
-            if (_formStart._state == State.UserOptions)
+            if (_globalState == State.UserOptions)
             {
                 stopWatchOptionsStatus.Stop();
                 stopWatchOptionsStatus.Reset();
                 timerOptionsTimeout.Enabled = false;
                 timerOptionsStatus.Enabled = false;
                 _formStart._state = State.Authenticated;
+                _globalState = State.Authenticated;
                 _formStart.UpdateComponents();
                 _formStart.Show();
                 this.Hide();
             }
-            else if (_formStart._state == State.UserOptions_EditProfile
-                     || _formStart._state == State.UserOptions_EditAuth)
+            else if (_globalState == State.UserOptions_EditProfile
+                     || _globalState == State.UserOptions_EditAuth)
             {
                 //TODO: save new data to database
-                _formStart._state = State.UserOptions;
+                _globalState = State.UserOptions;
                 this.UpdateComponents();
             }
         }
@@ -57,38 +57,39 @@ namespace BuzzLockGui
         {
             this.UpdateComponents();
         }
+
         private void UpdateComponents()
         {
             //UserOptions
-            btnEditAuth.Visible = _formStart._state == State.UserOptions;
-            btnEditProfile.Visible = _formStart._state == State.UserOptions;
-            btnRemoveUser.Visible = _formStart._state == State.UserOptions;
-            txtEditAuth.Visible = _formStart._state == State.UserOptions;
-            txtEditProfile.Visible = _formStart._state == State.UserOptions;
-            txtRemoveUser.Visible = _formStart._state == State.UserOptions;
+            btnEditAuth.Visible = _globalState == State.UserOptions;
+            btnEditProfile.Visible = _globalState == State.UserOptions;
+            btnRemoveUser.Visible = _globalState == State.UserOptions;
+            txtEditAuth.Visible = _globalState == State.UserOptions;
+            txtEditProfile.Visible = _globalState == State.UserOptions;
+            txtRemoveUser.Visible = _globalState == State.UserOptions;
 
 
             //EditProfile
-            txtCurrentName.Visible = _formStart._state == State.UserOptions_EditProfile;
-            txtCurrentPhone.Visible = _formStart._state == State.UserOptions_EditProfile;
-            txtNewName.Visible = _formStart._state == State.UserOptions_EditProfile;
-            txtNewPhone.Visible = _formStart._state == State.UserOptions_EditProfile;
-            tbxCurrentName.Visible = _formStart._state == State.UserOptions_EditProfile;
-            tbxCurrentPhone.Visible = _formStart._state == State.UserOptions_EditProfile;
-            tbxNewName.Visible = _formStart._state == State.UserOptions_EditProfile;
-            tbxNewPhone.Visible = _formStart._state == State.UserOptions_EditProfile;
-            btnChangeName.Visible = _formStart._state == State.UserOptions_EditProfile;
-            btnChangePhone.Visible = _formStart._state == State.UserOptions_EditProfile;
-            //dataCurrentPicture.Visible = _formStart._state == State.UserOptions_EditProfile;
-            //btnChangePictureOrTakePicture.Visible = _formStart._state == State.UserOptions_EditProfile;
+            txtCurrentName.Visible = _globalState == State.UserOptions_EditProfile;
+            txtCurrentPhone.Visible = _globalState == State.UserOptions_EditProfile;
+            txtNewName.Visible = _globalState == State.UserOptions_EditProfile;
+            txtNewPhone.Visible = _globalState == State.UserOptions_EditProfile;
+            tbxCurrentName.Visible = _globalState == State.UserOptions_EditProfile;
+            tbxCurrentPhone.Visible = _globalState == State.UserOptions_EditProfile;
+            tbxNewName.Visible = _globalState == State.UserOptions_EditProfile;
+            tbxNewPhone.Visible = _globalState == State.UserOptions_EditProfile;
+            btnChangeName.Visible = _globalState == State.UserOptions_EditProfile;
+            btnChangePhone.Visible = _globalState == State.UserOptions_EditProfile;
+            //dataCurrentPicture.Visible = _globalState == State.UserOptions_EditProfile;
+            //btnChangePictureOrTakePicture.Visible = _globalState == State.UserOptions_EditProfile;
 
             //EditAuth
-            //txtPrimAuth.Visible = _formStart._state == State.UserOptions_EditAuth;
-            //txtSecAuth.Visible = _formStart._state == State.UserOptions_EditAuth;
-            //cbxPrimAuth.Visible = _formStart._state == State.UserOptions_EditAuth;
-            //cbxSecAuth.Visible = _formStart._state == State.UserOptions_EditAuth;
+            //txtPrimAuth.Visible = _globalState == State.UserOptions_EditAuth;
+            //txtSecAuth.Visible = _globalState == State.UserOptions_EditAuth;
+            //cbxPrimAuth.Visible = _globalState == State.UserOptions_EditAuth;
+            //cbxSecAuth.Visible = _globalState == State.UserOptions_EditAuth;
 
-            switch (_formStart._state)
+            switch (_globalState)
             {
                 case State.UserOptions:
                     txtOptionsTitle.Text = "BuzzLock Options Menu";
@@ -144,7 +145,7 @@ namespace BuzzLockGui
                 // Close options and stop both timers. Go back to IDLE
                 timerOptionsTimeout.Enabled = false;
                 timerOptionsStatus.Enabled = false;
-                _formStart._state = State.Idle;
+                _globalState = State.Idle;
                 _formStart.UpdateComponents();
                 _formStart.Show();
                 this.Hide();
@@ -162,13 +163,13 @@ namespace BuzzLockGui
 
         private void btnEditProfile_Click(object sender, EventArgs e)
         {
-            _formStart._state = State.UserOptions_EditProfile;
+            _globalState = State.UserOptions_EditProfile;
             this.UpdateComponents();
         }
 
         private void btnEditAuth_Click(object sender, EventArgs e)
         {
-            _formStart._state = State.UserOptions_EditAuth;
+            _globalState = State.UserOptions_EditAuth;
             this.UpdateComponents();
         }
 
