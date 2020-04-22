@@ -26,10 +26,6 @@ namespace BuzzLockGui
         private FormOptions _formOptions;
         public State _state;
 
-        // state = 0: uninitialized
-        // state = 1: after swiping card to initialize, but before finishing init process
-        // state = 2: idle, showing time
-
         public FormStart()
         {
             InitializeComponent();
@@ -110,8 +106,6 @@ namespace BuzzLockGui
             //TODO: ValidatePhoneBox
             ValidateTextBox(tbxUserPhone, EventArgs.Empty);
             ValidateComboBox(cbxPrimAuth, EventArgs.Empty);
-
-            // TODO: Validate combo boxes for authentication
         }
 
         private HashSet<Control> errorControls = new HashSet<Control>();
@@ -390,6 +384,16 @@ public void UpdateComponents()
                 case State.UserOptions:
                     stopWatchAuthStatus.Stop();
                     stopWatchAuthStatus.Reset();
+
+
+
+
+
+
+
+
+
+
                     break;
                 default:
                     break;

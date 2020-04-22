@@ -64,5 +64,31 @@ namespace BuzzLockGui
         {
             txtOptionsStatus.Text = (30 - stopWatchOptionsStatus.Elapsed.Seconds) + " seconds until timeout.";
         }
+
+        private void btnRemoveUser_Click(object sender, EventArgs e)
+        {
+            // Initializes the variables to pass to the MessageBox.Show method.
+            string message = "Are you sure you want to remove your user? This cannot be undone.";
+            string caption = "Error Detected in Input";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult result;
+
+            // Displays the MessageBox.
+            result = MessageBox.Show(message, caption, buttons);
+            if (result == System.Windows.Forms.DialogResult.Yes)
+            {
+                //TODO: Remove the current user from the database.
+                
+                // Close options and stop both timers. Go back to IDLE
+                timerOptionsTimeout.Enabled = false;
+                timerOptionsStatus.Enabled = false;
+                _formStart._state = State.Idle;
+                _formStart.UpdateComponents();
+                _formStart.Show();
+                this.Hide();
+            }
+        }
+
     }
+    
 }
