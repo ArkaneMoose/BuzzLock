@@ -351,7 +351,7 @@ public void UpdateComponents()
             timerTxtAuthStatus.Enabled = _state == State.Authenticated;
 
             // Multiple States
-            btnOptionsSave.Visible = _state == State.Initializing || _state == State.Idle || _state == State.Authenticated;
+            btnOptionsSave.Visible = _state == State.Initializing || _state == State.Authenticated;
 
             switch (_state)
             {
@@ -369,6 +369,7 @@ public void UpdateComponents()
                     btnOptionsSave.Text = "Options";
                     txtStatus.Text = "Hello! Please swipe your card or choose your device.";
                     this.ActiveControl = txtStatus;
+                    enableBtnConfirmBTDevice(listIdleBTDevices, EventArgs.Empty);
                     break;
                 case State.Authenticated:
                     btnOptionsSave.Text = "Options";
@@ -384,15 +385,6 @@ public void UpdateComponents()
                 case State.UserOptions:
                     stopWatchAuthStatus.Stop();
                     stopWatchAuthStatus.Reset();
-
-
-
-
-
-
-
-
-
 
                     break;
                 default:
@@ -429,6 +421,8 @@ public void UpdateComponents()
         private void FormStart_MouseClick(object sender, MouseEventArgs e)
         {
             Console.WriteLine("Form Start Clicked");
+            // If the user clicks on the form, then active control leaves whatever it was and goes to default
+            this.ActiveControl = txtStatus;
         }
 
         private void FormStart_Activated(object sender, EventArgs e)
@@ -490,6 +484,23 @@ public void UpdateComponents()
                     newCardEntry = true;
                 }
             }
+        }
+
+        private void enableBtnConfirmBTDevice(object sender, EventArgs e)
+        {
+            ListBox listBox = (ListBox) sender;
+            btnConfirmBTDevices.Enabled = listBox.SelectedItem != null;
+        }
+
+        private void btnDebugBluetooth_Click(object sender, EventArgs e)
+        {
+            listIdleBTDevices.Items.Add("Dummy BT device name or address");
+        }
+
+        private void btnConfirmBTDevices_Click(object sender, EventArgs e)
+        {
+            //TODO: Request user second authentication, either PIN or Card swipe.
+
         }
     }
 }

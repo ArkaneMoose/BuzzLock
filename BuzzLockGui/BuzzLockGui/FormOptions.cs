@@ -58,6 +58,8 @@ namespace BuzzLockGui
             _formStart.UpdateComponents();
             _formStart.Show();
             this.Hide();
+
+            // Also close "remove user" message box if it is open
         }
 
         private void timerOptionsStatus_Tick(object sender, EventArgs e)
@@ -69,13 +71,13 @@ namespace BuzzLockGui
         {
             // Initializes the variables to pass to the MessageBox.Show method.
             string message = "Are you sure you want to remove your user? This cannot be undone.";
-            string caption = "Error Detected in Input";
+            string caption = "Remove user";
             MessageBoxButtons buttons = MessageBoxButtons.YesNo;
             DialogResult result;
 
             // Displays the MessageBox.
             result = MessageBox.Show(message, caption, buttons);
-            if (result == System.Windows.Forms.DialogResult.Yes)
+            if (result == DialogResult.Yes)
             {
                 //TODO: Remove the current user from the database.
                 
@@ -89,6 +91,11 @@ namespace BuzzLockGui
             }
         }
 
+        private void FormOptions_Click(object sender, EventArgs e)
+        {
+            // Reset active control to default
+            this.ActiveControl = tbxStatus;
+        }
     }
     
 }

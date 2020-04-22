@@ -182,6 +182,7 @@
             this.Name = "FormOptions";
             this.Text = "BuzzLock Options";
             this.Load += new System.EventHandler(this.FormOptions_Load);
+            this.Click += new System.EventHandler(this.FormOptions_Click);
             this.ResumeLayout(false);
             this.PerformLayout();
 
