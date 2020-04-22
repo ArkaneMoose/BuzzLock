@@ -11,6 +11,7 @@ namespace BuzzLockGui
     {
         private FormOptions _formOptions;
         public int keyboard_on = 0; //1 means on 0 means off
+        public int numberpad_on = 0; //1 means on 0 means off
 
         public FormStart()
         {
@@ -475,7 +476,8 @@ public void UpdateComponents()
         {
             if (keyboard_on == 0 && IS_LINUX)
             {
-                var args = string.Format("florence & echo $!");
+                System.Threading.Thread.Sleep(100);
+                var args = string.Format("xvkbd -compact -geometry 800x200+0+280");
                 Process process = new Process();
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
@@ -495,11 +497,36 @@ public void UpdateComponents()
             }
         }
 
-        private void KeyboardClose_Leave(object sender, EventArgs e)
+        private void numberpad_Click(object sender, EventArgs e)
+        {
+            if (numberpad_on == 0 && IS_LINUX)
+            {
+                System.Threading.Thread.Sleep(100);
+                var args = string.Format("xvkbd -keypad -geometry 260x230+0+250");
+                Process process = new Process();
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"{args}\"",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                };
+
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.StartInfo = startInfo;
+                process.Start();
+                numberpad_on = 1;
+                //string result = process.StandardOutput.ReadToEnd();
+                //Console.WriteLine(result);
+            }
+        }
+
+        private void keyboardClose_Leave(object sender, EventArgs e)
         {
             if (IS_LINUX)
             {
-                var args = string.Format("sudo killall florence");
+                var args = string.Format("sudo killall xvkbd");
                 Process process = new Process();
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
@@ -514,6 +541,7 @@ public void UpdateComponents()
                 process.StartInfo = startInfo;
                 process.Start();
                 keyboard_on = 0;
+                numberpad_on = 0;
                 //string result = process.StandardOutput.ReadToEnd();
                 //Console.WriteLine(result);
             }

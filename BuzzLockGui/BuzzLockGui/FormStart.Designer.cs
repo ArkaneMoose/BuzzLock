@@ -173,7 +173,7 @@
             this.tbxUserPhone.Size = new System.Drawing.Size(313, 26);
             this.tbxUserPhone.TabIndex = 13;
             this.tbxUserPhone.Visible = false;
-            this.tbxUserPhone.Click += new System.EventHandler(this.keyboard_Click);
+            this.tbxUserPhone.Click += new System.EventHandler(this.numberpad_Click);
             this.tbxUserPhone.TextChanged += new System.EventHandler(this.ValidateTextBox);
             this.tbxUserPhone.Leave += new System.EventHandler(this.keyboardClose_Leave);
             // 
@@ -266,7 +266,9 @@
             this.tbxPin.Size = new System.Drawing.Size(205, 26);
             this.tbxPin.TabIndex = 23;
             this.tbxPin.Visible = false;
+            this.tbxPin.Click += new System.EventHandler(this.numberpad_Click);
             this.tbxPin.TextChanged += new System.EventHandler(this.ValidatePinBox);
+            this.tbxPin.Leave += new System.EventHandler(this.keyboardClose_Leave);
             // 
             // cbxBTSelect2
             // 
