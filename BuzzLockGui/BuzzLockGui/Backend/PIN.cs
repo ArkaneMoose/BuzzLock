@@ -19,7 +19,7 @@ namespace BuzzLockGui.Backend
         {
             if (pin == null)
             {
-                throw new ArgumentNullException("pin cannot be null");
+                throw new ArgumentNullException("pin");
             }
             PinValue = pin;
         }

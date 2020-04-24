@@ -53,8 +53,7 @@ namespace BuzzLockGui.Backend
             AuthenticationMethod authenticationMethod)
         {
             if (!remaining.Remove(authenticationMethod
-                ?? throw new ArgumentNullException(
-                    "authenticationMethod cannot be null")))
+                ?? throw new ArgumentNullException("authenticationMethod")))
             {
                 return false;
             }
@@ -78,7 +77,7 @@ namespace BuzzLockGui.Backend
         {
             long? nullableUserId = Backend.GetUserIdForAuthenticationMethod(
                 authenticationMethod ?? throw new ArgumentNullException(
-                    "authenticationMethod cannot be null"));
+                    "authenticationMethod"));
             if (nullableUserId is long userId)
             {
                 return new AuthenticationSequence(

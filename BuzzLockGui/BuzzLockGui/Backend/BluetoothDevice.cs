@@ -33,7 +33,7 @@ namespace BuzzLockGui.Backend
         public BluetoothDevice(BluetoothAddress address, string name)
         {
             Address = address
-                ?? throw new ArgumentNullException("address cannot be null");
+                ?? throw new ArgumentNullException("address");
             this.name = name;
         }
 

@@ -38,21 +38,20 @@ namespace BuzzLockGui.Backend
         {
             if (name == null)
             {
-                throw new ArgumentNullException("name cannot be null");
+                throw new ArgumentNullException("name");
             }
             if (phoneNumber == null)
             {
-                throw new ArgumentNullException("phoneNumber cannot be null");
+                throw new ArgumentNullException("phoneNumber");
             }
             if (authenticationMethods == null)
             {
-                throw new ArgumentNullException("authenticationMethods cannot "
-                    + "be null");
+                throw new ArgumentNullException("authenticationMethods");
             }
             if (authenticationMethods.BluetoothDevice != null
                 && authenticationMethods.BluetoothDevice.Name == null)
             {
-                throw new ArgumentNullException("You must explicitly set a Name "
+                throw new ArgumentException("You must explicitly set a Name "
                     + "for the BluetoothDevice when creating a user");
             }
 
@@ -67,11 +66,14 @@ namespace BuzzLockGui.Backend
             cmd.Parameters.AddWithValue("@photo", photo);
             cmd.Parameters.AddWithValue("@cardId", authenticationMethods.Card?.Id);
             cmd.Parameters.AddWithValue("@bluetoothId",
-                (long)authenticationMethods.BluetoothDevice?.Address);
+                (long?)authenticationMethods.BluetoothDevice?.Address);
             cmd.Parameters.AddWithValue("@bluetoothName",
                 authenticationMethods.BluetoothDevice?.Name);
             cmd.Parameters.AddWithValue("@pin", authenticationMethods.Pin?.PinValue);
-            cmd.ExecuteNonQueryOrThrow();
+            if (cmd.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException("User not found");
+            }
             return conn.LastInsertRowId;
         }
 
@@ -80,7 +82,10 @@ namespace BuzzLockGui.Backend
             SQLiteCommand cmd = new SQLiteCommand(
                 "DELETE FROM users WHERE id = @userId", conn);
             cmd.Parameters.AddWithValue("@userId", userId);
-            cmd.ExecuteNonQueryOrThrow();
+            if (cmd.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException("User not found");
+            }
         }
 
         internal static List<long> GetAllUserIds()
@@ -109,7 +114,7 @@ namespace BuzzLockGui.Backend
         {
             if (address == null)
             {
-                throw new ArgumentNullException("address cannot be null");
+                throw new ArgumentNullException("address");
             }
             SQLiteCommand cmd = new SQLiteCommand(
                 "SELECT id FROM users WHERE bluetoothId = @address", conn);
@@ -121,8 +126,7 @@ namespace BuzzLockGui.Backend
             AuthenticationMethod authenticationMethod)
         {
             switch (authenticationMethod
-                ?? throw new ArgumentNullException(
-                    "authenticationMethod cannot be null"))
+                ?? throw new ArgumentNullException("authenticationMethod"))
             {
                 case Card card:
                     return GetUserIdForCard(card.Id);
@@ -138,7 +142,7 @@ namespace BuzzLockGui.Backend
         {
             if (address == null)
             {
-                throw new ArgumentNullException("address cannot be null");
+                throw new ArgumentNullException("address");
             }
             SQLiteCommand cmd = new SQLiteCommand(
                 "SELECT bluetoothName FROM users WHERE bluetoothId = @address", conn);
@@ -151,7 +155,12 @@ namespace BuzzLockGui.Backend
             SQLiteCommand cmd = new SQLiteCommand(
                 "SELECT name FROM users WHERE id = @userId", conn);
             cmd.Parameters.AddWithValue("@userId", userId);
-            return (string)cmd.ExecuteScalarOrThrow();
+            object result = cmd.ExecuteScalar();
+            if (result == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }
+            return (string)result;
         }
 
         internal static User.PermissionLevels GetUserPermissionLevel(long userId)
@@ -159,7 +168,12 @@ namespace BuzzLockGui.Backend
             SQLiteCommand cmd = new SQLiteCommand(
                 "SELECT permissionLevel FROM users WHERE id = @userId", conn);
             cmd.Parameters.AddWithValue("@userId", userId);
-            return (User.PermissionLevels)(long)cmd.ExecuteScalarOrThrow();
+            object result = cmd.ExecuteScalar();
+            if (result == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }
+            return (User.PermissionLevels)(long)cmd.ExecuteScalar();
         }
 
         internal static string GetUserPhoneNumber(long userId)
@@ -167,7 +181,12 @@ namespace BuzzLockGui.Backend
             SQLiteCommand cmd = new SQLiteCommand(
                 "SELECT phone FROM users WHERE id = @userId", conn);
             cmd.Parameters.AddWithValue("@userId", userId);
-            return (string)cmd.ExecuteScalarOrThrow();
+            object result = cmd.ExecuteScalar();
+            if (result == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }
+            return (string)cmd.ExecuteScalar();
         }
 
         internal static byte[] GetUserPhoto(long userId)
@@ -175,7 +194,16 @@ namespace BuzzLockGui.Backend
             SQLiteCommand cmd = new SQLiteCommand(
                 "SELECT photo FROM users WHERE id = @userId", conn);
             cmd.Parameters.AddWithValue("@userId", userId);
-            return (byte[])cmd.ExecuteScalarOrThrow();
+            object result = cmd.ExecuteScalar();
+            if (result == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }
+            if (Convert.IsDBNull(result))
+            {
+                return null;
+            }
+            return (byte[])cmd.ExecuteScalar();
         }
 
         internal static AuthenticationMethods GetUserAuthenticationMethods(
@@ -213,14 +241,17 @@ namespace BuzzLockGui.Backend
         {
             if (name == null)
             {
-                throw new ArgumentNullException("name must not be null");
+                throw new ArgumentNullException("name");
             }
 
             SQLiteCommand cmd = new SQLiteCommand(
                 "UPDATE users SET name = @name WHERE id = @userId", conn);
             cmd.Parameters.AddWithValue("@userId", userId);
             cmd.Parameters.AddWithValue("@name", name);
-            cmd.ExecuteNonQueryOrThrow();
+            if (cmd.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException("User not found");
+            }
         }
 
         internal static void SetUserPermissionLevel(long userId,
@@ -231,21 +262,27 @@ namespace BuzzLockGui.Backend
                   WHERE id = @userId", conn);
             cmd.Parameters.AddWithValue("@userId", userId);
             cmd.Parameters.AddWithValue("@permissionLevel", (long)permissionLevel);
-            cmd.ExecuteNonQueryOrThrow();
+            if (cmd.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException("User not found");
+            }
         }
 
         internal static void SetUserPhoneNumber(long userId, string phoneNumber)
         {
             if (phoneNumber == null)
             {
-                throw new ArgumentNullException("phoneNumber must not be null");
+                throw new ArgumentNullException("phoneNumber");
             }
 
             SQLiteCommand cmd = new SQLiteCommand(
                 "UPDATE users SET phone = @phoneNumber WHERE id = @userId", conn);
             cmd.Parameters.AddWithValue("@userId", userId);
             cmd.Parameters.AddWithValue("@phoneNumber", phoneNumber);
-            cmd.ExecuteNonQueryOrThrow();
+            if (cmd.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException("User not found");
+            }
         }
 
         internal static void SetUserPhoto(long userId, byte[] photo)
@@ -254,82 +291,39 @@ namespace BuzzLockGui.Backend
                 "UPDATE users SET photo = @photo WHERE id = @userId", conn);
             cmd.Parameters.AddWithValue("@userId", userId);
             cmd.Parameters.AddWithValue("@photo", photo);
-            cmd.ExecuteNonQueryOrThrow();
+            if (cmd.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException("User not found");
+            }
         }
 
         internal static void SetUserAuthenticationMethods(
             long userId, AuthenticationMethods authenticationMethods)
         {
+            if (authenticationMethods == null)
+            {
+                throw new ArgumentNullException("authenticationMethods");
+            }
+            if (authenticationMethods.BluetoothDevice != null
+                && authenticationMethods.BluetoothDevice.Name == null)
+            {
+                throw new ArgumentException("You must explicitly set a Name "
+                    + "for this BluetoothDevice");
+            }
             SQLiteCommand cmd = new SQLiteCommand(
                 @"UPDATE users SET cardId = @cardId, bluetoothId = @bluetoothId,
                   bluetoothName = @bluetoothName, pin = @pin WHERE id = @userId", conn);
             cmd.Parameters.AddWithValue("@userId", userId);
             cmd.Parameters.AddWithValue("@cardId", authenticationMethods.Card?.Id);
             cmd.Parameters.AddWithValue("@bluetoothId",
-                (long)authenticationMethods.BluetoothDevice?.Address);
+                (long?)authenticationMethods.BluetoothDevice?.Address);
             cmd.Parameters.AddWithValue("@bluetoothName",
                 authenticationMethods.BluetoothDevice?.Name);
             cmd.Parameters.AddWithValue("@pin", authenticationMethods.Pin?.PinValue);
-            cmd.ExecuteNonQueryOrThrow();
-        }
-    }
-
-    internal static class SQLiteExtensions
-    {
-        /**
-         * <summary>
-         * Like <see cref="IDbCommand.ExecuteScalar(CommandBehavior)"/>,
-         * but throws if there are no rows returned.
-         * </summary>
-         * <exception cref="InvalidOperationException">
-         * If there are no rows returned from the query.
-         * </exception>
-         */
-        internal static object ExecuteScalarOrThrow(this IDbCommand command,
-            CommandBehavior behavior)
-        {
-            using (IDataReader reader = command.ExecuteReader(behavior))
+            if (cmd.ExecuteNonQuery() == 0)
             {
-                if (!reader.Read())
-                {
-                    throw new InvalidOperationException(
-                        "Command did not return a result");
-                }
-                return reader[0];
+                throw new InvalidOperationException("User not found");
             }
-        }
-
-        /**
-         * <summary>
-         * Like <see cref="IDbCommand.ExecuteScalar"/>,
-         * but throws if there are no rows returned.
-         * </summary>
-         * <exception cref="InvalidOperationException">
-         * If there are no rows returned from the query.
-         * </exception>
-         */
-        internal static object ExecuteScalarOrThrow(this IDbCommand command)
-        {
-            return command.ExecuteScalarOrThrow(CommandBehavior.Default);
-        }
-
-        /**
-         * <summary>
-         * Like <see cref="IDbCommand.ExecuteNonQuery"/>,
-         * but throws if there are no rows affected.
-         * </summary>
-         * <exception cref="InvalidOperationException">
-         * If there are no rows affected by the query.
-         * </exception>
-         */
-        internal static int ExecuteNonQueryOrThrow(this IDbCommand command)
-        {
-            int rowsAffected = command.ExecuteNonQuery();
-            if (rowsAffected == 0)
-            {
-                throw new InvalidOperationException("Command affected no rows");
-            }
-            return rowsAffected;
         }
     }
 }

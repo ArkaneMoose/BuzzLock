@@ -83,7 +83,7 @@ namespace BuzzLockGui.Backend
                 AuthenticationMethod authenticationMethod in authenticationMethods)
             {
                 switch (authenticationMethod
-                    ?? throw new ArgumentNullException("None of the authentication "
+                    ?? throw new ArgumentException("None of the authentication "
                         + "methods can be null"))
                 {
                     case Card card:
@@ -134,8 +134,7 @@ namespace BuzzLockGui.Backend
         {
             if (authenticationMethod == null)
             {
-                throw new ArgumentNullException(
-                    "authenticationMethod cannot be null");
+                throw new ArgumentNullException("authenticationMethod");
             }
             if (authenticationMethod == Primary)
             {

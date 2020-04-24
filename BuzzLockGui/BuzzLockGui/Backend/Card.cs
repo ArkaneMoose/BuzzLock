@@ -22,7 +22,7 @@ namespace BuzzLockGui.Backend
         {
             if (id == null)
             {
-                throw new ArgumentNullException("id cannot be null");
+                throw new ArgumentNullException("id");
             }
             Id = id;
         }

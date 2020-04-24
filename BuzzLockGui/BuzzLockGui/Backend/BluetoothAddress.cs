@@ -19,7 +19,7 @@ namespace BuzzLockGui.Backend
         {
             if (address == null)
             {
-                throw new ArgumentNullException("address cannot be null");
+                throw new ArgumentNullException("address");
             }
 
             string[] octets;
@@ -60,7 +60,7 @@ namespace BuzzLockGui.Backend
         {
             if (address == null)
             {
-                throw new ArgumentNullException("address cannot be null");
+                throw new ArgumentNullException("address");
             }
             if (address.Length != 6)
             {
@@ -129,15 +129,19 @@ namespace BuzzLockGui.Backend
         }
 
         public static implicit operator string(BluetoothAddress address)
-            => address.ToString();
+            => address is object ? address.ToString() : null;
         public static implicit operator byte[](BluetoothAddress address)
-            => address.ToBytes();
+            => address is object ? address.ToBytes() : null;
+        public static implicit operator long?(BluetoothAddress address)
+            => address is object ? (long?)address.ToInt64() : null;
         public static implicit operator long(BluetoothAddress address)
             => address.ToInt64();
         public static implicit operator BluetoothAddress(string address)
-            => new BluetoothAddress(address);
+            => address is object ? new BluetoothAddress(address) : null;
         public static implicit operator BluetoothAddress(byte[] address)
-            => new BluetoothAddress(address);
+            => address is object ? new BluetoothAddress(address) : null;
+        public static implicit operator BluetoothAddress(long? address)
+            => address is object ? new BluetoothAddress((long)address) : null;
         public static implicit operator BluetoothAddress(long address)
             => new BluetoothAddress(address);
         public static bool operator ==(BluetoothAddress a, BluetoothAddress b)
