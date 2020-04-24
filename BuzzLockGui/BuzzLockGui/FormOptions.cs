@@ -120,6 +120,9 @@ namespace BuzzLockGui
 
         private void FormOptions_Load(object sender, EventArgs e)
         {
+            this.TopMost = true;
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
         }
 
         private void UpdateComponents()
@@ -148,10 +151,15 @@ namespace BuzzLockGui
             //btnChangePictureOrTakePicture.Visible = _globalState == State.UserOptions_EditProfile;
 
             //EditAuth
-            //txtPrimAuth.Visible = _globalState == State.UserOptions_EditAuth;
-            //txtSecAuth.Visible = _globalState == State.UserOptions_EditAuth;
-            //cbxPrimAuth.Visible = _globalState == State.UserOptions_EditAuth;
-            //cbxSecAuth.Visible = _globalState == State.UserOptions_EditAuth;
+            txtPrimAuth.Visible = _globalState == State.UserOptions_EditAuth;
+            txtSecAuth.Visible = _globalState == State.UserOptions_EditAuth;
+            cbxPrimAuth.Visible = _globalState == State.UserOptions_EditAuth;
+            cbxSecAuth.Visible = _globalState == State.UserOptions_EditAuth;
+            txtPrimChooseDev.Visible = _globalState == State.UserOptions_EditAuth;
+            cbxBTSelect1.Visible = _globalState == State.UserOptions_EditAuth;
+            txtSecChooseDevOrPin.Visible = _globalState == State.UserOptions_EditAuth;
+            cbxBTSelect2.Visible = _globalState == State.UserOptions_EditAuth;
+
 
             switch (_globalState)
             {

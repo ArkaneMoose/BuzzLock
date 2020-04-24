@@ -42,9 +42,9 @@ namespace BuzzLockGui
 
             this.WindowState = FormWindowState.Normal;
             loseFocus();
-            //this.TopMost = true;
-            //this.FormBorderStyle = FormBorderStyle.None;
-            //this.WindowState = FormWindowState.Maximized;
+            this.TopMost = true;
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
         }
 
         public new void Show()

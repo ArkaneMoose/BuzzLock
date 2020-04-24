@@ -52,6 +52,15 @@
             this.tbxCurrentPhone = new System.Windows.Forms.TextBox();
             this.btnChangeName = new System.Windows.Forms.Button();
             this.btnChangePhone = new System.Windows.Forms.Button();
+            this.txtSecChooseDevOrPin = new System.Windows.Forms.Label();
+            this.txtPrimChooseDev = new System.Windows.Forms.Label();
+            this.txtSecAuth = new System.Windows.Forms.Label();
+            this.txtPrimAuth = new System.Windows.Forms.Label();
+            this.cbxSecAuth = new System.Windows.Forms.ComboBox();
+            this.cbxPrimAuth = new System.Windows.Forms.ComboBox();
+            this.cbxBTSelect1 = new System.Windows.Forms.ComboBox();
+            this.tbxPin = new System.Windows.Forms.TextBox();
+            this.cbxBTSelect2 = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // btnOptionsSave
@@ -267,11 +276,112 @@
             this.btnChangePhone.UseVisualStyleBackColor = true;
             this.btnChangePhone.Click += new System.EventHandler(this.btnChangePhone_Click);
             // 
+            // txtSecChooseDevOrPin
+            // 
+            this.txtSecChooseDevOrPin.AutoSize = true;
+            this.txtSecChooseDevOrPin.Location = new System.Drawing.Point(307, 275);
+            this.txtSecChooseDevOrPin.Name = "txtSecChooseDevOrPin";
+            this.txtSecChooseDevOrPin.Size = new System.Drawing.Size(57, 13);
+            this.txtSecChooseDevOrPin.TabIndex = 33;
+            this.txtSecChooseDevOrPin.Text = "Insert PIN:";
+            this.txtSecChooseDevOrPin.Visible = false;
+            // 
+            // txtPrimChooseDev
+            // 
+            this.txtPrimChooseDev.AutoSize = true;
+            this.txtPrimChooseDev.Location = new System.Drawing.Point(15, 275);
+            this.txtPrimChooseDev.Name = "txtPrimChooseDev";
+            this.txtPrimChooseDev.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.txtPrimChooseDev.Size = new System.Drawing.Size(81, 13);
+            this.txtPrimChooseDev.TabIndex = 30;
+            this.txtPrimChooseDev.Text = "Choose device:";
+            this.txtPrimChooseDev.Visible = false;
+            // 
+            // txtSecAuth
+            // 
+            this.txtSecAuth.AutoSize = true;
+            this.txtSecAuth.Location = new System.Drawing.Point(307, 249);
+            this.txtSecAuth.Name = "txtSecAuth";
+            this.txtSecAuth.Size = new System.Drawing.Size(131, 13);
+            this.txtSecAuth.TabIndex = 29;
+            this.txtSecAuth.Text = "Secondary authentication:";
+            this.txtSecAuth.Visible = false;
+            // 
+            // txtPrimAuth
+            // 
+            this.txtPrimAuth.AutoSize = true;
+            this.txtPrimAuth.Location = new System.Drawing.Point(15, 249);
+            this.txtPrimAuth.Name = "txtPrimAuth";
+            this.txtPrimAuth.Size = new System.Drawing.Size(114, 13);
+            this.txtPrimAuth.TabIndex = 28;
+            this.txtPrimAuth.Text = "Primary authentication:";
+            this.txtPrimAuth.Visible = false;
+            // 
+            // cbxSecAuth
+            // 
+            this.cbxSecAuth.FormattingEnabled = true;
+            this.cbxSecAuth.Items.AddRange(new object[] {
+            "Bluetooth",
+            "PIN"});
+            this.cbxSecAuth.Location = new System.Drawing.Point(444, 245);
+            this.cbxSecAuth.Name = "cbxSecAuth";
+            this.cbxSecAuth.Size = new System.Drawing.Size(138, 21);
+            this.cbxSecAuth.TabIndex = 27;
+            this.cbxSecAuth.Visible = false;
+            // 
+            // cbxPrimAuth
+            // 
+            this.cbxPrimAuth.FormattingEnabled = true;
+            this.cbxPrimAuth.Items.AddRange(new object[] {
+            "Card",
+            "Bluetooth"});
+            this.cbxPrimAuth.Location = new System.Drawing.Point(135, 245);
+            this.cbxPrimAuth.Name = "cbxPrimAuth";
+            this.cbxPrimAuth.Size = new System.Drawing.Size(137, 21);
+            this.cbxPrimAuth.TabIndex = 26;
+            this.cbxPrimAuth.Visible = false;
+            // 
+            // cbxBTSelect1
+            // 
+            this.cbxBTSelect1.FormattingEnabled = true;
+            this.cbxBTSelect1.Location = new System.Drawing.Point(135, 271);
+            this.cbxBTSelect1.Name = "cbxBTSelect1";
+            this.cbxBTSelect1.Size = new System.Drawing.Size(137, 21);
+            this.cbxBTSelect1.TabIndex = 31;
+            this.cbxBTSelect1.Visible = false;
+            // 
+            // tbxPin
+            // 
+            this.tbxPin.Location = new System.Drawing.Point(444, 273);
+            this.tbxPin.MaxLength = 6;
+            this.tbxPin.Name = "tbxPin";
+            this.tbxPin.Size = new System.Drawing.Size(138, 20);
+            this.tbxPin.TabIndex = 32;
+            this.tbxPin.Visible = false;
+            // 
+            // cbxBTSelect2
+            // 
+            this.cbxBTSelect2.FormattingEnabled = true;
+            this.cbxBTSelect2.Location = new System.Drawing.Point(444, 273);
+            this.cbxBTSelect2.Name = "cbxBTSelect2";
+            this.cbxBTSelect2.Size = new System.Drawing.Size(138, 21);
+            this.cbxBTSelect2.TabIndex = 34;
+            this.cbxBTSelect2.Visible = false;
+            // 
             // FormOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 442);
+            this.Controls.Add(this.cbxBTSelect2);
+            this.Controls.Add(this.txtSecChooseDevOrPin);
+            this.Controls.Add(this.txtPrimChooseDev);
+            this.Controls.Add(this.txtSecAuth);
+            this.Controls.Add(this.txtPrimAuth);
+            this.Controls.Add(this.cbxSecAuth);
+            this.Controls.Add(this.cbxPrimAuth);
+            this.Controls.Add(this.cbxBTSelect1);
+            this.Controls.Add(this.tbxPin);
             this.Controls.Add(this.btnChangePhone);
             this.Controls.Add(this.btnChangeName);
             this.Controls.Add(this.tbxNewPhone);
@@ -296,8 +406,8 @@
             this.Name = "FormOptions";
             this.Text = "BuzzLock Options";
             this.Load += new System.EventHandler(this.FormOptions_Load);
-            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.FormOptions_MouseClick);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FormOptions_KeyPress);
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.FormOptions_MouseClick);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -328,5 +438,14 @@
         private System.Windows.Forms.TextBox tbxCurrentPhone;
         private System.Windows.Forms.Button btnChangeName;
         private System.Windows.Forms.Button btnChangePhone;
+        private System.Windows.Forms.Label txtSecChooseDevOrPin;
+        private System.Windows.Forms.Label txtPrimChooseDev;
+        private System.Windows.Forms.Label txtSecAuth;
+        private System.Windows.Forms.Label txtPrimAuth;
+        private System.Windows.Forms.ComboBox cbxSecAuth;
+        private System.Windows.Forms.ComboBox cbxPrimAuth;
+        private System.Windows.Forms.ComboBox cbxBTSelect1;
+        private System.Windows.Forms.TextBox tbxPin;
+        private System.Windows.Forms.ComboBox cbxBTSelect2;
     }
 }
