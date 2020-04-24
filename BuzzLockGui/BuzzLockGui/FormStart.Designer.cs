@@ -1,6 +1,6 @@
 ﻿namespace BuzzLockGui
 {
-    partial class FormStart
+    partial class FormStart : FormBuzzLock
     {
         /// <summary>
         /// Required designer variable.

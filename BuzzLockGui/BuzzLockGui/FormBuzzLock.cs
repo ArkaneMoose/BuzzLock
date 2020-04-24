@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace BuzzLockGui
 {
-    public class FormBuzzLock : Form
+    public partial class FormBuzzLock : Form
     {
         protected enum State
         {
