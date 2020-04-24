@@ -5,25 +5,241 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using BuzzLockGui.Backend;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace BuzzLockGui
 {
-    public partial class FormBuzzLock : Form
+    public class FormBuzzLock : Form
     {
         protected enum State
         {
             Uninitialized,
             Initializing,
             Idle,
-            GenericOptions,
+            SecondFactor,
             Authenticated, //TODO: spin servo to unlock door in Authenticated, and keep it unlocked during UserOptions
-            UserOptions,    //      and in Authenticated until timeout happens.
+            UserOptions,   //      and in Authenticated until timeout happens.
             UserOptions_EditProfile,
             UserOptions_EditAuth
         }
 
         protected static State _globalState;
-        public static readonly bool IS_LINUX =
-            RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+        protected static User _currentUser;
+        protected bool noErrors;
+        static readonly bool IS_LINUX = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+        private static int keyboard_on = 0; //1 means on 0 means off
+        private static int numberpad_on = 0; //1 means on 0 means off
+
+        protected ErrorProvider userError = new ErrorProvider()
+        {
+            BlinkStyle = ErrorBlinkStyle.NeverBlink
+        };
+
+        protected static HashSet<Control> errorControls = new HashSet<Control>();
+
+        protected void ValidateTextBox(object sender, EventArgs e)
+        {
+            // Type check to ensure passed in object is a TextBox
+            if (sender.GetType().Name == "TextBox") {
+                TextBox textBox = (TextBox) sender;
+                if (textBox.Text == "")
+                {
+                    userError.SetError(textBox, (string)textBox.Tag);
+                    errorControls.Add(textBox);
+                }
+                else
+                {
+                    userError.SetError(textBox, null);
+                    errorControls.Remove(textBox);
+                }
+            }
+            noErrors = errorControls.Count == 0;
+            OnValidate();
+        }
+
+        protected void ValidatePhoneBox(object sender, EventArgs e)
+        {
+            // Type check to ensure passed in object is a TextBox
+            if (sender.GetType().Name == "TextBox")
+            {
+                TextBox textBox = (TextBox)sender;
+                string errorMessage;
+                if (!ValidPhone(textBox.Text, out errorMessage))
+                {
+                    userError.SetError(textBox, errorMessage);
+                    errorControls.Add(textBox);
+                }
+                else
+                {
+                    userError.SetError(textBox, null);
+                    errorControls.Remove(textBox);
+                }
+            }
+            noErrors = errorControls.Count == 0;
+            OnValidate();
+        }
+
+        protected bool ValidPhone(string phone, out string errorMessage)
+        {
+            // Confirm that the phone number is the correct length
+            if (phone.Length < 10)
+            {
+                errorMessage = "Phone number must be exactly 10 digits long (all numbers).";
+                return false;
+            }
+
+            // Confirm that the phone number contains only numbers
+            if (!Regex.IsMatch(phone, @"^\d+$"))
+            {
+                errorMessage = "Phone number must be all numbers.";
+                return false;
+            }
+
+            errorMessage = "";
+            return true;
+        }
+
+        protected void ValidatePinBox(object sender, EventArgs e)
+        {
+            // Type check to ensure passed in object is a TextBox
+            if (sender.GetType().Name == "TextBox")
+            {
+                TextBox textBox = (TextBox) sender;
+                string errorMessage;
+                if (!ValidPin(textBox.Text, out errorMessage))
+                {
+                    userError.SetError(textBox, errorMessage);
+                    errorControls.Add(textBox);
+                }
+                else
+                {
+                    userError.SetError(textBox, null);
+                    errorControls.Remove(textBox);
+                }
+            }
+            noErrors = errorControls.Count == 0;
+            OnValidate();
+        }
+
+
+        private bool ValidPin(string pin, out string errorMessage)
+        {
+            // Confirm that the pin is the correct length
+            if (pin.Length < 6)
+            {
+                errorMessage = "PIN must be exactly 6 digits long.";
+                return false;
+            }
+
+            // Confirm that the pin contains only numbers
+            if (!Regex.IsMatch(pin, @"^\d+$"))
+            {
+                errorMessage = "PIN must be all numbers.";
+                return false;
+            }
+
+            errorMessage = "";
+            return true;
+        }
+
+        protected void ValidateComboBox(object sender, EventArgs e)
+        {
+            // Type check to ensure passed in object is a ComboBox
+            if (sender.GetType().Name == "ComboBox")
+            {
+                ComboBox comboBox = (ComboBox) sender;
+                if (comboBox.SelectedItem == null)
+                {
+                    userError.SetError(comboBox, (string)comboBox.Tag);
+                    errorControls.Add(comboBox);
+                }
+                else
+                {
+                    userError.SetError(comboBox, null);
+                    errorControls.Remove(comboBox);
+                }
+            }
+            noErrors = errorControls.Count == 0;
+            OnValidate();
+        }
+
+        protected void keyboard_Click(object sender, EventArgs e)
+        {
+            if (keyboard_on == 0 && IS_LINUX)
+            {
+                System.Threading.Thread.Sleep(100);
+                var args = string.Format("xvkbd -compact -geometry 800x200+0+280");
+                Process process = new Process();
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"{args}\"",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                };
+
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.StartInfo = startInfo;
+                process.Start();
+                keyboard_on = 1;
+                //string result = process.StandardOutput.ReadToEnd();
+                //Console.WriteLine(result);
+            }
+        }
+
+        protected void numberpad_Click(object sender, EventArgs e)
+        {
+            if (numberpad_on == 0 && IS_LINUX)
+            {
+                System.Threading.Thread.Sleep(100);
+                var args = string.Format("xvkbd -keypad -geometry 260x230+0+250");
+                Process process = new Process();
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"{args}\"",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                };
+
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.StartInfo = startInfo;
+                process.Start();
+                numberpad_on = 1;
+                //string result = process.StandardOutput.ReadToEnd();
+                //Console.WriteLine(result);
+            }
+        }
+
+        protected void keyboardClose_Leave(object sender, EventArgs e)
+        {
+            if (IS_LINUX)
+            {
+                var args = string.Format("sudo killall xvkbd");
+                Process process = new Process();
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"{args}\"",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                };
+
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.StartInfo = startInfo;
+                process.Start();
+                keyboard_on = 0;
+                numberpad_on = 0;
+                //string result = process.StandardOutput.ReadToEnd();
+                //Console.WriteLine(result);
+            }
+        }
+
+        protected virtual void OnValidate() { }
     }
 }

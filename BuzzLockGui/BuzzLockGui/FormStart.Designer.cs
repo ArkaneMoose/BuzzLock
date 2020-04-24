@@ -65,10 +65,11 @@
             // 
             // btnOptionsSave
             // 
-            this.btnOptionsSave.Location = new System.Drawing.Point(583, 211);
+            this.btnOptionsSave.Location = new System.Drawing.Point(1166, 406);
+            this.btnOptionsSave.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.btnOptionsSave.Name = "btnOptionsSave";
             this.btnOptionsSave.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.btnOptionsSave.Size = new System.Drawing.Size(119, 32);
+            this.btnOptionsSave.Size = new System.Drawing.Size(238, 62);
             this.btnOptionsSave.TabIndex = 2;
             this.btnOptionsSave.Text = "Options";
             this.btnOptionsSave.UseVisualStyleBackColor = true;
@@ -79,18 +80,20 @@
             // 
             this.txtStatus.AutoSize = true;
             this.txtStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.5F);
-            this.txtStatus.Location = new System.Drawing.Point(12, 9);
+            this.txtStatus.Location = new System.Drawing.Point(24, 17);
+            this.txtStatus.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.txtStatus.Name = "txtStatus";
-            this.txtStatus.Size = new System.Drawing.Size(507, 26);
+            this.txtStatus.Size = new System.Drawing.Size(1013, 52);
             this.txtStatus.TabIndex = 5;
             this.txtStatus.Text = "Hello! Please swipe your BuzzCard to begin set up.";
             // 
             // btnDebugSwipe
             // 
             this.btnDebugSwipe.CausesValidation = false;
-            this.btnDebugSwipe.Location = new System.Drawing.Point(583, 75);
+            this.btnDebugSwipe.Location = new System.Drawing.Point(1166, 144);
+            this.btnDebugSwipe.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.btnDebugSwipe.Name = "btnDebugSwipe";
-            this.btnDebugSwipe.Size = new System.Drawing.Size(109, 23);
+            this.btnDebugSwipe.Size = new System.Drawing.Size(218, 44);
             this.btnDebugSwipe.TabIndex = 6;
             this.btnDebugSwipe.Text = "Debug: Swipe card";
             this.btnDebugSwipe.UseVisualStyleBackColor = true;
@@ -98,9 +101,10 @@
             // 
             // btnDebugBluetooth
             // 
-            this.btnDebugBluetooth.Location = new System.Drawing.Point(583, 104);
+            this.btnDebugBluetooth.Location = new System.Drawing.Point(1166, 200);
+            this.btnDebugBluetooth.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.btnDebugBluetooth.Name = "btnDebugBluetooth";
-            this.btnDebugBluetooth.Size = new System.Drawing.Size(137, 23);
+            this.btnDebugBluetooth.Size = new System.Drawing.Size(274, 44);
             this.btnDebugBluetooth.TabIndex = 7;
             this.btnDebugBluetooth.Text = "Debug: Bluetooth found";
             this.btnDebugBluetooth.UseVisualStyleBackColor = true;
@@ -108,9 +112,10 @@
             // txtCard
             // 
             this.txtCard.AutoSize = true;
-            this.txtCard.Location = new System.Drawing.Point(16, 48);
+            this.txtCard.Location = new System.Drawing.Point(32, 92);
+            this.txtCard.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.txtCard.Name = "txtCard";
-            this.txtCard.Size = new System.Drawing.Size(32, 13);
+            this.txtCard.Size = new System.Drawing.Size(64, 25);
             this.txtCard.TabIndex = 8;
             this.txtCard.Text = "Card:";
             this.txtCard.Visible = false;
@@ -118,9 +123,10 @@
             // txtUserName
             // 
             this.txtUserName.AutoSize = true;
-            this.txtUserName.Location = new System.Drawing.Point(15, 74);
+            this.txtUserName.Location = new System.Drawing.Point(30, 142);
+            this.txtUserName.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.txtUserName.Name = "txtUserName";
-            this.txtUserName.Size = new System.Drawing.Size(38, 13);
+            this.txtUserName.Size = new System.Drawing.Size(74, 25);
             this.txtUserName.TabIndex = 9;
             this.txtUserName.Text = "Name:";
             this.txtUserName.Visible = false;
@@ -128,28 +134,31 @@
             // txtUserPhone
             // 
             this.txtUserPhone.AutoSize = true;
-            this.txtUserPhone.Location = new System.Drawing.Point(15, 100);
+            this.txtUserPhone.Location = new System.Drawing.Point(30, 192);
+            this.txtUserPhone.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.txtUserPhone.Name = "txtUserPhone";
-            this.txtUserPhone.Size = new System.Drawing.Size(41, 13);
+            this.txtUserPhone.Size = new System.Drawing.Size(80, 25);
             this.txtUserPhone.TabIndex = 10;
             this.txtUserPhone.Text = "Phone:";
             this.txtUserPhone.Visible = false;
             // 
             // tbxCard
             // 
-            this.tbxCard.Location = new System.Drawing.Point(62, 45);
+            this.tbxCard.Location = new System.Drawing.Point(124, 87);
+            this.tbxCard.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.tbxCard.Name = "tbxCard";
             this.tbxCard.ReadOnly = true;
-            this.tbxCard.Size = new System.Drawing.Size(455, 20);
+            this.tbxCard.Size = new System.Drawing.Size(906, 31);
             this.tbxCard.TabIndex = 11;
             this.tbxCard.Visible = false;
             this.tbxCard.TextChanged += new System.EventHandler(this.ValidateTextBox);
             // 
             // tbxUserName
             // 
-            this.tbxUserName.Location = new System.Drawing.Point(62, 71);
+            this.tbxUserName.Location = new System.Drawing.Point(124, 137);
+            this.tbxUserName.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.tbxUserName.Name = "tbxUserName";
-            this.tbxUserName.Size = new System.Drawing.Size(210, 20);
+            this.tbxUserName.Size = new System.Drawing.Size(416, 31);
             this.tbxUserName.TabIndex = 12;
             this.tbxUserName.Visible = false;
             this.tbxUserName.Click += new System.EventHandler(this.keyboard_Click);
@@ -158,13 +167,15 @@
             // 
             // tbxUserPhone
             // 
-            this.tbxUserPhone.Location = new System.Drawing.Point(62, 97);
+            this.tbxUserPhone.Location = new System.Drawing.Point(124, 187);
+            this.tbxUserPhone.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.tbxUserPhone.MaxLength = 10;
             this.tbxUserPhone.Name = "tbxUserPhone";
-            this.tbxUserPhone.Size = new System.Drawing.Size(210, 20);
+            this.tbxUserPhone.Size = new System.Drawing.Size(416, 31);
             this.tbxUserPhone.TabIndex = 13;
             this.tbxUserPhone.Visible = false;
             this.tbxUserPhone.Click += new System.EventHandler(this.numberpad_Click);
-            this.tbxUserPhone.TextChanged += new System.EventHandler(this.ValidateTextBox);
+            this.tbxUserPhone.TextChanged += new System.EventHandler(this.ValidatePhoneBox);
             this.tbxUserPhone.Leave += new System.EventHandler(this.keyboardClose_Leave);
             // 
             // cbxPrimAuth
@@ -173,11 +184,13 @@
             this.cbxPrimAuth.Items.AddRange(new object[] {
             "Card",
             "Bluetooth"});
-            this.cbxPrimAuth.Location = new System.Drawing.Point(135, 149);
+            this.cbxPrimAuth.Location = new System.Drawing.Point(270, 287);
+            this.cbxPrimAuth.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.cbxPrimAuth.Name = "cbxPrimAuth";
-            this.cbxPrimAuth.Size = new System.Drawing.Size(137, 21);
+            this.cbxPrimAuth.Size = new System.Drawing.Size(270, 33);
             this.cbxPrimAuth.TabIndex = 14;
             this.cbxPrimAuth.Visible = false;
+            this.cbxPrimAuth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxPrimAuth.SelectedIndexChanged += new System.EventHandler(this.SetupPrimaryAuthConfiguration);
             this.cbxPrimAuth.TextUpdate += new System.EventHandler(this.ValidateComboBox);
             this.cbxPrimAuth.SelectedValueChanged += new System.EventHandler(this.SetupPrimaryAuthConfiguration);
@@ -188,20 +201,23 @@
             this.cbxSecAuth.Items.AddRange(new object[] {
             "Bluetooth",
             "PIN"});
-            this.cbxSecAuth.Location = new System.Drawing.Point(444, 149);
+            this.cbxSecAuth.Location = new System.Drawing.Point(888, 287);
+            this.cbxSecAuth.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.cbxSecAuth.Name = "cbxSecAuth";
-            this.cbxSecAuth.Size = new System.Drawing.Size(138, 21);
+            this.cbxSecAuth.Size = new System.Drawing.Size(272, 33);
             this.cbxSecAuth.TabIndex = 15;
             this.cbxSecAuth.Visible = false;
+            this.cbxSecAuth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxSecAuth.SelectedIndexChanged += new System.EventHandler(this.SetupSecondaryAuthConfiguration);
             this.cbxSecAuth.SelectedValueChanged += new System.EventHandler(this.SetupSecondaryAuthConfiguration);
             // 
             // txtPrimAuth
             // 
             this.txtPrimAuth.AutoSize = true;
-            this.txtPrimAuth.Location = new System.Drawing.Point(15, 153);
+            this.txtPrimAuth.Location = new System.Drawing.Point(30, 294);
+            this.txtPrimAuth.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.txtPrimAuth.Name = "txtPrimAuth";
-            this.txtPrimAuth.Size = new System.Drawing.Size(114, 13);
+            this.txtPrimAuth.Size = new System.Drawing.Size(232, 25);
             this.txtPrimAuth.TabIndex = 17;
             this.txtPrimAuth.Text = "Primary authentication:";
             this.txtPrimAuth.Visible = false;
@@ -209,9 +225,10 @@
             // txtSecAuth
             // 
             this.txtSecAuth.AutoSize = true;
-            this.txtSecAuth.Location = new System.Drawing.Point(307, 153);
+            this.txtSecAuth.Location = new System.Drawing.Point(614, 294);
+            this.txtSecAuth.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.txtSecAuth.Name = "txtSecAuth";
-            this.txtSecAuth.Size = new System.Drawing.Size(131, 13);
+            this.txtSecAuth.Size = new System.Drawing.Size(262, 25);
             this.txtSecAuth.TabIndex = 18;
             this.txtSecAuth.Text = "Secondary authentication:";
             this.txtSecAuth.Visible = false;
@@ -223,10 +240,11 @@
             // txtPrimChooseDev
             // 
             this.txtPrimChooseDev.AutoSize = true;
-            this.txtPrimChooseDev.Location = new System.Drawing.Point(15, 179);
+            this.txtPrimChooseDev.Location = new System.Drawing.Point(30, 344);
+            this.txtPrimChooseDev.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.txtPrimChooseDev.Name = "txtPrimChooseDev";
             this.txtPrimChooseDev.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtPrimChooseDev.Size = new System.Drawing.Size(81, 13);
+            this.txtPrimChooseDev.Size = new System.Drawing.Size(161, 25);
             this.txtPrimChooseDev.TabIndex = 21;
             this.txtPrimChooseDev.Text = "Choose device:";
             this.txtPrimChooseDev.Visible = false;
@@ -234,19 +252,22 @@
             // cbxBTSelect1
             // 
             this.cbxBTSelect1.FormattingEnabled = true;
-            this.cbxBTSelect1.Location = new System.Drawing.Point(135, 175);
+            this.cbxBTSelect1.Location = new System.Drawing.Point(270, 337);
+            this.cbxBTSelect1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.cbxBTSelect1.Name = "cbxBTSelect1";
-            this.cbxBTSelect1.Size = new System.Drawing.Size(137, 21);
+            this.cbxBTSelect1.Size = new System.Drawing.Size(270, 33);
             this.cbxBTSelect1.TabIndex = 22;
             this.cbxBTSelect1.Visible = false;
+            this.cbxBTSelect1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBTSelect1.SelectedIndexChanged += new System.EventHandler(this.ValidateComboBox);
             // 
             // tbxPin
             // 
-            this.tbxPin.Location = new System.Drawing.Point(444, 177);
+            this.tbxPin.Location = new System.Drawing.Point(888, 340);
+            this.tbxPin.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.tbxPin.MaxLength = 6;
             this.tbxPin.Name = "tbxPin";
-            this.tbxPin.Size = new System.Drawing.Size(138, 20);
+            this.tbxPin.Size = new System.Drawing.Size(272, 31);
             this.tbxPin.TabIndex = 23;
             this.tbxPin.Visible = false;
             this.tbxPin.Click += new System.EventHandler(this.numberpad_Click);
@@ -256,19 +277,22 @@
             // cbxBTSelect2
             // 
             this.cbxBTSelect2.FormattingEnabled = true;
-            this.cbxBTSelect2.Location = new System.Drawing.Point(444, 175);
+            this.cbxBTSelect2.Location = new System.Drawing.Point(888, 337);
+            this.cbxBTSelect2.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.cbxBTSelect2.Name = "cbxBTSelect2";
-            this.cbxBTSelect2.Size = new System.Drawing.Size(138, 21);
+            this.cbxBTSelect2.Size = new System.Drawing.Size(272, 33);
             this.cbxBTSelect2.TabIndex = 24;
             this.cbxBTSelect2.Visible = false;
+            this.cbxBTSelect2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBTSelect2.SelectedIndexChanged += new System.EventHandler(this.ValidateComboBox);
             // 
             // txtSecChooseDevOrPin
             // 
             this.txtSecChooseDevOrPin.AutoSize = true;
-            this.txtSecChooseDevOrPin.Location = new System.Drawing.Point(307, 179);
+            this.txtSecChooseDevOrPin.Location = new System.Drawing.Point(614, 344);
+            this.txtSecChooseDevOrPin.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.txtSecChooseDevOrPin.Name = "txtSecChooseDevOrPin";
-            this.txtSecChooseDevOrPin.Size = new System.Drawing.Size(57, 13);
+            this.txtSecChooseDevOrPin.Size = new System.Drawing.Size(111, 25);
             this.txtSecChooseDevOrPin.TabIndex = 25;
             this.txtSecChooseDevOrPin.Text = "Insert PIN:";
             this.txtSecChooseDevOrPin.Visible = false;
@@ -277,9 +301,10 @@
             // 
             this.txtDate.AutoSize = true;
             this.txtDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.5F);
-            this.txtDate.Location = new System.Drawing.Point(192, 75);
+            this.txtDate.Location = new System.Drawing.Point(384, 144);
+            this.txtDate.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.txtDate.Name = "txtDate";
-            this.txtDate.Size = new System.Drawing.Size(80, 26);
+            this.txtDate.Size = new System.Drawing.Size(159, 52);
             this.txtDate.TabIndex = 26;
             this.txtDate.Text = "<date>";
             this.txtDate.Visible = false;
@@ -288,9 +313,10 @@
             // 
             this.txtTime.AutoSize = true;
             this.txtTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.5F);
-            this.txtTime.Location = new System.Drawing.Point(192, 108);
+            this.txtTime.Location = new System.Drawing.Point(384, 208);
+            this.txtTime.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.txtTime.Name = "txtTime";
-            this.txtTime.Size = new System.Drawing.Size(80, 26);
+            this.txtTime.Size = new System.Drawing.Size(158, 52);
             this.txtTime.TabIndex = 27;
             this.txtTime.Text = "<time>";
             this.txtTime.Visible = false;
@@ -302,9 +328,10 @@
             // 
             // btnExit
             // 
-            this.btnExit.Location = new System.Drawing.Point(583, 48);
+            this.btnExit.Location = new System.Drawing.Point(1166, 92);
+            this.btnExit.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(75, 23);
+            this.btnExit.Size = new System.Drawing.Size(150, 44);
             this.btnExit.TabIndex = 28;
             this.btnExit.Text = "Exit";
             this.btnExit.UseVisualStyleBackColor = true;
@@ -315,19 +342,21 @@
             this.listIdleBTDevices.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.listIdleBTDevices.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.listIdleBTDevices.FormattingEnabled = true;
-            this.listIdleBTDevices.ItemHeight = 16;
-            this.listIdleBTDevices.Location = new System.Drawing.Point(19, 75);
+            this.listIdleBTDevices.ItemHeight = 31;
+            this.listIdleBTDevices.Location = new System.Drawing.Point(38, 144);
+            this.listIdleBTDevices.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.listIdleBTDevices.Name = "listIdleBTDevices";
-            this.listIdleBTDevices.Size = new System.Drawing.Size(160, 98);
+            this.listIdleBTDevices.Size = new System.Drawing.Size(318, 157);
             this.listIdleBTDevices.TabIndex = 29;
             this.listIdleBTDevices.Visible = false;
             // 
             // btnConfirmBTDevices
             // 
-            this.btnConfirmBTDevices.Location = new System.Drawing.Point(19, 211);
+            this.btnConfirmBTDevices.Location = new System.Drawing.Point(38, 406);
+            this.btnConfirmBTDevices.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.btnConfirmBTDevices.Name = "btnConfirmBTDevices";
             this.btnConfirmBTDevices.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.btnConfirmBTDevices.Size = new System.Drawing.Size(119, 32);
+            this.btnConfirmBTDevices.Size = new System.Drawing.Size(238, 62);
             this.btnConfirmBTDevices.TabIndex = 30;
             this.btnConfirmBTDevices.Text = "Confirm Bluetooth";
             this.btnConfirmBTDevices.UseVisualStyleBackColor = true;
@@ -336,18 +365,20 @@
             // txtChooseBTDevice
             // 
             this.txtChooseBTDevice.AutoSize = true;
-            this.txtChooseBTDevice.Location = new System.Drawing.Point(16, 57);
+            this.txtChooseBTDevice.Location = new System.Drawing.Point(32, 110);
+            this.txtChooseBTDevice.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.txtChooseBTDevice.Name = "txtChooseBTDevice";
-            this.txtChooseBTDevice.Size = new System.Drawing.Size(128, 13);
+            this.txtChooseBTDevice.Size = new System.Drawing.Size(256, 25);
             this.txtChooseBTDevice.TabIndex = 31;
             this.txtChooseBTDevice.Text = "Choose bluetooth device:";
             this.txtChooseBTDevice.Visible = false;
             // 
             // btnDebugAuthUser
             // 
-            this.btnDebugAuthUser.Location = new System.Drawing.Point(583, 133);
+            this.btnDebugAuthUser.Location = new System.Drawing.Point(1166, 256);
+            this.btnDebugAuthUser.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.btnDebugAuthUser.Name = "btnDebugAuthUser";
-            this.btnDebugAuthUser.Size = new System.Drawing.Size(144, 23);
+            this.btnDebugAuthUser.Size = new System.Drawing.Size(288, 44);
             this.btnDebugAuthUser.TabIndex = 32;
             this.btnDebugAuthUser.Text = "Debug: Authenticate User";
             this.btnDebugAuthUser.UseVisualStyleBackColor = true;
@@ -356,9 +387,10 @@
             // txtAuthStatus
             // 
             this.txtAuthStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.txtAuthStatus.Location = new System.Drawing.Point(15, 39);
+            this.txtAuthStatus.Location = new System.Drawing.Point(30, 75);
+            this.txtAuthStatus.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.txtAuthStatus.Name = "txtAuthStatus";
-            this.txtAuthStatus.Size = new System.Drawing.Size(390, 36);
+            this.txtAuthStatus.Size = new System.Drawing.Size(780, 69);
             this.txtAuthStatus.TabIndex = 34;
             this.txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, this screen will time" +
     "out in 10 seconds.";
@@ -376,9 +408,9 @@
             // 
             // FormStart
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 442);
+            this.ClientSize = new System.Drawing.Size(1568, 850);
             this.Controls.Add(this.btnDebugAuthUser);
             this.Controls.Add(this.txtChooseBTDevice);
             this.Controls.Add(this.btnConfirmBTDevices);
@@ -406,7 +438,7 @@
             this.Controls.Add(this.tbxCard);
             this.Controls.Add(this.listIdleBTDevices);
             this.Controls.Add(this.tbxPin);
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(12, 12, 12, 12);
             this.Name = "FormStart";
             this.Text = "BuzzLock";
             this.Activated += new System.EventHandler(this.FormStart_Activated);

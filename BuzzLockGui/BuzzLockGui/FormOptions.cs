@@ -1,4 +1,5 @@
-﻿using ModernMessageBoxLib;
+﻿using BuzzLockGui.Backend;
+using ModernMessageBoxLib;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +16,7 @@ namespace BuzzLockGui
     public partial class FormOptions : FormBuzzLock
     {
         private FormStart _formStart;
-        public Stopwatch stopWatchOptionsStatus = new Stopwatch();
+        private Stopwatch stopWatchOptionsStatus = new Stopwatch();
 
         public FormOptions(FormStart formStart)
         {
@@ -89,8 +90,6 @@ namespace BuzzLockGui
             _formStart.UpdateComponents();
             _formStart.Show();
             this.Hide();
-
-            // Also close "remove user" message box if it is open
         }
 
         private void timerOptionsStatus_Tick(object sender, EventArgs e)
@@ -108,8 +107,17 @@ namespace BuzzLockGui
                 _formStart.Show();
                 this.Hide();
             }
-            else if (_globalState == State.UserOptions_EditProfile
-                     || _globalState == State.UserOptions_EditAuth)
+            else if (_globalState == State.UserOptions_EditProfile)
+            {
+                // saves new data to database
+                
+                _currentUser.Name = tbxNewName.Text;
+                _currentUser.PhoneNumber = tbxNewPhone.Text;
+                // ResetTimer();
+                _globalState = State.UserOptions;
+                this.UpdateComponents();
+            }
+            else if (_globalState == State.UserOptions_EditAuth)
             {
                 //TODO: save new data to database
                 // ResetTimer();
@@ -120,9 +128,9 @@ namespace BuzzLockGui
 
         private void FormOptions_Load(object sender, EventArgs e)
         {
-            this.TopMost = true;
-            this.FormBorderStyle = FormBorderStyle.None;
-            this.WindowState = FormWindowState.Maximized;
+            // this.TopMost = true;
+            // this.FormBorderStyle = FormBorderStyle.None;
+            // this.WindowState = FormWindowState.Maximized;
         }
 
         private void UpdateComponents()
@@ -139,14 +147,8 @@ namespace BuzzLockGui
             //EditProfile
             txtCurrentName.Visible = _globalState == State.UserOptions_EditProfile;
             txtCurrentPhone.Visible = _globalState == State.UserOptions_EditProfile;
-            txtNewName.Visible = _globalState == State.UserOptions_EditProfile;
-            txtNewPhone.Visible = _globalState == State.UserOptions_EditProfile;
-            tbxCurrentName.Visible = _globalState == State.UserOptions_EditProfile;
-            tbxCurrentPhone.Visible = _globalState == State.UserOptions_EditProfile;
             tbxNewName.Visible = _globalState == State.UserOptions_EditProfile;
             tbxNewPhone.Visible = _globalState == State.UserOptions_EditProfile;
-            btnChangeName.Visible = _globalState == State.UserOptions_EditProfile;
-            btnChangePhone.Visible = _globalState == State.UserOptions_EditProfile;
             //dataCurrentPicture.Visible = _globalState == State.UserOptions_EditProfile;
             //btnChangePictureOrTakePicture.Visible = _globalState == State.UserOptions_EditProfile;
 
@@ -168,11 +170,12 @@ namespace BuzzLockGui
                     break;
                 case State.UserOptions_EditProfile:
                     txtOptionsTitle.Text = "Edit your profile:";
-                    //TODO: Query database for current name and phone number and picture
-                    tbxCurrentName.Text = "<get from database>";
-                    tbxCurrentPhone.Text = "<get from database>";
-                    validateNewName(tbxNewName, EventArgs.Empty);
-                    validateNewPhone(tbxNewPhone, EventArgs.Empty);
+                    // Query database for current name and phone number and picture
+                    tbxNewName.Text = _currentUser.Name; // Populate textbox with user's current name
+                    tbxNewPhone.Text = _currentUser.PhoneNumber; // Populate textbox with user's current phone number
+                    ValidateTextBox(tbxNewName, EventArgs.Empty);
+                    ValidatePhoneBox(tbxNewPhone, EventArgs.Empty);
+                    btnOptionsSave.Enabled = noErrors;
                     break;
                 case State.UserOptions_EditAuth:
                     txtOptionsTitle.Text = "Edit your authentication methods:";
@@ -193,12 +196,14 @@ namespace BuzzLockGui
                 defaultResult: DialogResult.No);
             if (result == DialogResult.Yes)
             {
-                //TODO: Remove the current user from the database.
+                // Remove the current user from the database.
+                _currentUser.Delete();
 
                 // Close options and stop both timers. Go back to IDLE
-                timerOptionsTimeout.Enabled = false;
-                timerOptionsStatus.Enabled = false;
-                _globalState = State.Idle;
+                StopTimer();
+
+                // Query for number of users. If number of users is zero, go back to INITIALIZING
+                _globalState = User.GetAll().Count != 0 ? State.Idle : State.Uninitialized;
                 _formStart.UpdateComponents();
                 _formStart.Show();
                 this.Hide();
@@ -212,9 +217,6 @@ namespace BuzzLockGui
             RestartTimer();
         }
 
-        //TODO: reset options timer every time the user moves, 
-        //      the mouse, clicks something or types something. 
-
         private void btnEditProfile_Click(object sender, EventArgs e)
         {
             _globalState = State.UserOptions_EditProfile;
@@ -226,47 +228,6 @@ namespace BuzzLockGui
             _globalState = State.UserOptions_EditAuth;
             this.UpdateComponents();
         }
-
-        private void tbxCurrentName_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtCurrentName_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnChangeName_Click(object sender, EventArgs e)
-        {
-            //TODO: Change user name in database
-
-            // Update current name textbox and reset new name textbox
-            tbxCurrentName.Text = tbxNewName.Text;
-            tbxNewName.Text = "";
-        }
-
-        private void validateNewName(object sender, EventArgs e)
-        {
-            TextBox textBox = (TextBox)sender;
-            btnChangeName.Enabled = textBox.TextLength > 0;
-        }
-
-        private void validateNewPhone(object sender, EventArgs e)
-        {
-            TextBox textBox = (TextBox)sender;
-            //TODO: implement phone number validation
-            btnChangePhone.Enabled = textBox.TextLength > 0;
-        }
-
-        private void btnChangePhone_Click(object sender, EventArgs e)
-        {
-            //TODO: Change user phone in database
-
-            // Update currentPhone textbox and reset new phone textbox
-            tbxCurrentPhone.Text = tbxNewPhone.Text;
-            tbxNewPhone.Text = "";
-        }
     }
-    
+
 }
