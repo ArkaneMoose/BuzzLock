@@ -115,7 +115,7 @@ namespace BuzzLockGui.Backend
 
         public bool Equals(BluetoothAddress other)
         {
-            return address == other.address;
+            return other is object && address == other.address;
         }
 
         public override bool Equals(object obj)
@@ -141,8 +141,8 @@ namespace BuzzLockGui.Backend
         public static implicit operator BluetoothAddress(long address)
             => new BluetoothAddress(address);
         public static bool operator ==(BluetoothAddress a, BluetoothAddress b)
-            => a.Equals(b);
+            => a is null ? b is null : a.Equals(b);
         public static bool operator !=(BluetoothAddress a, BluetoothAddress b)
-            => !a.Equals(b);
+            => !(a == b);
     }
 }

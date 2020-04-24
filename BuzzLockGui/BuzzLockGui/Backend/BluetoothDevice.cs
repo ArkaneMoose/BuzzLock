@@ -5,7 +5,7 @@ namespace BuzzLockGui.Backend
     /// <summary>
     /// Allows a user to authenticate using a Bluetooth device.
     /// </summary>
-    public class BluetoothDevice : IAuthenticationMethod, IEquatable<BluetoothDevice>
+    public class BluetoothDevice : AuthenticationMethod, IEquatable<BluetoothDevice>
     {
         /// <summary>
         /// The address of this Bluetooth device.
@@ -54,7 +54,7 @@ namespace BuzzLockGui.Backend
 
         public bool Equals(BluetoothDevice other)
         {
-            return Address == other.Address;
+            return other is object && Address == other.Address;
         }
 
         public override bool Equals(object obj)

@@ -10,22 +10,22 @@ namespace BuzzLockGui.Backend
     /// </summary>
     public class AuthenticationSequence
     {
-        private readonly HashSet<IAuthenticationMethod> remaining;
+        private readonly HashSet<AuthenticationMethod> remaining;
 
         /// <summary>
         /// The user being authenticated.
         /// </summary>
         public readonly User User;
         /// <summary>
-        /// The next <see cref="IAuthenticationMethod"/> the user must present, or
+        /// The next <see cref="AuthenticationMethod"/> the user must present, or
         /// <c>null</c> if authentication has been completed successfully.
         /// </summary>
-        public IAuthenticationMethod NextAuthenticationMethod { get; private set; }
+        public AuthenticationMethod NextAuthenticationMethod { get; private set; }
 
-        private AuthenticationSequence(User user, IAuthenticationMethod completed)
+        private AuthenticationSequence(User user, AuthenticationMethod completed)
         {
             User = user;
-            remaining = new HashSet<IAuthenticationMethod>(
+            remaining = new HashSet<AuthenticationMethod>(
                 user.AuthenticationMethods);
             if (!remaining.Remove(completed))
             {
@@ -50,7 +50,7 @@ namespace BuzzLockGui.Backend
         /// next authentication method the user must present.
         /// </remarks>
         public bool Continue(
-            IAuthenticationMethod authenticationMethod)
+            AuthenticationMethod authenticationMethod)
         {
             if (!remaining.Remove(authenticationMethod
                 ?? throw new ArgumentNullException(
@@ -74,7 +74,7 @@ namespace BuzzLockGui.Backend
         /// given authentication method, or <c>null</c> otherwise.
         /// </returns>
         public static AuthenticationSequence Start(
-            IAuthenticationMethod authenticationMethod)
+            AuthenticationMethod authenticationMethod)
         {
             long? nullableUserId = Backend.GetUserIdForAuthenticationMethod(
                 authenticationMethod ?? throw new ArgumentNullException(

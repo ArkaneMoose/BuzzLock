@@ -31,7 +31,7 @@ namespace BuzzLockGui.Backend
 
         internal static long CreateUser(
             string name,
-            User.PermissionLevel permissionLevel,
+            User.PermissionLevels permissionLevel,
             string phoneNumber,
             byte[] photo,
             AuthenticationMethods authenticationMethods)
@@ -104,7 +104,7 @@ namespace BuzzLockGui.Backend
         }
 
         internal static long? GetUserIdForAuthenticationMethod(
-            IAuthenticationMethod authenticationMethod)
+            AuthenticationMethod authenticationMethod)
         {
             switch (authenticationMethod
                 ?? throw new ArgumentNullException(
@@ -140,12 +140,12 @@ namespace BuzzLockGui.Backend
             return (string)cmd.ExecuteScalarOrThrow();
         }
 
-        internal static User.PermissionLevel GetUserPermissionLevel(long userId)
+        internal static User.PermissionLevels GetUserPermissionLevel(long userId)
         {
             SQLiteCommand cmd = new SQLiteCommand(
                 "SELECT permissionLevel FROM users WHERE id = @userId", conn);
             cmd.Parameters.AddWithValue("@userId", userId);
-            return (User.PermissionLevel)cmd.ExecuteScalarOrThrow();
+            return (User.PermissionLevels)cmd.ExecuteScalarOrThrow();
         }
 
         internal static string GetUserPhoneNumber(long userId)
@@ -171,8 +171,8 @@ namespace BuzzLockGui.Backend
                 "SELECT cardId, bluetoothId, pin FROM users WHERE id = @userId",
                 conn);
             cmd.Parameters.AddWithValue("@userId", userId);
-            HashSet<IAuthenticationMethod> authenticationMethods
-                = new HashSet<IAuthenticationMethod>();
+            HashSet<AuthenticationMethod> authenticationMethods
+                = new HashSet<AuthenticationMethod>();
             using (SQLiteDataReader reader = cmd.ExecuteReader())
             {
                 if (!reader.Read())
@@ -210,7 +210,7 @@ namespace BuzzLockGui.Backend
         }
 
         internal static void SetUserPermissionLevel(long userId,
-            User.PermissionLevel permissionLevel)
+            User.PermissionLevels permissionLevel)
         {
             SQLiteCommand cmd = new SQLiteCommand(
                 @"UPDATE users SET permissionLevel = @permissionLevel

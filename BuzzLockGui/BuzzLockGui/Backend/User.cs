@@ -1,14 +1,16 @@
-﻿namespace BuzzLockGui.Backend
+﻿using System;
+
+namespace BuzzLockGui.Backend
 {
     /// <summary>
     /// A model of a user as it exists in the database.
     /// </summary>
-    public class User
+    public class User : IEquatable<User>
     {
         /// <summary>
         /// The possible levels of access for any user.
         /// </summary>
-        public enum PermissionLevel
+        public enum PermissionLevels
         {
             /// <summary>
             /// Cannot unlock the door lock.
@@ -41,7 +43,7 @@
         /// <summary>
         /// The level of access of this user.
         /// </summary>
-        public PermissionLevel permissionLevel
+        public PermissionLevels PermissionLevel
         {
             get => Backend.GetUserPermissionLevel(Id);
             set => Backend.SetUserPermissionLevel(Id, value);
@@ -73,7 +75,7 @@
 
         /// <summary>
         /// The devices or passcodes this user uses to authenticate. Contains exactly two
-        /// <see cref="IAuthenticationMethod"/>s of different types. Cannot be
+        /// <see cref="AuthenticationMethod"/>s of different types. Cannot be
         /// <c>null</c>.
         /// </summary>
         public AuthenticationMethods AuthenticationMethods
@@ -117,13 +119,13 @@
         /// </param>
         /// <param name="authenticationMethods">
         /// The devices or passcodes this user uses to authenticate. Must contain exactly
-        /// two <see cref="IAuthenticationMethod"/>s of different types. Cannot be
+        /// two <see cref="AuthenticationMethod"/>s of different types. Cannot be
         /// <c>null</c>.
         /// </param>
         /// <returns>The newly created user.</returns>
         public static User Create(
             string name,
-            PermissionLevel permissionLevel,
+            PermissionLevels permissionLevel,
             string phoneNumber,
             byte[] photo,
             AuthenticationMethods authenticationMethods)
@@ -132,5 +134,25 @@
                 authenticationMethods);
             return new User(id);
         }
+
+        public bool Equals(User other)
+        {
+            return other is object && Id == other.Id;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is User && Equals((User)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+        public static bool operator ==(User a, User b)
+            => a is null ? b is null : a.Equals(b);
+        public static bool operator !=(User a, User b)
+            => !(a == b);
     }
 }

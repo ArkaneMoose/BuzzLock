@@ -5,7 +5,7 @@ namespace BuzzLockGui.Backend
     /// <summary>
     /// Allows a user to authenticate using a magstripe card.
     /// </summary>
-    public class Card : IAuthenticationMethod, IEquatable<Card>
+    public class Card : AuthenticationMethod, IEquatable<Card>
     {
         /// <summary>
         /// The identification string on the magnetic stripe of a card.
@@ -29,7 +29,7 @@ namespace BuzzLockGui.Backend
 
         public bool Equals(Card other)
         {
-            return Id == other.Id;
+            return other is object && Id == other.Id;
         }
 
         public override bool Equals(object obj)

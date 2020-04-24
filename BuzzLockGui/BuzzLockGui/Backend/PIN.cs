@@ -5,7 +5,7 @@ namespace BuzzLockGui.Backend
     /// <summary>
     /// Allows a user to authenticate using a PIN.
     /// </summary>
-    public class Pin : IAuthenticationMethod, IEquatable<Pin>
+    public class Pin : AuthenticationMethod, IEquatable<Pin>
     {
         /// <summary>
         /// The PIN itself.
@@ -26,7 +26,7 @@ namespace BuzzLockGui.Backend
 
         public bool Equals(Pin other)
         {
-            return PinValue == other.PinValue;
+            return other is object && PinValue == other.PinValue;
         }
 
         public override bool Equals(object obj)

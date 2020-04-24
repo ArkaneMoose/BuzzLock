@@ -12,44 +12,54 @@ namespace BuzzLockGui.Backend
     /// API consumers to use objects of this type in <c>foreach</c> loops and with
     /// LINQ extension methods, among other uses.
     /// </remarks>
-    public class AuthenticationMethods : IReadOnlyList<IAuthenticationMethod>
+    public class AuthenticationMethods : IReadOnlyList<AuthenticationMethod>
     {
         /// <summary>
-        /// A <see cref="Card"/> if the user uses a magstripe card to authenticate,
-        /// or <c>null</c> otherwise.
+        /// A <see cref="BuzzLockGui.Backend.Card"/> if the user uses a
+        /// magstripe card to authenticate, or <c>null</c> otherwise.
         /// </summary>
         public readonly Card Card = null;
         /// <summary>
-        /// A <see cref="BluetoothDevice"/> if the user uses a Bluetooth device to
-        /// authenticate, or <c>null</c> otherwise.
+        /// A <see cref="BuzzLockGui.Backend.BluetoothDevice"/> if the user
+        /// uses a Bluetooth device to authenticate, or <c>null</c> otherwise.
         /// </summary>
         public readonly BluetoothDevice BluetoothDevice = null;
         /// <summary>
-        /// A <see cref="Pin"/> if the user uses a PIN to authenticate, or
-        /// <c>null</c> otherwise.
+        /// A <see cref="BuzzLockGui.Backend.Pin"/> if the user uses a PIN to
+        /// authenticate, or <c>null</c> otherwise.
         /// </summary>
         public readonly Pin Pin = null;
 
         /// <summary>
-        /// The primary authentication method. Either a <see cref="Card"/> or a
-        /// <see cref="BluetoothDevice"/>.
+        /// The primary authentication method. Either a
+        /// <see cref="BuzzLockGui.Backend.Card"/> or a
+        /// <see cref="BuzzLockGui.Backend.BluetoothDevice"/>.
         /// </summary>
-        public IAuthenticationMethod Primary
-            => (IAuthenticationMethod)Card ?? BluetoothDevice;
+        public AuthenticationMethod Primary
+            => (AuthenticationMethod)Card ?? BluetoothDevice;
         /// <summary>
         /// The secondary authentication method. Either a
-        /// <see cref="BluetoothDevice"/> or a <see cref="Pin"/>.
+        /// <see cref="BuzzLockGui.Backend.BluetoothDevice"/> or a
+        /// <see cref="BuzzLockGui.Backend.Pin"/>.
         /// </summary>
-        public IAuthenticationMethod Secondary
-            => (IAuthenticationMethod)Pin ?? BluetoothDevice;
+        public AuthenticationMethod Secondary
+            => (AuthenticationMethod)Pin ?? BluetoothDevice;
 
         /// <summary>
         /// Create a new set of authentication methods from the two
-        /// <see cref="IAuthenticationMethod"/>s passed in.
+        /// <see cref="AuthenticationMethod"/>s passed in.
         /// </summary>
+        /// <param name="first">
+        /// One of the two <see cref="AuthenticationMethod"/>s. Not necessarily
+        /// the <see cref="Primary"/> <see cref="AuthenticationMethod"/>.
+        /// </param>
+        /// <param name="second">
+        /// One of the two <see cref="AuthenticationMethod"/>s. Not necessarily
+        /// the <see cref="Secondary"/> <see cref="AuthenticationMethod"/>.
+        /// </param>
         public AuthenticationMethods(
-            params IAuthenticationMethod[] authenticationMethods)
-            : this(authenticationMethods, authenticationMethods.Length) { }
+            AuthenticationMethod first, AuthenticationMethod second)
+            : this(new AuthenticationMethod[] { first, second }) { }
 
         /// <summary>
         /// Create a new set of authentication methods from a
@@ -58,23 +68,19 @@ namespace BuzzLockGui.Backend
         /// </summary>
         /// <param name="authenticationMethods">
         /// A read-only or read-write collection containing two
-        /// <see cref="IAuthenticationMethod"/>s.
+        /// <see cref="AuthenticationMethod"/>s.
         /// </param>
         public AuthenticationMethods(
-            IReadOnlyCollection<IAuthenticationMethod> authenticationMethods)
-            : this(authenticationMethods, authenticationMethods.Count) { }
-
-        private AuthenticationMethods(
-            IEnumerable<IAuthenticationMethod> authenticationMethods, int Count)
+            IReadOnlyCollection<AuthenticationMethod> authenticationMethods)
         {
-            if (Count != 2)
+            if (authenticationMethods.Count != 2)
             {
                 throw new ArgumentException(
                     "Exactly two authentication methods required");
             }
 
             foreach (
-                IAuthenticationMethod authenticationMethod in authenticationMethods)
+                AuthenticationMethod authenticationMethod in authenticationMethods)
             {
                 switch (authenticationMethod
                     ?? throw new ArgumentNullException("None of the authentication "
@@ -112,19 +118,19 @@ namespace BuzzLockGui.Backend
         }
 
         /// <summary>
-        /// Given one <see cref="IAuthenticationMethod"/> in this
+        /// Given one <see cref="AuthenticationMethod"/> in this
         /// <see cref="AuthenticationMethods"/> instance, return the other.
         /// </summary>
         /// <param name="authenticationMethod">
-        /// One of the two <see cref="IAuthenticationMethod"/>s in this
+        /// One of the two <see cref="AuthenticationMethod"/>s in this
         /// <see cref="AuthenticationMethods"/> instance.
         /// </param>
         /// <returns>
-        /// The other of the two <see cref="IAuthenticationMethod"/>s in this
+        /// The other of the two <see cref="AuthenticationMethod"/>s in this
         /// <see cref="AuthenticationMethods"/> instance.
         /// </returns>
-        public IAuthenticationMethod GetOtherAuthenticationMethod(
-            IAuthenticationMethod authenticationMethod)
+        public AuthenticationMethod GetOtherAuthenticationMethod(
+            AuthenticationMethod authenticationMethod)
         {
             if (authenticationMethod == null)
             {
@@ -145,7 +151,7 @@ namespace BuzzLockGui.Backend
         }
 
         /// <summary>
-        /// Access the <see cref="IAuthenticationMethod"/>s in this
+        /// Access the <see cref="AuthenticationMethod"/>s in this
         /// <see cref="AuthenticationMethods"/>.
         /// </summary>
         /// <param name="i">An index, 0 or 1.</param>
@@ -156,7 +162,7 @@ namespace BuzzLockGui.Backend
         /// <exception cref="IndexOutOfRangeException">
         /// If <c>i</c> is neither 0 nor 1.
         /// </exception>
-        public IAuthenticationMethod this[int i]
+        public AuthenticationMethod this[int i]
         {
             get
             {
@@ -174,17 +180,17 @@ namespace BuzzLockGui.Backend
         }
 
         /// <summary>
-        /// The number of <see cref="IAuthenticationMethod"/>s in this
+        /// The number of <see cref="AuthenticationMethod"/>s in this
         /// <see cref="AuthenticationMethods"/>. Always 2.
         /// </summary>
         public int Count => 2;
 
-        public IEnumerator<IAuthenticationMethod> GetEnumerator()
+        public IEnumerator<AuthenticationMethod> GetEnumerator()
             => new Enumerator(this);
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
 
-        private class Enumerator : IEnumerator<IAuthenticationMethod>
+        private class Enumerator : IEnumerator<AuthenticationMethod>
         {
             private AuthenticationMethods authenticationMethods;
             private int position = -1;
@@ -195,7 +201,7 @@ namespace BuzzLockGui.Backend
                 this.authenticationMethods = authenticationMethods;
             }
 
-            public IAuthenticationMethod Current
+            public AuthenticationMethod Current
             {
                 get
                 {
