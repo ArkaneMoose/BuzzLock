@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace BuzzLockGui.Backend
+﻿namespace BuzzLockGui.Backend
 {
     /// <summary>
     /// A model of a user as it exists in the database.
@@ -78,14 +76,7 @@ namespace BuzzLockGui.Backend
         /// <see cref="IAuthenticationMethod"/>s of different types. Cannot be
         /// <c>null</c>.
         /// </summary>
-        /// <remarks>
-        /// Each access to this field returns a new <see cref="HashSet{T}"/> with the
-        /// latest information from the database. Mutating this <see cref="HashSet{T}"/>
-        /// has no impact on the user's authentication methods in the database; the
-        /// user's authentication methods are only updated on an assignment to this
-        /// field.
-        /// </remarks>
-        public HashSet<IAuthenticationMethod> AuthenticationMethods
+        public AuthenticationMethods AuthenticationMethods
         {
             get => Backend.GetUserAuthenticationMethods(Id);
             set => Backend.SetUserAuthenticationMethods(Id, value);
@@ -135,7 +126,7 @@ namespace BuzzLockGui.Backend
             PermissionLevel permissionLevel,
             string phoneNumber,
             byte[] photo,
-            HashSet<IAuthenticationMethod> authenticationMethods)
+            AuthenticationMethods authenticationMethods)
         {
             long id = Backend.CreateUser(name, permissionLevel, phoneNumber, photo,
                 authenticationMethods);

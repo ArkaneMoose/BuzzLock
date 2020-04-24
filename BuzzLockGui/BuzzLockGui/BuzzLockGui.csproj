@@ -118,6 +118,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backend\AuthenticationMethods.cs" />
     <Compile Include="Backend\IAuthenticationMethod.cs" />
     <Compile Include="Backend\AuthenticationSequence.cs" />
     <Compile Include="Backend\Backend.cs" />

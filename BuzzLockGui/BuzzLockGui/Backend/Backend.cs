@@ -8,8 +8,8 @@ namespace BuzzLockGui.Backend
     /// <summary>
     /// A class to interact with the database. Generally only used from within the
     /// <see cref="BuzzLockGui.Backend"/> namespace. API consumers should use the
-    /// higher-level <see cref="AuthenticationSequence"/> and <see cref="User"/> classes
-    /// instead.
+    /// higher-level <see cref="AuthenticationSequence"/> and <see cref="User"/>
+    /// classes instead.
     /// </summary>
     static class Backend
     {
@@ -34,7 +34,7 @@ namespace BuzzLockGui.Backend
             User.PermissionLevel permissionLevel,
             string phoneNumber,
             byte[] photo,
-            HashSet<IAuthenticationMethod> authenticationMethods)
+            AuthenticationMethods authenticationMethods)
         {
             if (name == null)
             {
@@ -44,10 +44,13 @@ namespace BuzzLockGui.Backend
             {
                 throw new ArgumentNullException("phoneNumber cannot be null");
             }
-            (Card card, BluetoothDevice bluetoothDevice, Pin pin)
-                = DestructureAuthenticationMethods(authenticationMethods);
-            if (bluetoothDevice is BluetoothDevice bluetoothDeviceNonNull
-                && bluetoothDeviceNonNull.Name == null)
+            if (authenticationMethods == null)
+            {
+                throw new ArgumentNullException("authenticationMethods cannot "
+                    + "be null");
+            }
+            if (authenticationMethods.BluetoothDevice != null
+                && authenticationMethods.BluetoothDevice.Name == null)
             {
                 throw new ArgumentNullException("You must explicitly set a Name "
                     + "for the BluetoothDevice when creating a user");
@@ -62,10 +65,12 @@ namespace BuzzLockGui.Backend
             cmd.Parameters.AddWithValue("@permissionLevel", permissionLevel);
             cmd.Parameters.AddWithValue("@phoneNumber", phoneNumber);
             cmd.Parameters.AddWithValue("@photo", photo);
-            cmd.Parameters.AddWithValue("@cardId", card?.Id);
-            cmd.Parameters.AddWithValue("@bluetoothId", (long)bluetoothDevice?.Address);
-            cmd.Parameters.AddWithValue("@bluetoothName", bluetoothDevice?.Name);
-            cmd.Parameters.AddWithValue("@pin", pin?.PinValue);
+            cmd.Parameters.AddWithValue("@cardId", authenticationMethods.Card?.Id);
+            cmd.Parameters.AddWithValue("@bluetoothId",
+                (long)authenticationMethods.BluetoothDevice?.Address);
+            cmd.Parameters.AddWithValue("@bluetoothName",
+                authenticationMethods.BluetoothDevice?.Name);
+            cmd.Parameters.AddWithValue("@pin", authenticationMethods.Pin?.PinValue);
             cmd.ExecuteNonQueryOrThrow();
             return conn.LastInsertRowId;
         }
@@ -102,7 +107,8 @@ namespace BuzzLockGui.Backend
             IAuthenticationMethod authenticationMethod)
         {
             switch (authenticationMethod
-                ?? throw new ArgumentNullException("authenticationMethod cannot be null"))
+                ?? throw new ArgumentNullException(
+                    "authenticationMethod cannot be null"))
             {
                 case Card card:
                     return GetUserIdForCard(card.Id);
@@ -158,7 +164,7 @@ namespace BuzzLockGui.Backend
             return (byte[])cmd.ExecuteScalarOrThrow();
         }
 
-        internal static HashSet<IAuthenticationMethod> GetUserAuthenticationMethods(
+        internal static AuthenticationMethods GetUserAuthenticationMethods(
             long userId)
         {
             SQLiteCommand cmd = new SQLiteCommand(
@@ -186,7 +192,7 @@ namespace BuzzLockGui.Backend
                     authenticationMethods.Add(new Pin(reader.GetString(2)));
                 }
             }
-            return authenticationMethods;
+            return new AuthenticationMethods(authenticationMethods);
         }
 
         internal static void SetUserName(long userId, string name)
@@ -238,78 +244,19 @@ namespace BuzzLockGui.Backend
         }
 
         internal static void SetUserAuthenticationMethods(
-            long userId,
-            HashSet<IAuthenticationMethod> authenticationMethods)
+            long userId, AuthenticationMethods authenticationMethods)
         {
-            (Card card, BluetoothDevice bluetoothDevice, Pin pin)
-                = DestructureAuthenticationMethods(authenticationMethods);
             SQLiteCommand cmd = new SQLiteCommand(
                 @"UPDATE users SET cardId = @cardId, bluetoothId = @bluetoothId,
                   bluetoothName = @bluetoothName, pin = @pin WHERE id = @userId", conn);
             cmd.Parameters.AddWithValue("@userId", userId);
-            cmd.Parameters.AddWithValue("@cardId", card?.Id);
-            cmd.Parameters.AddWithValue("@bluetoothId", (long)bluetoothDevice?.Address);
-            cmd.Parameters.AddWithValue("@bluetoothName", bluetoothDevice?.Name);
-            cmd.Parameters.AddWithValue("@pin", pin?.PinValue);
+            cmd.Parameters.AddWithValue("@cardId", authenticationMethods.Card?.Id);
+            cmd.Parameters.AddWithValue("@bluetoothId",
+                (long)authenticationMethods.BluetoothDevice?.Address);
+            cmd.Parameters.AddWithValue("@bluetoothName",
+                authenticationMethods.BluetoothDevice?.Name);
+            cmd.Parameters.AddWithValue("@pin", authenticationMethods.Pin?.PinValue);
             cmd.ExecuteNonQueryOrThrow();
-        }
-
-        private static (
-            Card card,
-            BluetoothDevice bluetoothDevice,
-            Pin pin
-        ) DestructureAuthenticationMethods(
-            HashSet<IAuthenticationMethod> authenticationMethods)
-        {
-            if (authenticationMethods == null)
-            {
-                throw new ArgumentNullException("authenticationMethods must not be null");
-            }
-            if (authenticationMethods.Count != 2)
-            {
-                throw new ArgumentException("Exactly two authentication methods required");
-            }
-
-            Card card = null;
-            BluetoothDevice bluetoothDevice = null;
-            Pin pin = null;
-
-            foreach (IAuthenticationMethod authenticationMethod in authenticationMethods)
-            {
-                switch (authenticationMethod
-                    ?? throw new ArgumentNullException("None of the authentication "
-                        + "methods can be null"))
-                {
-                    case Card c:
-                        if (card != null)
-                        {
-                            throw new ArgumentException("Cannot have more than one Card "
-                                + "authentication method");
-                        }
-                        card = c;
-                        break;
-                    case BluetoothDevice b:
-                        if (bluetoothDevice != null)
-                        {
-                            throw new ArgumentException("Cannot have more than one "
-                                + "BluetoothDevice authentication method");
-                        }
-                        bluetoothDevice = b;
-                        break;
-                    case Pin p:
-                        if (pin != null)
-                        {
-                            throw new ArgumentException("Cannot have more than one Pin "
-                                + "authentication method");
-                        }
-                        pin = p;
-                        break;
-                    default:
-                        throw new ArgumentException("Unrecognized authentication method");
-                }
-            }
-
-            return (card, bluetoothDevice, pin);
         }
     }
 
@@ -331,7 +278,8 @@ namespace BuzzLockGui.Backend
             {
                 if (!reader.Read())
                 {
-                    throw new InvalidOperationException("Command did not return a result");
+                    throw new InvalidOperationException(
+                        "Command did not return a result");
                 }
                 return reader[0];
             }

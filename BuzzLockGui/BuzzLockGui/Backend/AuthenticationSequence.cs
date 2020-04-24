@@ -25,11 +25,12 @@ namespace BuzzLockGui.Backend
         private AuthenticationSequence(User user, IAuthenticationMethod completed)
         {
             User = user;
-            remaining = user.AuthenticationMethods;
+            remaining = new HashSet<IAuthenticationMethod>(
+                user.AuthenticationMethods);
             if (!remaining.Remove(completed))
             {
-                throw new ArgumentException("Cannot start authentication sequence with "
-                    + "an authentication method the user doesn't have");
+                throw new ArgumentException("Cannot start authentication sequence "
+                    + "with an authentication method the user doesn't have");
             }
             NextAuthenticationMethod = remaining.First();
         }
@@ -70,7 +71,7 @@ namespace BuzzLockGui.Backend
         /// </param>
         /// <returns>
         /// An <see cref="AuthenticationSequence"/> if there exists a user with the
-        /// given authentication method, or<c>null</c> otherwise.
+        /// given authentication method, or <c>null</c> otherwise.
         /// </returns>
         public static AuthenticationSequence Start(
             IAuthenticationMethod authenticationMethod)
