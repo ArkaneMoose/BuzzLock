@@ -145,7 +145,7 @@ namespace BuzzLockGui.Backend
             SQLiteCommand cmd = new SQLiteCommand(
                 "SELECT permissionLevel FROM users WHERE id = @userId", conn);
             cmd.Parameters.AddWithValue("@userId", userId);
-            return (User.PermissionLevels)cmd.ExecuteScalarOrThrow();
+            return (User.PermissionLevels)(long)cmd.ExecuteScalarOrThrow();
         }
 
         internal static string GetUserPhoneNumber(long userId)
@@ -216,7 +216,7 @@ namespace BuzzLockGui.Backend
                 @"UPDATE users SET permissionLevel = @permissionLevel
                   WHERE id = @userId", conn);
             cmd.Parameters.AddWithValue("@userId", userId);
-            cmd.Parameters.AddWithValue("@permissionLevel", (int)permissionLevel);
+            cmd.Parameters.AddWithValue("@permissionLevel", (long)permissionLevel);
             cmd.ExecuteNonQueryOrThrow();
         }
 

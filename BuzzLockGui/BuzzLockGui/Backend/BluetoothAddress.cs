@@ -35,7 +35,7 @@ namespace BuzzLockGui.Backend
                     octets = address.Split(sep);
                     if (char.IsLetterOrDigit(sep)
                         || octets.Length != 6
-                        || octets.All(octet => octet.Length == 2))
+                        || !octets.All(octet => octet.Length == 2))
                     {
                         throw new ArgumentException("Invalid separator");
                     }
