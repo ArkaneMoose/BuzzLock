@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace BuzzLockGui
+namespace BuzzLockGui.Backend
 {
     /// <summary>
     /// Represents the 6-byte address of a Bluetooth device.
