@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BuzzLockGui.Backend
 {
@@ -133,6 +135,18 @@ namespace BuzzLockGui.Backend
             long id = Backend.CreateUser(name, permissionLevel, phoneNumber, photo,
                 authenticationMethods);
             return new User(id);
+        }
+
+        /// <summary>
+        /// Gets all existing users from the database.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="List{T}"/> of all <see cref="User"/>s.
+        /// </returns>
+        public static List<User> GetAll()
+        {
+            List<long> ids = Backend.GetAllUserIds();
+            return ids.Select(id => new User(id)).ToList();
         }
 
         public bool Equals(User other)

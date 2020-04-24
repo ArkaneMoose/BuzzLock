@@ -83,6 +83,20 @@ namespace BuzzLockGui.Backend
             cmd.ExecuteNonQueryOrThrow();
         }
 
+        internal static List<long> GetAllUserIds()
+        {
+            SQLiteCommand cmd = new SQLiteCommand("SELECT id FROM users", conn);
+            List<long> userIds = new List<long>();
+            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    userIds.Add(reader.GetInt64(0));
+                }
+            }
+            return userIds;
+        }
+
         internal static long? GetUserIdForCard(string cardId)
         {
             SQLiteCommand cmd = new SQLiteCommand(
