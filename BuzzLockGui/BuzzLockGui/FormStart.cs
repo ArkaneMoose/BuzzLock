@@ -57,9 +57,6 @@ namespace BuzzLockGui
             // this.TopMost = true;
             // this.FormBorderStyle = FormBorderStyle.None;
             // this.WindowState = FormWindowState.Maximized;
-
-            // Enable date and time display
-            timerDateTime.Enabled = true;
         }
 
         public new void Show()
@@ -113,12 +110,12 @@ namespace BuzzLockGui
                 // Save user preferences and information to database
                 string name = tbxUserName.Text;
                 string phoneNumber = tbxUserPhone.Text;
-                User.PermissionLevels permissionLevel = User.PermissionLevels.FULL;
+                User.PermissionLevels permissionLevel = (User.GetAll().Count() == 0) ? User.PermissionLevels.FULL : User.PermissionLevels.NONE;
                 List<AuthenticationMethod> authMethodsList = new List<AuthenticationMethod>();
                 switch (cbxPrimAuth.SelectedItem.ToString())
                 {
                     case "Bluetooth":
-                        authMethodsList.Add(new BluetoothDevice(cbxBTSelect1.SelectedItem.ToString()));
+                        authMethodsList.Add(new BluetoothDevice(cbxBTSelect1.SelectedItem.ToString(), name + cbxBTSelect1.SelectedItem.ToString()));
                         break;
                     case "Card":
                         authMethodsList.Add(new Card(tbxCard.Text));
@@ -127,7 +124,7 @@ namespace BuzzLockGui
                 switch (cbxSecAuth.SelectedItem.ToString())
                 {
                     case "Bluetooth":
-                        authMethodsList.Add(new BluetoothDevice(cbxBTSelect2.SelectedItem.ToString()));
+                        authMethodsList.Add(new BluetoothDevice(cbxBTSelect2.SelectedItem.ToString(), name + cbxBTSelect2.SelectedItem.ToString()));
                         break;
                     case "PIN":
                         authMethodsList.Add(new Pin(tbxPin.Text));
@@ -181,6 +178,11 @@ namespace BuzzLockGui
                     cbxSecAuth.Visible = true;
                     ValidateComboBox(cbxSecAuth, EventArgs.Empty);
                 }
+                else
+                {
+                    return;
+                }
+
                 if (comboBox.SelectedItem.ToString() == "Bluetooth")
                 {
                     txtPrimChooseDev.Visible = true;
@@ -243,6 +245,10 @@ namespace BuzzLockGui
             if (sender.GetType().Name == "ComboBox")
             {
                 ComboBox comboBox = (ComboBox)sender;
+                if (comboBox.SelectedItem == null)
+                {
+                    return;
+                }
                 if (comboBox.SelectedItem.ToString() == "Bluetooth")
                 {
                     txtSecChooseDevOrPin.Text = "Choose device:";
@@ -329,11 +335,22 @@ namespace BuzzLockGui
             switch (_globalState)
             {
                 case State.Uninitialized:
+                    txtStatus.Text = "Hello! Please swipe your BuzzCard to begin set up.";
                     break;
                 case State.Initializing:
                     btnOptionsSave.Text = "Save";
                     txtStatus.Text = "Create your profile and choose how you want to unlock the door:";
                     UserInputValidation();
+
+                    //reset boxes
+                    tbxPin.Text = "";
+                    tbxUserName.Text = "";
+                    tbxUserPhone.Text = "";
+                    cbxBTSelect1.Items.Clear();
+                    cbxBTSelect2.Items.Clear();
+                    cbxPrimAuth.SelectedItem = null;
+                    cbxSecAuth.SelectedItem = null;
+
                     break;
                 case State.Idle:
 
@@ -485,17 +502,31 @@ namespace BuzzLockGui
 
         private void enableBtnConfirmBTDevice(object sender, EventArgs e)
         {
-
+            ListBox listBox = (ListBox)sender;
+            btnConfirmBTDevices.Enabled = listBox.Items.Count > 0;
         }
 
         private void btnDebugBluetooth_Click(object sender, EventArgs e)
         {
-            listIdleBTDevices.Items.Add("00:11:22:33:44:55");
+            string testDevice = "00:11:22:33:44:55";
+            if (_globalState == State.Initializing)
+            {
+                cbxBTSelect1.Items.Add(testDevice);
+                cbxBTSelect2.Items.Add(testDevice);
+            }
+            else
+            {
+                listIdleBTDevices.Items.Add(testDevice);
+            }
+            
         }
 
         private void btnConfirmBTDevices_Click(object sender, EventArgs e)
         {
-
+            string selectedBTDevice = listIdleBTDevices.SelectedItem.ToString();
+            _currentAuthSequence = AuthenticationSequence.Start(new BluetoothDevice(selectedBTDevice));
+            _globalState = State.SecondFactor;
+            UpdateComponents();
         }
 
         protected override void OnValidate()
@@ -511,7 +542,6 @@ namespace BuzzLockGui
             => base.ValidatePinBox(sender, e);
         protected new void ValidateComboBox(object sender, EventArgs e)
             => base.ValidateComboBox(sender, e);
-
         protected new void keyboard_Click(object sender, EventArgs e)
             => base.keyboard_Click(sender, e);
         protected new void keyboardClose_Leave(object sender, EventArgs e)
