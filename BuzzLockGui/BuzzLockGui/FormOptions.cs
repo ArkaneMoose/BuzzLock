@@ -352,6 +352,7 @@ namespace BuzzLockGui
                 timeout: 5000, //5 seconds
                 buttons: MessageBoxButtons.YesNo,
                 defaultResult: DialogResult.No);
+
             if (result == DialogResult.Yes)
             {
                 // Remove the current user from the database.
