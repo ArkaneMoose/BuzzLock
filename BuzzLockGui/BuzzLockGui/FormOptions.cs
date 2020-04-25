@@ -162,6 +162,10 @@ namespace BuzzLockGui
             txtSecChooseDevOrPin.Visible = _globalState == State.UserOptions_EditAuth;
             cbxBTSelect2.Visible = _globalState == State.UserOptions_EditAuth;
 
+            //Set the welcome textbox
+            tbxStatus.Text = $"Welcome, {_currentUser.Name}";
+            //Set the permission level textbox
+            txtUserPermission.Text = $"Permission Level: {_currentUser.PermissionLevel}";
 
             switch (_globalState)
             {

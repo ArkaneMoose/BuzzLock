@@ -357,7 +357,7 @@ namespace BuzzLockGui
                     break;
                 case State.Authenticated:
                     btnOptionsSave.Text = "Options";
-                    //TODO: display user name here
+
                     txtStatus.Text = $"Welcome, {_currentUser.Name}. Door is unlocked.";
 
                     // Timeout stopwatch
@@ -485,8 +485,7 @@ namespace BuzzLockGui
 
         private void enableBtnConfirmBTDevice(object sender, EventArgs e)
         {
-            ListBox listBox = (ListBox) sender;
-            btnConfirmBTDevices.Enabled = listBox.SelectedItem != null;
+
         }
 
         private void btnDebugBluetooth_Click(object sender, EventArgs e)
@@ -496,20 +495,6 @@ namespace BuzzLockGui
 
         private void btnConfirmBTDevices_Click(object sender, EventArgs e)
         {
-            //TODO: Request user second authentication, either PIN or Card swipe.
-            var selectedBT = listIdleBTDevices.SelectedItem.ToString();
-            _currentAuthSequence = AuthenticationSequence.Start(new BluetoothDevice(selectedBT));
-            if (_currentAuthSequence != null)
-            {
-                _globalState = State.SecondFactor;
-                UpdateComponents();
-            }
-            else
-            {
-                // this should not happen, because all bluetooth devices being listed
-                // should be associated to a user already inside the database.
-                Console.WriteLine("User selected a BT device that was not found in the database.");
-            }
 
         }
 
