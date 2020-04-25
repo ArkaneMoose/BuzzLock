@@ -124,9 +124,8 @@ namespace BuzzLockGui
 
         private void RestartAccessDeniedTimer()
         {
-            stopWatchAccessDeniedStatus.Reset();
-            timerAccessDeniedTimeout.Enabled = false;
-            timerTxtAccessDeniedStatus.Enabled = false;
+            StopAccessDeniedTimer();
+            StartAccessDeniedTimer();
         }
 
 
@@ -430,7 +429,7 @@ namespace BuzzLockGui
                     break;
                 case State.AccessDenied:
                     //Timeout stopwatch
-                    txtAccessDeniedStatus.Text = "Access Denied, this screen will timeout in 10 seconds";
+                    tbxAccessDenied.Text = "Access Denied, this screen will timeout in 10 seconds";
                     stopWatchAccessDeniedStatus.Reset();
                     stopWatchAccessDeniedStatus.Start();
                     loseFocus();
@@ -474,7 +473,7 @@ namespace BuzzLockGui
 
         private void timerTxtAccessDeniedStatus_Tick(object sender, EventArgs e)
         {
-            txtAuthStatus.Text = "Your access was denied, you may try again in"
+            tbxAccessDenied.Text = "Your access was denied, you may try again in "
                     + Utility.Pluralize((10 - stopWatchAccessDeniedStatus.Elapsed.Seconds), "second") + ".";
         }
 
@@ -500,6 +499,13 @@ namespace BuzzLockGui
         private void btnDebugAuthUser_Click(object sender, EventArgs e)
         {
             _globalState = State.Authenticated;
+            _currentUser = new User(1);
+            UpdateComponents();
+        }
+
+        private void btnDebugAccessDenied_Click(object sender, EventArgs e)
+        {
+            _globalState = State.AccessDenied;
             _currentUser = new User(1);
             UpdateComponents();
         }

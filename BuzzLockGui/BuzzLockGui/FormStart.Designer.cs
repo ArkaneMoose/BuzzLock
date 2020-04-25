@@ -64,6 +64,7 @@
             this.timerAccessDeniedTimeout = new System.Windows.Forms.Timer(this.components);
             this.timerTxtAccessDeniedStatus = new System.Windows.Forms.Timer(this.components);
             this.txtAccessDeniedStatus = new System.Windows.Forms.Label();
+            this.btnDebugAccessDenied = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.userError)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errNewUser)).BeginInit();
             this.SuspendLayout();
@@ -424,16 +425,39 @@
             this.tbxAccessDenied.TabIndex = 35;
             this.tbxAccessDenied.Text = "Access Denied";
             // 
-            // txtAccessDeniedStatus
+            // timerAccessDeniedTimeout
+            // 
+            this.timerAccessDeniedTimeout.Tick += new System.EventHandler(this.timeoutAccessDenied_Tick);
+            // 
+            // timerTxtAccessDeniedStatus
             // 
             this.timerTxtAccessDeniedStatus.Interval = 200;
             this.timerTxtAccessDeniedStatus.Tick += new System.EventHandler(this.timerTxtAccessDeniedStatus_Tick);
+            // 
+            // txtAccessDeniedStatus
+            // 
+            this.txtAccessDeniedStatus.Location = new System.Drawing.Point(0, 0);
+            this.txtAccessDeniedStatus.Name = "txtAccessDeniedStatus";
+            this.txtAccessDeniedStatus.Size = new System.Drawing.Size(100, 23);
+            this.txtAccessDeniedStatus.TabIndex = 35;
+            // 
+            // btnDebugAccessDenied
+            // 
+            this.btnDebugAccessDenied.Location = new System.Drawing.Point(874, 250);
+            this.btnDebugAccessDenied.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnDebugAccessDenied.Name = "btnDebugAccessDenied";
+            this.btnDebugAccessDenied.Size = new System.Drawing.Size(216, 35);
+            this.btnDebugAccessDenied.TabIndex = 36;
+            this.btnDebugAccessDenied.Text = "Debug: Access Denied";
+            this.btnDebugAccessDenied.UseVisualStyleBackColor = true;
+            this.btnDebugAccessDenied.Click += new System.EventHandler(this.btnDebugAccessDenied_Click);
             // 
             // FormStart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1176, 680);
+            this.Controls.Add(this.btnDebugAccessDenied);
             this.Controls.Add(this.txtAuthStatus);
             this.Controls.Add(this.txtAccessDeniedStatus);
             this.Controls.Add(this.tbxAccessDenied);
@@ -514,6 +538,7 @@
         private System.Windows.Forms.Timer timerAccessDeniedTimeout;
         private System.Windows.Forms.Timer timerTxtAccessDeniedStatus;
         private System.Windows.Forms.Label txtAccessDeniedStatus;
+        private System.Windows.Forms.Button btnDebugAccessDenied;
     }
 }
 
