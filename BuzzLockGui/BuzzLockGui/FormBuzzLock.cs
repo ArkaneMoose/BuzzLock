@@ -45,7 +45,7 @@ namespace BuzzLockGui
             // Type check to ensure passed in object is a TextBox
             if (sender.GetType().Name == "TextBox") {
                 TextBox textBox = (TextBox) sender;
-                if (textBox.Text == "")
+                if (textBox.Visible && textBox.Text == "")
                 {
                     userError.SetError(textBox, (string)textBox.Tag);
                     errorControls.Add(textBox);
@@ -67,7 +67,7 @@ namespace BuzzLockGui
             {
                 TextBox textBox = (TextBox)sender;
                 string errorMessage;
-                if (!ValidPhone(textBox.Text, out errorMessage))
+                if (textBox.Visible && !ValidPhone(textBox.Text, out errorMessage))
                 {
                     userError.SetError(textBox, errorMessage);
                     errorControls.Add(textBox);
@@ -109,7 +109,7 @@ namespace BuzzLockGui
             {
                 TextBox textBox = (TextBox) sender;
                 string errorMessage;
-                if (!ValidPin(textBox.Text, out errorMessage))
+                if (textBox.Visible && !ValidPin(textBox.Text, out errorMessage))
                 {
                     userError.SetError(textBox, errorMessage);
                     errorControls.Add(textBox);
@@ -151,7 +151,7 @@ namespace BuzzLockGui
             if (sender.GetType().Name == "ComboBox")
             {
                 ComboBox comboBox = (ComboBox) sender;
-                if (comboBox.SelectedItem == null)
+                if (comboBox.Visible && comboBox.SelectedItem == null)
                 {
                     userError.SetError(comboBox, (string)comboBox.Tag);
                     errorControls.Add(comboBox);

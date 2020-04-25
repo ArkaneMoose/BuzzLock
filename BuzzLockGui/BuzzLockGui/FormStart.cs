@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -151,6 +151,9 @@ namespace BuzzLockGui
                 }
                 switch (cbxSecAuth.SelectedItem.ToString())
                 {
+                    case "Card":
+                        authMethodsList.Add(new Card(tbxCard.Text));
+                        break;
                     case "Bluetooth":
                         authMethodsList.Add(new BluetoothDevice(cbxBTSelect2.SelectedItem.ToString(), name + cbxBTSelect2.SelectedItem.ToString()));
                         break;
@@ -198,38 +201,39 @@ namespace BuzzLockGui
             // Type check to ensure passed in object is a ComboBox
             if (sender.GetType().Name == "ComboBox")
             {
+                // Call error provider validation
                 ComboBox comboBox = (ComboBox)sender;
                 ValidateComboBox(comboBox, e);
-                if (comboBox.SelectedItem != null)
-                {
-                    txtSecAuth.Visible = true;
-                    cbxSecAuth.Visible = true;
-                    ValidateComboBox(cbxSecAuth, EventArgs.Empty);
-                }
-                else
+
+                // Null check
+                if (comboBox.SelectedItem == null)
                 {
                     return;
                 }
+                
+                // If an item is selected, then we need to show the second authentication box
+                txtSecAuth.Visible = true;
+                cbxSecAuth.Visible = true;
+                ValidateComboBox(cbxSecAuth, EventArgs.Empty);
 
                 if (comboBox.SelectedItem.ToString() == "Bluetooth")
                 {
+                    // Show the select bluetooth device combo box
+                    //TODO: get bluetooth devices and place them in the combo box with their names
                     txtPrimChooseDev.Visible = true;
                     cbxBTSelect1.Visible = true;
                     ValidateComboBox(cbxBTSelect1, EventArgs.Empty);
-                    //TODO: get bluetooth devices and place them in the combo box with their names
 
                     // Add Card to Secondary Auth if it has been removed
                     if (!cbxSecAuth.Items.Contains("Card"))
                     {
-                        cbxSecAuth.Items.Insert(0, "Card");
+                        cbxSecAuth.Items.Insert(1, "Card");
                     }
 
-                    // Swap primary and secondary auth if needed
+                    // Dissalow selecting bluetooth for both primary and secondary authentication
                     if (cbxSecAuth.SelectedItem != null && cbxSecAuth.SelectedItem.ToString() == "Bluetooth")
                     {
-                        cbxSecAuth.SelectedItem = "Card";
-                        cbxSecAuth.Text = cbxSecAuth.SelectedItem.ToString();
-                        cbxSecAuth.Update();
+                        SetupSecondaryAuthConfiguration(cbxSecAuth, EventArgs.Empty);
                     }
 
                     // Remove Bluetooth from Secondary Auth
@@ -240,9 +244,10 @@ namespace BuzzLockGui
                 }
                 else if (comboBox.SelectedItem.ToString() == "Card")
                 {
+                    // Hide the select bluetooth device combobox
                     txtPrimChooseDev.Visible = false;
                     cbxBTSelect1.Visible = false;
-                    errorControls.Remove(cbxBTSelect1);
+                    ValidateComboBox(cbxBTSelect1, EventArgs.Empty);
 
                     // Add Blutetooth to Secondary Auth if it has been removed
                     if (!cbxSecAuth.Items.Contains("Bluetooth"))
@@ -250,11 +255,10 @@ namespace BuzzLockGui
                         cbxSecAuth.Items.Insert(1, "Bluetooth");
                     }
 
-                    // Swap primary and secondary auth if needed
+                    // Dissalow selecting card for both primary and secondary authentication
                     if (cbxSecAuth.SelectedItem != null && cbxSecAuth.SelectedItem.ToString() == "Card")
                     {
-                        cbxSecAuth.SelectedItem = "Bluetooth";
-                        cbxSecAuth.Update();
+                        SetupSecondaryAuthConfiguration(cbxSecAuth, EventArgs.Empty);
                     }
 
                     // Remove Card from Secondary Auth
@@ -269,39 +273,56 @@ namespace BuzzLockGui
 
         private void SetupSecondaryAuthConfiguration(object sender, EventArgs e)
         {
+            // Type check to ensure passed in object is a ComboBox
             if (sender.GetType().Name == "ComboBox")
             {
                 ComboBox comboBox = (ComboBox)sender;
                 ValidateComboBox(comboBox, e);
+
+                // Null check
                 if (comboBox.SelectedItem == null)
                 {
+                    // Reset to default
+                    txtSecChooseDevOrPin.Visible = false;
+                    cbxBTSelect2.Visible = false;
+                    tbxPin.Visible = false;
+                    ValidateComboBox(cbxBTSelect2, EventArgs.Empty);
+                    ValidatePinBox(tbxPin, EventArgs.Empty);
                     return;
                 }
+
                 if (comboBox.SelectedItem.ToString() == "Bluetooth")
                 {
+                    // Hide pinBox just in case it was visible
+                    tbxPin.Visible = false;
+                    ValidatePinBox(tbxPin, EventArgs.Empty);
+
+                    // Show bluetooth combo box
                     txtSecChooseDevOrPin.Text = "Choose device:";
                     txtSecChooseDevOrPin.Visible = true;
                     cbxBTSelect2.Visible = true;
-                    tbxPin.Visible = false;
-                    errorControls.Remove(tbxPin);
                     ValidateComboBox(cbxBTSelect2, EventArgs.Empty);
                 }
                 else if (comboBox.SelectedItem.ToString() == "PIN")
                 {
+                    // Hide bluetooth combo box just in case it was visible
+                    cbxBTSelect2.Visible = false;
+                    ValidateComboBox(cbxBTSelect2, EventArgs.Empty);
+
+                    // Show pin box
                     txtSecChooseDevOrPin.Text = "Insert PIN:";
                     txtSecChooseDevOrPin.Visible = true;
-                    cbxBTSelect2.Visible = false;
-                    errorControls.Remove(cbxBTSelect2);
                     tbxPin.Visible = true;
                     ValidatePinBox(tbxPin, EventArgs.Empty);
                 }
                 else if (comboBox.SelectedItem.ToString() == "Card")
                 {
+                    // Hide bluetooth and pin boxes just in case they were visible
                     txtSecChooseDevOrPin.Visible = false;
                     cbxBTSelect2.Visible = false;
-                    errorControls.Remove(cbxBTSelect2);
                     tbxPin.Visible = false;
-                    errorControls.Remove(tbxPin);
+                    ValidateComboBox(cbxBTSelect2, EventArgs.Empty);
+                    ValidatePinBox(tbxPin, EventArgs.Empty);
                 }
             }
             OnValidate();
