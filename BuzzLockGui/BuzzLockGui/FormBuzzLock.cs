@@ -21,6 +21,7 @@ namespace BuzzLockGui
             SecondFactor,
             Authenticated, //TODO: spin servo to unlock door in Authenticated, and keep it unlocked during UserOptions
             UserOptions,   //      and in Authenticated until timeout happens.
+            AccessDenied,
             UserOptions_EditProfile,
             UserOptions_EditAuth
         }
