@@ -55,6 +55,8 @@
             this.cbxBTSelect1 = new System.Windows.Forms.ComboBox();
             this.tbxPin = new System.Windows.Forms.TextBox();
             this.cbxBTSelect2 = new System.Windows.Forms.ComboBox();
+            this.tbxCard = new System.Windows.Forms.TextBox();
+            this.txtCard = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.userError)).BeginInit();
             this.SuspendLayout();
             // 
@@ -275,24 +277,19 @@
             // 
             // cbxSecAuth
             // 
+            this.cbxSecAuth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxSecAuth.FormattingEnabled = true;
-            this.cbxSecAuth.Items.AddRange(new object[] {
-            "Bluetooth",
-            "PIN"});
             this.cbxSecAuth.Location = new System.Drawing.Point(888, 471);
             this.cbxSecAuth.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.cbxSecAuth.Name = "cbxSecAuth";
             this.cbxSecAuth.Size = new System.Drawing.Size(272, 33);
             this.cbxSecAuth.TabIndex = 27;
             this.cbxSecAuth.Visible = false;
-            this.cbxSecAuth.SelectedIndexChanged += new System.EventHandler(this.btnRemoveUser_Click);
             // 
             // cbxPrimAuth
             // 
+            this.cbxPrimAuth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxPrimAuth.FormattingEnabled = true;
-            this.cbxPrimAuth.Items.AddRange(new object[] {
-            "Card",
-            "Bluetooth"});
             this.cbxPrimAuth.Location = new System.Drawing.Point(269, 471);
             this.cbxPrimAuth.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.cbxPrimAuth.Name = "cbxPrimAuth";
@@ -302,6 +299,7 @@
             // 
             // cbxBTSelect1
             // 
+            this.cbxBTSelect1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBTSelect1.FormattingEnabled = true;
             this.cbxBTSelect1.Location = new System.Drawing.Point(269, 521);
             this.cbxBTSelect1.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
@@ -319,9 +317,11 @@
             this.tbxPin.Size = new System.Drawing.Size(272, 31);
             this.tbxPin.TabIndex = 32;
             this.tbxPin.Visible = false;
+            this.tbxPin.TextChanged += new System.EventHandler(this.ValidatePinBox);
             // 
             // cbxBTSelect2
             // 
+            this.cbxBTSelect2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBTSelect2.FormattingEnabled = true;
             this.cbxBTSelect2.Location = new System.Drawing.Point(888, 525);
             this.cbxBTSelect2.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
@@ -330,17 +330,33 @@
             this.cbxBTSelect2.TabIndex = 34;
             this.cbxBTSelect2.Visible = false;
             // 
+            // tbxCard
+            // 
+            this.tbxCard.BackColor = System.Drawing.SystemColors.Control;
+            this.tbxCard.Location = new System.Drawing.Point(35, 563);
+            this.tbxCard.Name = "tbxCard";
+            this.tbxCard.Size = new System.Drawing.Size(1125, 31);
+            this.tbxCard.TabIndex = 35;
+            // 
+            // txtCard
+            // 
+            this.txtCard.AutoSize = true;
+            this.txtCard.Location = new System.Drawing.Point(33, 529);
+            this.txtCard.Name = "txtCard";
+            this.txtCard.Size = new System.Drawing.Size(64, 25);
+            this.txtCard.TabIndex = 36;
+            this.txtCard.Text = "Card:";
+            // 
             // FormOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1568, 850);
-            this.Controls.Add(this.cbxBTSelect2);
-            this.Controls.Add(this.txtSecChooseDevOrPin);
+            this.Controls.Add(this.txtCard);
+            this.Controls.Add(this.tbxCard);
             this.Controls.Add(this.txtPrimChooseDev);
             this.Controls.Add(this.txtSecAuth);
             this.Controls.Add(this.txtPrimAuth);
-            this.Controls.Add(this.cbxSecAuth);
             this.Controls.Add(this.cbxPrimAuth);
             this.Controls.Add(this.cbxBTSelect1);
             this.Controls.Add(this.tbxPin);
@@ -359,6 +375,9 @@
             this.Controls.Add(this.btnEditAuth);
             this.Controls.Add(this.btnEditProfile);
             this.Controls.Add(this.btnOptionsSave);
+            this.Controls.Add(this.cbxSecAuth);
+            this.Controls.Add(this.cbxBTSelect2);
+            this.Controls.Add(this.txtSecChooseDevOrPin);
             this.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.Name = "FormOptions";
             this.Text = "BuzzLock Options";
@@ -399,5 +418,7 @@
         private System.Windows.Forms.ComboBox cbxBTSelect1;
         private System.Windows.Forms.TextBox tbxPin;
         private System.Windows.Forms.ComboBox cbxBTSelect2;
+        private System.Windows.Forms.TextBox tbxCard;
+        private System.Windows.Forms.Label txtCard;
     }
 }

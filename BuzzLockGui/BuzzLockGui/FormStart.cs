@@ -170,11 +170,11 @@ namespace BuzzLockGui
 
         private void SetupPrimaryAuthConfiguration(object sender, EventArgs e)
         {
-            ValidateComboBox(sender, e);
             // Type check to ensure passed in object is a ComboBox
             if (sender.GetType().Name == "ComboBox")
             {
                 ComboBox comboBox = (ComboBox)sender;
+                ValidateComboBox(comboBox, e);
                 if (comboBox.SelectedItem != null)
                 {
                     txtSecAuth.Visible = true;
@@ -239,10 +239,10 @@ namespace BuzzLockGui
 
         private void SetupSecondaryAuthConfiguration(object sender, EventArgs e)
         {
-            ValidateComboBox(sender, e);
             if (sender.GetType().Name == "ComboBox")
             {
                 ComboBox comboBox = (ComboBox)sender;
+                ValidateComboBox(comboBox, e);
                 if (comboBox.SelectedItem.ToString() == "Bluetooth")
                 {
                     txtSecChooseDevOrPin.Text = "Choose device:";
@@ -329,6 +329,8 @@ namespace BuzzLockGui
             switch (_globalState)
             {
                 case State.Uninitialized:
+                    // TODO: Message for tbxStatus.Text for when the system is uninitialized
+                    // "Please swipe a card to begin setup
                     break;
                 case State.Initializing:
                     btnOptionsSave.Text = "Save";
