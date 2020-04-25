@@ -186,6 +186,9 @@ namespace BuzzLockGui
                     break;
                 case State.UserOptions_EditAuth:
                     txtOptionsTitle.Text = "Edit your authentication methods:";
+                    // Query database for current primary and secondary authentication method. 
+                    cbxPrimAuth.SelectedItem = _currentUser.AuthenticationMethods.Primary;
+                    cbxSecAuth.SelectedItem = _currentUser.AuthenticationMethods.Secondary;
                     break;
                 default:
                     break;
