@@ -315,7 +315,6 @@ namespace BuzzLockGui
             txtSecChooseDevOrPin.Visible = false;
             tbxPin.Visible = false;
             cbxBTSelect2.Visible = false;
-            tbxUnauthorized.Visible = false;
 
             // Idle State
             btnDebugAuthUser.Enabled = (_globalState == State.Idle);
@@ -329,10 +328,6 @@ namespace BuzzLockGui
             txtAuthStatus.Visible = _globalState == State.Authenticated;
             timerAuthTimeout.Enabled = _globalState == State.Authenticated;
             timerTxtAuthStatus.Enabled = _globalState == State.Authenticated;
-
-            // AccessDenied State
-            tbxUnauthorized.Visible = _globalState == State.AccessDenied;
-
 
             // Multiple States
             btnOptionsSave.Visible = _globalState == State.Initializing || _globalState == State.Authenticated;
@@ -389,10 +384,6 @@ namespace BuzzLockGui
                     stopWatchAuthStatus.Start();
                     loseFocus();
                     break;
-                case State.AccessDenied:
-                    //Timeout stopwatch
-                    //make a new timer for such
-
                 default:
                     break;
             }
@@ -494,14 +485,7 @@ namespace BuzzLockGui
                     else
                     {
                         // we recognize this card and need to request second factor
-                        if (_currentAuthSequence.User.PermissionLevel == User.PermissionLevels.NONE)
-                        {
-                            _globalState = State.AccessDenied;
-                        }
-                        else
-                        {
-                            _globalState = State.SecondFactor;
-                        }
+                        _globalState = State.SecondFactor;
                     }
 
                     UpdateComponents();
