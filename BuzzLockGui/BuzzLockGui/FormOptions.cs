@@ -225,7 +225,7 @@ namespace BuzzLockGui
                             break;
                         case "Pin":
                             cbxSecAuth.Items.Insert(0, "PIN");
-                            cbxSecAuth.Items.Insert(1, "Bluetooth");
+                            cbxSecAuth.Items.Insert(1, "Bluetooth"");
                             txtSecChooseDevOrPin.Visible = true;
                             txtSecChooseDevOrPin.Text = "Insert PIN:";
                             tbxPin.Visible = true;
