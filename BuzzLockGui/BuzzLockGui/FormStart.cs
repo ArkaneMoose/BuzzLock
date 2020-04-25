@@ -507,16 +507,16 @@ namespace BuzzLockGui
             => base.ValidateTextBox(sender, e);
         protected new void ValidatePhoneBox(object sender, EventArgs e)
             => base.ValidatePhoneBox(sender, e);
+        protected new void ValidatePinBox(object sender, EventArgs e)
+            => base.ValidatePinBox(sender, e);
+        protected new void ValidateComboBox(object sender, EventArgs e)
+            => base.ValidateComboBox(sender, e);
+
         protected new void keyboard_Click(object sender, EventArgs e)
             => base.keyboard_Click(sender, e);
         protected new void keyboardClose_Leave(object sender, EventArgs e)
             => base.keyboardClose_Leave(sender, e);
         protected new void numberpad_Click(object sender, EventArgs e)
             => base.numberpad_Click(sender, e);
-        protected new void ValidatePinBox(object sender, EventArgs e)
-            => base.ValidatePinBox(sender, e);
-        protected new void ValidateComboBox(object sender, EventArgs e)
-            => base.ValidateComboBox(sender, e);
-
     }
 }

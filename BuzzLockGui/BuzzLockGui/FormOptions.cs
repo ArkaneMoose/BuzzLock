@@ -177,9 +177,12 @@ namespace BuzzLockGui
                     // Query database for current name and phone number and picture
                     tbxNewName.Text = _currentUser.Name; // Populate textbox with user's current name
                     tbxNewPhone.Text = _currentUser.PhoneNumber; // Populate textbox with user's current phone number
+
+                    // Ensure user properly fills the Name and Phone text boxes before submitting to database
+                    tbxNewName.Tag = "Please enter a your full name.";
                     ValidateTextBox(tbxNewName, EventArgs.Empty);
                     ValidatePhoneBox(tbxNewPhone, EventArgs.Empty);
-                    btnOptionsSave.Enabled = noErrors;
+                    OnValidate();
                     break;
                 case State.UserOptions_EditAuth:
                     txtOptionsTitle.Text = "Edit your authentication methods:";
@@ -232,6 +235,16 @@ namespace BuzzLockGui
             _globalState = State.UserOptions_EditAuth;
             this.UpdateComponents();
         }
+
+        protected override void OnValidate()
+        {
+            btnOptionsSave.Enabled = noErrors;
+        }
+
+        protected new void ValidateTextBox(object sender, EventArgs e)
+            => base.ValidateTextBox(sender, e);
+        protected new void ValidatePhoneBox(object sender, EventArgs e)
+            => base.ValidatePhoneBox(sender, e);
     }
 
 }
