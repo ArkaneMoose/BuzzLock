@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -336,6 +336,7 @@ namespace BuzzLockGui
             txtSecChooseDevOrPin.Visible = false;
             tbxPin.Visible = false;
             cbxBTSelect2.Visible = false;
+            tbxAccessDenied.Visible = false;
 
             // Idle State
             btnDebugAuthUser.Enabled = (_globalState == State.Idle);
@@ -350,12 +351,16 @@ namespace BuzzLockGui
             timerAuthTimeout.Enabled = _globalState == State.Authenticated;
             timerTxtAuthStatus.Enabled = _globalState == State.Authenticated;
 
+            // AccessDenied State
+            tbxAccessDenied.Visible = _globalState == State.AccessDenied;
+
             // Multiple States
             btnOptionsSave.Visible = _globalState == State.Initializing || _globalState == State.Authenticated;
 
             switch (_globalState)
             {
                 case State.Uninitialized:
+                    // Message for tbxStatus.Text for when the system is uninitialized
                     txtStatus.Text = "Hello! Please swipe your BuzzCard to begin set up.";
                     break;
                 case State.Initializing:
@@ -391,6 +396,14 @@ namespace BuzzLockGui
                     // txtStatus.Text = "Hello! Please swipe your card or choose your device.";
                     _globalState = State.Authenticated;
                     _currentUser = _currentAuthSequence.User;
+                    if(_currentUser.AuthenticationMethods.Secondary.GetType().Name == "BluetoothDevice")
+                    {
+                        //look for that user's bluetooth device
+                    }
+                    else if (_currentUser.AuthenticationMethods.Secondary.GetType().Name == "Pin")
+                    {
+                        //look for pin 
+                    }
                     UpdateComponents();
                     break;
                 case State.Authenticated:
@@ -403,6 +416,10 @@ namespace BuzzLockGui
                     stopWatchAuthStatus.Reset();
                     stopWatchAuthStatus.Start();
                     loseFocus();
+                    break;
+                case State.AccessDenied:
+                    //Timeout stopwatch
+                    //make a new timer for such
                     break;
                 default:
                     break;
@@ -504,9 +521,14 @@ namespace BuzzLockGui
                     }
                     else
                     {
-                        // we recognize this card and need to request second factor
-                        _globalState = State.SecondFactor;
-                        
+                        if (_currentAuthSequence.User.PermissionLevel == User.PermissionLevels.NONE)
+                        {
+                            _globalState = State.AccessDenied;
+                        }
+                        else
+                        {
+                            _globalState = State.SecondFactor;
+                        }
                     }
 
                     UpdateComponents();
@@ -547,7 +569,24 @@ namespace BuzzLockGui
         {
             string selectedBTDevice = listIdleBTDevices.SelectedItem.ToString();
             _currentAuthSequence = AuthenticationSequence.Start(new BluetoothDevice(selectedBTDevice));
-            _globalState = State.SecondFactor;
+            bool bluetoothRecognized = (_currentAuthSequence != null);
+
+            if (!bluetoothRecognized)
+            {
+                // this is a new BT device
+                _globalState = State.Initializing;
+            }
+            else
+            {
+                if (_currentAuthSequence.User.PermissionLevel == User.PermissionLevels.NONE)
+                {
+                    _globalState = State.AccessDenied;
+                }
+                else
+                {
+                    _globalState = State.SecondFactor;
+                }
+            }
             UpdateComponents();
         }
 
