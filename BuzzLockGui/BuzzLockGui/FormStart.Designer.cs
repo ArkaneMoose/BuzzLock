@@ -61,6 +61,9 @@
             this.timerAuthTimeout = new System.Windows.Forms.Timer(this.components);
             this.timerTxtAuthStatus = new System.Windows.Forms.Timer(this.components);
             this.tbxAccessDenied = new System.Windows.Forms.Label();
+            this.timerAccessDeniedTimeout = new System.Windows.Forms.Timer(this.components);
+            this.timerTxtAccessDeniedStatus = new System.Windows.Forms.Timer(this.components);
+            this.txtAccessDeniedStatus = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.userError)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errNewUser)).BeginInit();
             this.SuspendLayout();
@@ -421,11 +424,18 @@
             this.tbxAccessDenied.TabIndex = 35;
             this.tbxAccessDenied.Text = "Access Denied";
             // 
+            // txtAccessDeniedStatus
+            // 
+            this.timerTxtAccessDeniedStatus.Interval = 200;
+            this.timerTxtAccessDeniedStatus.Tick += new System.EventHandler(this.timerTxtAccessDeniedStatus_Tick);
+            // 
             // FormStart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1176, 680);
+            this.Controls.Add(this.txtAuthStatus);
+            this.Controls.Add(this.txtAccessDeniedStatus);
             this.Controls.Add(this.tbxAccessDenied);
             this.Controls.Add(this.btnDebugAuthUser);
             this.Controls.Add(this.txtChooseBTDevice);
@@ -446,14 +456,13 @@
             this.Controls.Add(this.txtCard);
             this.Controls.Add(this.btnDebugBluetooth);
             this.Controls.Add(this.btnDebugSwipe);
-            this.Controls.Add(this.txtStatus);
             this.Controls.Add(this.btnOptionsSave);
             this.Controls.Add(this.cbxBTSelect1);
-            this.Controls.Add(this.txtAuthStatus);
             this.Controls.Add(this.tbxCard);
             this.Controls.Add(this.listIdleBTDevices);
             this.Controls.Add(this.tbxPin);
             this.Controls.Add(this.cbxBTSelect2);
+            this.Controls.Add(this.txtStatus);
             this.Margin = new System.Windows.Forms.Padding(9, 10, 9, 10);
             this.Name = "FormStart";
             this.Text = "BuzzLock";
@@ -502,6 +511,9 @@
         private System.Windows.Forms.Timer timerAuthTimeout;
         private System.Windows.Forms.Timer timerTxtAuthStatus;
         private System.Windows.Forms.Label tbxAccessDenied;
+        private System.Windows.Forms.Timer timerAccessDeniedTimeout;
+        private System.Windows.Forms.Timer timerTxtAccessDeniedStatus;
+        private System.Windows.Forms.Label txtAccessDeniedStatus;
     }
 }
 

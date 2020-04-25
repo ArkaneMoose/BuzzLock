@@ -15,6 +15,7 @@ namespace BuzzLockGui
         private FormOptions _formOptions;
         private AuthenticationSequence _currentAuthSequence;
         private Stopwatch stopWatchAuthStatus = new Stopwatch();
+        private Stopwatch stopWatchAccessDeniedStatus = new Stopwatch();
         private bool newCardEntry = false;
         private string cardInput = "";
 
@@ -63,6 +64,7 @@ namespace BuzzLockGui
         {
             this.UpdateComponents();
             RestartTimer();
+            RestartAccessDeniedTimer();
             base.Show();
         }
 
@@ -84,6 +86,14 @@ namespace BuzzLockGui
             timerTxtAuthStatus.Enabled = false;
         }
 
+        private void StopAccessDeniedTimer()
+        {
+            stopWatchAccessDeniedStatus.Reset();
+            timerAccessDeniedTimeout.Enabled = false;
+            timerTxtAccessDeniedStatus.Enabled = false;
+        }
+
+
         private void StartTimer()
         {
             if (_globalState == State.Authenticated)
@@ -95,11 +105,30 @@ namespace BuzzLockGui
             }
         }
 
+        private void StartAccessDeniedTimer()
+        {
+            if (_globalState == State.AccessDenied)
+            {
+                timerTxtAccessDeniedStatus_Tick(timerTxtAccessDeniedStatus, EventArgs.Empty);
+                stopWatchAccessDeniedStatus.Start();
+                timerAccessDeniedTimeout.Enabled = true;
+                timerTxtAccessDeniedStatus.Enabled = true;
+            }
+        }
+
         private void RestartTimer()
         {
             StopTimer();
             StartTimer();
         }
+
+        private void RestartAccessDeniedTimer()
+        {
+            stopWatchAccessDeniedStatus.Reset();
+            timerAccessDeniedTimeout.Enabled = false;
+            timerTxtAccessDeniedStatus.Enabled = false;
+        }
+
 
         private void btnOptionsSave_Click(object sender, EventArgs e)
         {
@@ -353,6 +382,8 @@ namespace BuzzLockGui
 
             // AccessDenied State
             tbxAccessDenied.Visible = _globalState == State.AccessDenied;
+            timerAccessDeniedTimeout.Enabled = _globalState == State.AccessDenied;
+            timerTxtAccessDeniedStatus.Enabled = _globalState == State.AccessDenied;
 
             // Multiple States
             btnOptionsSave.Visible = _globalState == State.Initializing || _globalState == State.Authenticated;
@@ -398,11 +429,12 @@ namespace BuzzLockGui
                     _currentUser = _currentAuthSequence.User;
                     if(_currentUser.AuthenticationMethods.Secondary.GetType().Name == "BluetoothDevice")
                     {
-                        //look for that user's bluetooth device
+                        //TODO: look for that user's bluetooth device
+
                     }
                     else if (_currentUser.AuthenticationMethods.Secondary.GetType().Name == "Pin")
                     {
-                        //look for pin 
+                        //TODO: look for pin 
                     }
                     UpdateComponents();
                     break;
@@ -419,7 +451,10 @@ namespace BuzzLockGui
                     break;
                 case State.AccessDenied:
                     //Timeout stopwatch
-                    //make a new timer for such
+                    txtAccessDeniedStatus.Text = "Access Denied, this screen will timeout in 10 seconds";
+                    stopWatchAccessDeniedStatus.Reset();
+                    stopWatchAccessDeniedStatus.Start();
+                    loseFocus();
                     break;
                 default:
                     break;
@@ -444,11 +479,24 @@ namespace BuzzLockGui
             UpdateComponents();
         }
 
+        private void timeoutAccessDenied_Tick(object sender, EventArgs e)
+        {
+            stopWatchAccessDeniedStatus.Reset();
+            _globalState = State.Idle;
+            UpdateComponents();
+        }
+
         private void timerTxtAuthStatus_Tick(object sender, EventArgs e)
         {
             txtAuthStatus.Text = "If you wish to edit your account, click Options."
                     + "Otherwise, this screen will timeout in "
                     + Utility.Pluralize((10 - stopWatchAuthStatus.Elapsed.Seconds), "second") + ".";
+        }
+
+        private void timerTxtAccessDeniedStatus_Tick(object sender, EventArgs e)
+        {
+            txtAuthStatus.Text = "Your access was denied, you may try again in"
+                    + Utility.Pluralize((10 - stopWatchAccessDeniedStatus.Elapsed.Seconds), "second") + ".";
         }
 
         private void btnExit_Click(object sender, EventArgs e)
