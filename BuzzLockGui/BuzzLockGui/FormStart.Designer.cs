@@ -60,6 +60,7 @@
             this.txtAuthStatus = new System.Windows.Forms.Label();
             this.timerAuthTimeout = new System.Windows.Forms.Timer(this.components);
             this.timerTxtAuthStatus = new System.Windows.Forms.Timer(this.components);
+            this.tbxAccessDenied = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.userError)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errNewUser)).BeginInit();
             this.SuspendLayout();
@@ -411,11 +412,21 @@
             this.timerTxtAuthStatus.Interval = 200;
             this.timerTxtAuthStatus.Tick += new System.EventHandler(this.timerTxtAuthStatus_Tick);
             // 
+            // tbxAccessDenied
+            // 
+            this.tbxAccessDenied.AutoSize = true;
+            this.tbxAccessDenied.Location = new System.Drawing.Point(448, 145);
+            this.tbxAccessDenied.Name = "tbxAccessDenied";
+            this.tbxAccessDenied.Size = new System.Drawing.Size(116, 20);
+            this.tbxAccessDenied.TabIndex = 35;
+            this.tbxAccessDenied.Text = "Access Denied";
+            // 
             // FormStart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1176, 680);
+            this.Controls.Add(this.tbxAccessDenied);
             this.Controls.Add(this.btnDebugAuthUser);
             this.Controls.Add(this.txtChooseBTDevice);
             this.Controls.Add(this.btnConfirmBTDevices);
@@ -490,6 +501,7 @@
         private System.Windows.Forms.Label txtAuthStatus;
         private System.Windows.Forms.Timer timerAuthTimeout;
         private System.Windows.Forms.Timer timerTxtAuthStatus;
+        private System.Windows.Forms.Label tbxAccessDenied;
     }
 }
 
