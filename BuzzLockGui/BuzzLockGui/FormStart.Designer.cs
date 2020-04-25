@@ -110,6 +110,7 @@
             this.btnDebugBluetooth.TabIndex = 7;
             this.btnDebugBluetooth.Text = "Debug: Bluetooth found";
             this.btnDebugBluetooth.UseVisualStyleBackColor = true;
+            this.btnDebugBluetooth.Click += new System.EventHandler(this.btnDebugBluetooth_Click);
             // 
             // txtCard
             // 
@@ -325,6 +326,7 @@
             // 
             // timerDateTime
             // 
+            this.timerDateTime.Enabled = true;
             this.timerDateTime.Interval = 1000;
             this.timerDateTime.Tick += new System.EventHandler(this.timerDateTime_Tick);
             // 
@@ -351,6 +353,7 @@
             this.listIdleBTDevices.Size = new System.Drawing.Size(239, 102);
             this.listIdleBTDevices.TabIndex = 29;
             this.listIdleBTDevices.Visible = false;
+            this.listIdleBTDevices.SelectedIndexChanged += new System.EventHandler(this.enableBtnConfirmBTDevice);
             // 
             // btnConfirmBTDevices
             // 
@@ -363,6 +366,7 @@
             this.btnConfirmBTDevices.Text = "Confirm Bluetooth";
             this.btnConfirmBTDevices.UseVisualStyleBackColor = true;
             this.btnConfirmBTDevices.Visible = false;
+            this.btnConfirmBTDevices.Click += new System.EventHandler(this.btnConfirmBTDevices_Click);
             // 
             // txtChooseBTDevice
             // 
