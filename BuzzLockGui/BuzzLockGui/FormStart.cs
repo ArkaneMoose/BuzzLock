@@ -71,6 +71,7 @@ namespace BuzzLockGui
         public new void Hide()
         {
             StopTimer();
+            StopAccessDeniedTimer();
             base.Hide();
         }
 
@@ -425,7 +426,6 @@ namespace BuzzLockGui
             txtSecChooseDevOrPin.Visible = false;
             tbxPin.Visible = false;
             cbxBTSelect2.Visible = false;
-            tbxAccessDenied.Visible = false;
 
             // Idle State
             btnDebugAuthUser.Enabled = (_globalState == State.Idle);
@@ -444,7 +444,6 @@ namespace BuzzLockGui
             timerTxtAuthStatus.Enabled = _globalState == State.Authenticated;
 
             // AccessDenied State
-            tbxAccessDenied.Visible = _globalState == State.AccessDenied;
             timerAccessDeniedTimeout.Enabled = _globalState == State.AccessDenied;
             timerTxtAccessDeniedStatus.Enabled = _globalState == State.AccessDenied;
 
@@ -543,7 +542,6 @@ namespace BuzzLockGui
                     break;
                 case State.AccessDenied:
                     //Timeout stopwatch
-                    tbxAccessDenied.Text = "Access Denied, this screen will timeout in 10 seconds";
                     stopWatchAccessDeniedStatus.Reset();
                     stopWatchAccessDeniedStatus.Start();
                     loseFocus();
@@ -587,7 +585,7 @@ namespace BuzzLockGui
 
         private void timerTxtAccessDeniedStatus_Tick(object sender, EventArgs e)
         {
-            tbxAccessDenied.Text = "Your access was denied, you may try again in "
+            txtStatus.Text = "Your access was denied, you may try again in "
                     + Utility.Pluralize((10 - stopWatchAccessDeniedStatus.Elapsed.Seconds), "second") + ".";
         }
 
@@ -632,6 +630,7 @@ namespace BuzzLockGui
             //Console.WriteLine("New Card Entry: " + newCardEntry);
 
             RestartTimer();
+            RestartAccessDeniedTimer(); //??
 
             // Check KeyPressed to see if it's the beginning of a new card entry
             if (e.KeyChar == ';' || (e.KeyChar == '%'))
