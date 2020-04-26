@@ -23,7 +23,9 @@ namespace BuzzLockGui
             AccessDenied,
             UserOptions,   //      and in Authenticated until timeout happens.
             UserOptions_EditProfile,
-            UserOptions_EditAuth
+            UserOptions_EditAuth,
+            UserManagement,
+            UserManagement_AddUser
         }
 
         protected static State _globalState;

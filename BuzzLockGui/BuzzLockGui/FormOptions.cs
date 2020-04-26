@@ -16,6 +16,7 @@ namespace BuzzLockGui
     public partial class FormOptions : FormBuzzLock
     {
         private FormStart _formStart;
+        private FormUserManagement _formUserManagement;
         private Stopwatch stopWatchOptionsStatus = new Stopwatch();
         private AuthenticationMethod origPrimary;
         private AuthenticationMethod origSecondary;
@@ -34,6 +35,8 @@ namespace BuzzLockGui
             this.KeyPreview = true;
 
             _formStart = formStart;
+            _formUserManagement = new FormUserManagement(_formStart, this);
+
 
             foreach (Control control in Controls)
             {
@@ -323,6 +326,8 @@ namespace BuzzLockGui
             btnEditAuth.Visible = _globalState == State.UserOptions;
             btnEditProfile.Visible = _globalState == State.UserOptions;
             btnRemoveUser.Visible = _globalState == State.UserOptions;
+            btnUserManagement.Visible = _globalState == State.UserOptions 
+                && _currentUser.PermissionLevel == User.PermissionLevels.FULL;
             txtEditAuth.Visible = _globalState == State.UserOptions;
             txtEditProfile.Visible = _globalState == State.UserOptions;
             txtRemoveUser.Visible = _globalState == State.UserOptions;
@@ -349,6 +354,9 @@ namespace BuzzLockGui
             txtSecChooseDevOrPin.Visible = false;
             cbxBTSelect2.Visible = false;
             tbxPin.Visible = false;
+
+            //UserManagement
+
 
             //Set the welcome textbox with user name and permissions
             tbxStatus.Text = $"Welcome, {_currentUser.Name}. You have {_currentUser.PermissionLevel} permissions.";
@@ -541,6 +549,13 @@ namespace BuzzLockGui
             => base.ValidatePinBox(sender, e);
         protected new void ValidateComboBox(object sender, EventArgs e)
             => base.ValidateComboBox(sender, e);
+
+        private void btnUserManagement_Click(object sender, EventArgs e)
+        {
+            _globalState = State.UserManagement;
+            _formUserManagement.Show();
+            this.Hide();
+        }
     }
 
 }

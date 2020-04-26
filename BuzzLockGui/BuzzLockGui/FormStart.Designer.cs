@@ -489,7 +489,6 @@
             this.Controls.Add(this.txtSecondFactorStatus);
             this.Controls.Add(this.btnDebugSecondFactor);
             this.Controls.Add(this.btnDebugAccessDenied);
-            this.Controls.Add(this.txtAuthStatus);
             this.Controls.Add(this.txtAccessDeniedStatus);
             this.Controls.Add(this.tbxAccessDenied);
             this.Controls.Add(this.btnDebugAuthUser);
@@ -498,6 +497,12 @@
             this.Controls.Add(this.txtTime);
             this.Controls.Add(this.txtDate);
             this.Controls.Add(this.btnExit);
+            this.Controls.Add(this.txtCard);
+            this.Controls.Add(this.btnDebugBluetooth);
+            this.Controls.Add(this.btnDebugSwipe);
+            this.Controls.Add(this.btnOptionsSave);
+            this.Controls.Add(this.tbxCard);
+            this.Controls.Add(this.txtStatus);
             this.Controls.Add(this.txtSecChooseDevOrPin);
             this.Controls.Add(this.txtPrimChooseDev);
             this.Controls.Add(this.txtSecAuth);
@@ -507,16 +512,11 @@
             this.Controls.Add(this.tbxUserPhone);
             this.Controls.Add(this.tbxUserName);
             this.Controls.Add(this.txtUserPhone);
-            this.Controls.Add(this.txtCard);
-            this.Controls.Add(this.btnDebugBluetooth);
-            this.Controls.Add(this.btnDebugSwipe);
-            this.Controls.Add(this.btnOptionsSave);
             this.Controls.Add(this.cbxBTSelect1);
-            this.Controls.Add(this.tbxCard);
             this.Controls.Add(this.tbxPin);
-            this.Controls.Add(this.txtStatus);
             this.Controls.Add(this.txtUserName);
             this.Controls.Add(this.listIdleBTDevices);
+            this.Controls.Add(this.txtAuthStatus);
             this.Controls.Add(this.cbxBTSelect2);
             this.Margin = new System.Windows.Forms.Padding(8);
             this.Name = "FormStart";

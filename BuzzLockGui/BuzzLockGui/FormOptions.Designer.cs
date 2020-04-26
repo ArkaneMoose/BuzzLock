@@ -57,6 +57,7 @@
             this.tbxCard = new System.Windows.Forms.TextBox();
             this.txtCard = new System.Windows.Forms.Label();
             this.btnResetAuthMods = new System.Windows.Forms.Button();
+            this.btnUserManagement = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.userError)).BeginInit();
             this.SuspendLayout();
             // 
@@ -361,11 +362,24 @@
             this.btnResetAuthMods.UseVisualStyleBackColor = true;
             this.btnResetAuthMods.Click += new System.EventHandler(this.ResetAuthMods_Click);
             // 
+            // btnUserManagement
+            // 
+            this.btnUserManagement.Location = new System.Drawing.Point(287, 122);
+            this.btnUserManagement.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.btnUserManagement.Name = "btnUserManagement";
+            this.btnUserManagement.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.btnUserManagement.Size = new System.Drawing.Size(118, 32);
+            this.btnUserManagement.TabIndex = 38;
+            this.btnUserManagement.Text = "User Management";
+            this.btnUserManagement.UseVisualStyleBackColor = true;
+            this.btnUserManagement.Click += new System.EventHandler(this.btnUserManagement_Click);
+            // 
             // FormOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 442);
+            this.Controls.Add(this.btnUserManagement);
             this.Controls.Add(this.btnResetAuthMods);
             this.Controls.Add(this.txtCard);
             this.Controls.Add(this.tbxCard);
@@ -434,5 +448,6 @@
         private System.Windows.Forms.TextBox tbxCard;
         private System.Windows.Forms.Label txtCard;
         private System.Windows.Forms.Button btnResetAuthMods;
+        private System.Windows.Forms.Button btnUserManagement;
     }
 }
