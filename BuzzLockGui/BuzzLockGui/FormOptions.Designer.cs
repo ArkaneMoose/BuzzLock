@@ -57,12 +57,13 @@
             this.cbxBTSelect2 = new System.Windows.Forms.ComboBox();
             this.tbxCard = new System.Windows.Forms.TextBox();
             this.txtCard = new System.Windows.Forms.Label();
+            this.btnResetAuthMods = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.userError)).BeginInit();
             this.SuspendLayout();
             // 
             // btnOptionsSave
             // 
-            this.btnOptionsSave.Location = new System.Drawing.Point(1307, 452);
+            this.btnOptionsSave.Location = new System.Drawing.Point(1307, 467);
             this.btnOptionsSave.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.btnOptionsSave.Name = "btnOptionsSave";
             this.btnOptionsSave.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -279,23 +280,31 @@
             // 
             this.cbxSecAuth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxSecAuth.FormattingEnabled = true;
+            this.cbxSecAuth.Items.AddRange(new object[] {
+            "Bluetooth",
+            "PIN"});
             this.cbxSecAuth.Location = new System.Drawing.Point(888, 471);
             this.cbxSecAuth.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.cbxSecAuth.Name = "cbxSecAuth";
             this.cbxSecAuth.Size = new System.Drawing.Size(272, 33);
             this.cbxSecAuth.TabIndex = 27;
             this.cbxSecAuth.Visible = false;
+            this.cbxSecAuth.SelectedIndexChanged += new System.EventHandler(this.ModifySecondaryAuthConfiguration);
             // 
             // cbxPrimAuth
             // 
             this.cbxPrimAuth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxPrimAuth.FormattingEnabled = true;
+            this.cbxPrimAuth.Items.AddRange(new object[] {
+            "Card",
+            "Bluetooth"});
             this.cbxPrimAuth.Location = new System.Drawing.Point(269, 471);
             this.cbxPrimAuth.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.cbxPrimAuth.Name = "cbxPrimAuth";
             this.cbxPrimAuth.Size = new System.Drawing.Size(271, 33);
             this.cbxPrimAuth.TabIndex = 26;
             this.cbxPrimAuth.Visible = false;
+            this.cbxPrimAuth.SelectedIndexChanged += new System.EventHandler(this.ModifyPrimaryAuthConfiguration);
             // 
             // cbxBTSelect1
             // 
@@ -307,6 +316,7 @@
             this.cbxBTSelect1.Size = new System.Drawing.Size(271, 33);
             this.cbxBTSelect1.TabIndex = 31;
             this.cbxBTSelect1.Visible = false;
+            this.cbxBTSelect1.SelectedIndexChanged += new System.EventHandler(this.ValidateComboBox);
             // 
             // tbxPin
             // 
@@ -329,11 +339,12 @@
             this.cbxBTSelect2.Size = new System.Drawing.Size(272, 33);
             this.cbxBTSelect2.TabIndex = 34;
             this.cbxBTSelect2.Visible = false;
+            this.cbxBTSelect2.SelectedIndexChanged += new System.EventHandler(this.ValidateComboBox);
             // 
             // tbxCard
             // 
             this.tbxCard.BackColor = System.Drawing.SystemColors.Control;
-            this.tbxCard.Location = new System.Drawing.Point(35, 563);
+            this.tbxCard.Location = new System.Drawing.Point(35, 595);
             this.tbxCard.Name = "tbxCard";
             this.tbxCard.Size = new System.Drawing.Size(1125, 31);
             this.tbxCard.TabIndex = 35;
@@ -341,17 +352,28 @@
             // txtCard
             // 
             this.txtCard.AutoSize = true;
-            this.txtCard.Location = new System.Drawing.Point(33, 529);
+            this.txtCard.Location = new System.Drawing.Point(30, 567);
             this.txtCard.Name = "txtCard";
             this.txtCard.Size = new System.Drawing.Size(64, 25);
             this.txtCard.TabIndex = 36;
             this.txtCard.Text = "Card:";
+            // 
+            // btnResetAuthMods
+            // 
+            this.btnResetAuthMods.Location = new System.Drawing.Point(1307, 567);
+            this.btnResetAuthMods.Name = "btnResetAuthMods";
+            this.btnResetAuthMods.Size = new System.Drawing.Size(237, 62);
+            this.btnResetAuthMods.TabIndex = 37;
+            this.btnResetAuthMods.Text = "Reset";
+            this.btnResetAuthMods.UseVisualStyleBackColor = true;
+            this.btnResetAuthMods.Click += new System.EventHandler(this.ResetAuthMods_Click);
             // 
             // FormOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1568, 850);
+            this.Controls.Add(this.btnResetAuthMods);
             this.Controls.Add(this.txtCard);
             this.Controls.Add(this.tbxCard);
             this.Controls.Add(this.txtPrimChooseDev);
@@ -359,7 +381,6 @@
             this.Controls.Add(this.txtPrimAuth);
             this.Controls.Add(this.cbxPrimAuth);
             this.Controls.Add(this.cbxBTSelect1);
-            this.Controls.Add(this.tbxPin);
             this.Controls.Add(this.tbxNewPhone);
             this.Controls.Add(this.tbxNewName);
             this.Controls.Add(this.txtCurrentPhone);
@@ -376,8 +397,9 @@
             this.Controls.Add(this.btnEditProfile);
             this.Controls.Add(this.btnOptionsSave);
             this.Controls.Add(this.cbxSecAuth);
-            this.Controls.Add(this.cbxBTSelect2);
             this.Controls.Add(this.txtSecChooseDevOrPin);
+            this.Controls.Add(this.tbxPin);
+            this.Controls.Add(this.cbxBTSelect2);
             this.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.Name = "FormOptions";
             this.Text = "BuzzLock Options";
@@ -420,5 +442,6 @@
         private System.Windows.Forms.ComboBox cbxBTSelect2;
         private System.Windows.Forms.TextBox tbxCard;
         private System.Windows.Forms.Label txtCard;
+        private System.Windows.Forms.Button btnResetAuthMods;
     }
 }

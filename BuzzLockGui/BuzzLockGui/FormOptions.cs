@@ -17,6 +17,8 @@ namespace BuzzLockGui
     {
         private FormStart _formStart;
         private Stopwatch stopWatchOptionsStatus = new Stopwatch();
+        private AuthenticationMethod origPrimary;
+        private AuthenticationMethod origSecondary;
 
         public FormOptions(FormStart formStart)
         {
@@ -35,11 +37,13 @@ namespace BuzzLockGui
                 control.MouseClick += OnAnyMouseClick;
             }
         }
-
-        private void FormOptions_KeyPress(object sender, KeyPressEventArgs e)
+        private void FormOptions_Load(object sender, EventArgs e)
         {
-            RestartTimer();
+            // this.TopMost = true;
+            // this.FormBorderStyle = FormBorderStyle.None;
+            // this.WindowState = FormWindowState.Maximized;
         }
+
 
         public new void Show()
         {
@@ -119,18 +123,159 @@ namespace BuzzLockGui
             }
             else if (_globalState == State.UserOptions_EditAuth)
             {
-                //TODO: save new data to database
+                string name = _currentUser.Name; // TODO: Update to be name of bluetooth device not user name
+                AuthenticationMethod primary = null;
+                AuthenticationMethod secondary = null;
+                switch (cbxPrimAuth.SelectedItem.ToString())
+                {
+                    case "Bluetooth":
+                        primary = new BluetoothDevice(cbxBTSelect1.SelectedItem.ToString(), name + cbxBTSelect1.SelectedItem.ToString());
+                        break;
+                    case "Card":
+                        primary = new Card(tbxCard.Text);
+                        break;
+                }
+                switch (cbxSecAuth.SelectedItem.ToString())
+                {
+                    case "Card":
+                        secondary = new Card(tbxCard.Text);
+                        break;
+                    case "Bluetooth":
+                        secondary = new BluetoothDevice(cbxBTSelect2.SelectedItem.ToString(), name + cbxBTSelect2.SelectedItem.ToString());
+                        break;
+                    case "PIN":
+                        secondary = new Pin(tbxPin.Text);
+                        break;
+                }
+                _currentUser.AuthenticationMethods = new AuthenticationMethods(primary, secondary);
+
                 // ResetTimer();
                 _globalState = State.UserOptions;
                 this.UpdateComponents();
             }
         }
 
-        private void FormOptions_Load(object sender, EventArgs e)
+        private void ResetAuthMods_Click(object sender, EventArgs e)
         {
-            // this.TopMost = true;
-            // this.FormBorderStyle = FormBorderStyle.None;
-            // this.WindowState = FormWindowState.Maximized;
+            switch(origPrimary)
+            {
+                case Card card:
+                    cbxPrimAuth.SelectedIndex = 0;
+                    tbxCard.Text = card.Id;
+                    break;
+                case BluetoothDevice btDevice:
+                    cbxPrimAuth.SelectedIndex = 1;
+                    cbxBTSelect1.Items.Insert(0, btDevice.Address);
+                    break;
+            }
+            switch(origSecondary)
+            {
+                case BluetoothDevice btDevice:
+                    cbxSecAuth.SelectedIndex = 0;
+                    cbxBTSelect2.Items.Insert(0, btDevice.Address);
+                    break;
+                case Pin pin:
+                    cbxSecAuth.SelectedIndex = 1;
+                    tbxPin.Text = pin.PinValue;
+                    break;
+            }
+            loseFocus();
+        }
+
+        private void btnRemoveUser_Click(object sender, EventArgs e)
+        {
+            // Initializes and displays the AutoClosingMessageBox.
+            var result = AutoClosingMessageBox.Show(
+                text: "Are you sure you want to remove your user? This cannot be undone.",
+                caption: "Remove User",
+                timeout: 5000, //5 seconds
+                buttons: MessageBoxButtons.YesNo,
+                defaultResult: DialogResult.No);
+
+            if (result == DialogResult.Yes)
+            {
+                // Remove the current user from the database.
+                _currentUser.Delete();
+
+                // Close options and stop both timers. Go back to IDLE or UNINITIALIZED depending on number of users
+                // registered in database after this user removal.
+                StopTimer();
+
+                // Query for number of users. If number of users is zero, go back to UNINITIALIZED
+                _globalState = User.GetAll().Count != 0 ? State.Idle : State.Uninitialized;
+                _formStart.UpdateComponents();
+                _formStart.Show();
+                this.Hide();
+            }
+        }
+
+        private void FormOptions_MouseClick(object sender, EventArgs e)
+        {
+            // Reset active control to default
+            loseFocus();
+            RestartTimer();
+        }
+
+        private void btnEditProfile_Click(object sender, EventArgs e)
+        {
+            _globalState = State.UserOptions_EditProfile;
+            this.UpdateComponents();
+        }
+
+        private void btnEditAuth_Click(object sender, EventArgs e)
+        {
+            _globalState = State.UserOptions_EditAuth;
+            this.UpdateComponents();
+        }
+
+        private bool newCardEntry = false;
+        private string cardInput = "";
+        private void FormOptions_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Console.WriteLine("Form Start Key Pressed");
+            //Console.WriteLine("Pressed: " + e.KeyChar);
+            //Console.WriteLine("Shift: " + shift);
+            //Console.WriteLine("New Card Entry: " + newCardEntry);
+
+            RestartTimer();
+
+            // Check KeyPressed to see if it's the beginning of a new card entry
+            if (e.KeyChar == ';' || (e.KeyChar == '%'))
+            {
+                newCardEntry = true;
+            }
+
+            if (newCardEntry)
+            {
+                // Stop adding to card input string when "Return" is entered
+                if (e.KeyChar == '\r') //|| e.KeyChar == '\n')
+                {
+                    // Check for invalid read before anything else
+                    if (cardInput.Contains(";E?") || cardInput.Contains("%E?") || cardInput.Contains("+E?"))
+                    {
+                        // Invalid read. Swipe again.
+                        newCardEntry = false;
+                        cardInput = "";
+                        Console.WriteLine("Invalid read. Swipe again.");
+                        return;
+                    }
+                    Console.WriteLine(cardInput);
+
+                    // Reset cardInput to allow for a new card swipe to be registered
+                    if (_globalState == State.UserOptions_EditAuth)
+                    {
+                        tbxCard.Text = cardInput;
+                    }
+                    newCardEntry = false;
+                    cardInput = "";
+                    return;
+                }
+                else
+                {
+                    cardInput += e.KeyChar;
+                    newCardEntry = true;
+                }
+            }
         }
 
         private void UpdateComponents()
@@ -153,6 +298,7 @@ namespace BuzzLockGui
             //btnChangePictureOrTakePicture.Visible = _globalState == State.UserOptions_EditProfile;
 
             //EditAuth
+            btnResetAuthMods.Visible = _globalState == State.UserOptions_EditAuth;
             txtPrimAuth.Visible = _globalState == State.UserOptions_EditAuth;
             txtSecAuth.Visible = _globalState == State.UserOptions_EditAuth;
             cbxPrimAuth.Visible = _globalState == State.UserOptions_EditAuth;
@@ -191,51 +337,34 @@ namespace BuzzLockGui
                     txtOptionsTitle.Text = "Edit your authentication methods:";
                     // Query database for current primary and secondary authentication method.
                     AuthenticationMethod primary = _currentUser.AuthenticationMethods.Primary;
-                    switch(primary.GetType().Name)
+                    origPrimary = primary;
+                    switch(primary)
                     {
-                        case "Card":
-                            cbxPrimAuth.Items.Insert(0, "Card");
-                            cbxPrimAuth.Items.Insert(1, "Bluetooth");
-                            txtCard.Visible = true;
-                            tbxCard.Visible = true;
-                            Card card = (Card)primary;
+                        case Card card:
+                            cbxPrimAuth.SelectedIndex = 0;
                             tbxCard.Text = card.Id;
                             break;
-                        case "BluetoothDevice":
-                            cbxPrimAuth.Items.Insert(0, "Bluetooth");
-                            cbxPrimAuth.Items.Insert(1, "Card");
-                            txtPrimChooseDev.Visible = true;
-                            cbxBTSelect1.Visible = true;
-                            BluetoothDevice btDevice = (BluetoothDevice)primary;
+                        case BluetoothDevice btDevice:
+                            cbxPrimAuth.SelectedIndex = 1;
                             cbxBTSelect1.Items.Insert(0, btDevice.Address);
                             break;
                     }
-                    cbxPrimAuth.SelectedIndex = 0;
+                    ModifyPrimaryAuthConfiguration(cbxPrimAuth, EventArgs.Empty);
 
                     AuthenticationMethod secondary = _currentUser.AuthenticationMethods.Secondary;
-                    switch(secondary.GetType().Name)
+                    origSecondary = secondary;
+                    switch(secondary)
                     {
-                        case "BluetoothDevice":
-                            cbxSecAuth.Items.Insert(0, "Bluetooth");
-                            cbxSecAuth.Items.Insert(1, "PIN");
-                            txtSecChooseDevOrPin.Visible = true;
-                            txtSecChooseDevOrPin.Text = "Choose device:";
-                            BluetoothDevice btDevice = (BluetoothDevice)secondary;
+                        case BluetoothDevice btDevice:
+                            cbxSecAuth.SelectedIndex = 0;
                             cbxBTSelect2.Items.Insert(0, btDevice.Address);
                             break;
-                        case "Pin":
-                            cbxSecAuth.Items.Insert(0, "PIN");
-                            cbxSecAuth.Items.Insert(1, "Bluetooth");
-                            txtSecChooseDevOrPin.Visible = true;
-                            txtSecChooseDevOrPin.Text = "Insert PIN:";
-                            tbxPin.Visible = true;
-                            Pin pin = (Pin)secondary;
+                        case Pin pin:
+                            cbxSecAuth.SelectedIndex = 1;
                             tbxPin.Text = pin.PinValue;
                             break;
                     }
-                    cbxSecAuth.SelectedIndex = 0;
-                    //ModifyPrimaryAuthConfiguration(cbxPrimAuth, EventArgs.Empty);
-                    //ModifySecondaryAuthConfiguration(cbxSecAuth, EventArgs.Empty);
+                    ModifySecondaryAuthConfiguration(cbxSecAuth, EventArgs.Empty);
                     // TODO: the Pin AuthenticationMethod returns a PinValue ToString() as "PIN: ######". Do we have to extract ###### manually?
                     //cbxPrimAuth.SelectedItem = _currentUser.AuthenticationMethods.Primary.ToString();
                     //cbxSecAuth.SelectedItem = _currentUser.AuthenticationMethods.Secondary.ToString();
@@ -247,15 +376,23 @@ namespace BuzzLockGui
 
         private void ModifyPrimaryAuthConfiguration(object sender, EventArgs e)
         {
-            if (sender.GetType().Name == "ComboBox")
+            if (sender is ComboBox comboBox)
             {
-                ComboBox comboBox = (ComboBox)sender;
                 ValidateComboBox(comboBox, e);
-                if (comboBox.SelectedItem.ToString() == "Bluetooth")
+
+                string selected = comboBox.SelectedItem.ToString();
+                bool isCard = selected == "Card";
+                bool isBluetooth = selected == "Bluetooth";
+
+                txtCard.Visible = isCard;
+                tbxCard.Visible = isCard;
+                txtPrimChooseDev.Visible = isBluetooth;
+                cbxBTSelect1.Visible = isBluetooth;
+
+                if (isBluetooth)
                 {
-                    txtPrimChooseDev.Visible = true;
-                    cbxBTSelect1.Visible = true;
                     ValidateComboBox(cbxBTSelect1, EventArgs.Empty);
+                    errorControls.Remove(tbxCard);
                     //TODO: get bluetooth devices and place them in the combo box with their names
 
                     // Add Card to Secondary Auth if it has been removed
@@ -278,10 +415,9 @@ namespace BuzzLockGui
                         cbxSecAuth.Items.Remove("Bluetooth");
                     }
                 }
-                else if (comboBox.SelectedItem.ToString() == "Card")
+                else if (isCard)
                 {
-                    txtPrimChooseDev.Visible = false;
-                    cbxBTSelect1.Visible = false;
+                    ValidateTextBox(tbxCard, EventArgs.Empty);
                     errorControls.Remove(cbxBTSelect1);
 
                     // Add Blutetooth to Secondary Auth if it has been removed
@@ -309,89 +445,55 @@ namespace BuzzLockGui
 
         private void ModifySecondaryAuthConfiguration(object sender, EventArgs e)
         {
-            if (sender.GetType().Name == "ComboBox")
+            if (sender is ComboBox comboBox)
             {
-                ComboBox comboBox = (ComboBox)sender;
                 ValidateComboBox(comboBox, e);
-                if (comboBox.SelectedItem.ToString() == "Bluetooth")
+
+                string selected = comboBox.SelectedItem.ToString();
+                bool isCard = selected == "Card";
+                bool isBluetooth = selected == "Bluetooth";
+                bool isPin = selected == "PIN";
+
+                txtCard.Visible = isCard || cbxPrimAuth.SelectedItem.ToString() == "Card";
+                tbxCard.Visible = isCard || cbxPrimAuth.SelectedItem.ToString() == "Card";
+                txtSecChooseDevOrPin.Visible = isBluetooth || isPin;
+                cbxBTSelect2.Visible = isBluetooth;
+                tbxPin.Visible = isPin;
+
+                if (isBluetooth)
                 {
                     txtSecChooseDevOrPin.Text = "Choose device:";
-                    txtSecChooseDevOrPin.Visible = true;
-                    cbxBTSelect2.Visible = true;
-                    tbxPin.Visible = false;
+                    if (cbxPrimAuth.SelectedItem.ToString() != "Card")
+                        errorControls.Remove(tbxCard);
                     errorControls.Remove(tbxPin);
                     ValidateComboBox(cbxBTSelect2, EventArgs.Empty);
                 }
-                else if (comboBox.SelectedItem.ToString() == "PIN")
+                else if (isPin)
                 {
                     txtSecChooseDevOrPin.Text = "Insert PIN:";
-                    txtSecChooseDevOrPin.Visible = true;
-                    cbxBTSelect2.Visible = false;
+                    if (cbxPrimAuth.SelectedItem.ToString() != "Card")
+                        errorControls.Remove(tbxCard);
                     errorControls.Remove(cbxBTSelect2);
-                    tbxPin.Visible = true;
                     ValidatePinBox(tbxPin, EventArgs.Empty);
                 }
-                else if (comboBox.SelectedItem.ToString() == "Card")
+                else if (isCard)
                 {
-                    txtSecChooseDevOrPin.Visible = false;
-                    cbxBTSelect2.Visible = false;
                     errorControls.Remove(cbxBTSelect2);
-                    tbxPin.Visible = false;
                     errorControls.Remove(tbxPin);
+                    ValidateTextBox(tbxCard, EventArgs.Empty);
                 }
             }
             OnValidate();
         }
 
-        private void btnRemoveUser_Click(object sender, EventArgs e)
+        private void loseFocus()
         {
-            // Initializes and displays the AutoClosingMessageBox.
-            var result = AutoClosingMessageBox.Show(
-                text: "Are you sure you want to remove your user? This cannot be undone.",
-                caption: "Remove User",
-                timeout: 5000, //5 seconds
-                buttons: MessageBoxButtons.YesNo,
-                defaultResult: DialogResult.No);
-
-            if (result == DialogResult.Yes)
-            {
-                // Remove the current user from the database.
-                _currentUser.Delete();
-
-                // Close options and stop both timers. Go back to IDLE or UNINITIALIZED depending on number of users
-                // registered in database after this user removal.
-                StopTimer();
-
-                // Query for number of users. If number of users is zero, go back to UNINITIALIZED
-                _globalState = User.GetAll().Count != 0 ? State.Idle : State.Uninitialized;
-                _formStart.UpdateComponents();
-                _formStart.Show();
-                this.Hide();
-            }
-        }
-
-        private void FormOptions_MouseClick(object sender, EventArgs e)
-        {
-            // Reset active control to default
             this.ActiveControl = tbxStatus;
-            RestartTimer();
-        }
-
-        private void btnEditProfile_Click(object sender, EventArgs e)
-        {
-            _globalState = State.UserOptions_EditProfile;
-            this.UpdateComponents();
-        }
-
-        private void btnEditAuth_Click(object sender, EventArgs e)
-        {
-            _globalState = State.UserOptions_EditAuth;
-            this.UpdateComponents();
         }
 
         protected override void OnValidate()
         {
-            btnOptionsSave.Enabled = noErrors;
+            btnOptionsSave.Enabled = NoErrors;
         }
 
         protected new void ValidateTextBox(object sender, EventArgs e)

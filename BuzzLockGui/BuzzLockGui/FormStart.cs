@@ -139,29 +139,30 @@ namespace BuzzLockGui
                 string name = tbxUserName.Text;
                 string phoneNumber = tbxUserPhone.Text;
                 User.PermissionLevels permissionLevel = (User.GetAll().Count() == 0) ? User.PermissionLevels.FULL : User.PermissionLevels.NONE;
-                List<AuthenticationMethod> authMethodsList = new List<AuthenticationMethod>();
+                AuthenticationMethod primary = null;
+                AuthenticationMethod secondary = null;
                 switch (cbxPrimAuth.SelectedItem.ToString())
                 {
                     case "Bluetooth":
-                        authMethodsList.Add(new BluetoothDevice(cbxBTSelect1.SelectedItem.ToString(), name + cbxBTSelect1.SelectedItem.ToString()));
+                        primary = new BluetoothDevice(cbxBTSelect1.SelectedItem.ToString(), name + cbxBTSelect1.SelectedItem.ToString());
                         break;
                     case "Card":
-                        authMethodsList.Add(new Card(tbxCard.Text));
+                        primary = new Card(tbxCard.Text);
                         break;
                 }
                 switch (cbxSecAuth.SelectedItem.ToString())
                 {
                     case "Card":
-                        authMethodsList.Add(new Card(tbxCard.Text));
+                        secondary = new Card(tbxCard.Text);
                         break;
                     case "Bluetooth":
-                        authMethodsList.Add(new BluetoothDevice(cbxBTSelect2.SelectedItem.ToString(), name + cbxBTSelect2.SelectedItem.ToString()));
+                        secondary = new BluetoothDevice(cbxBTSelect2.SelectedItem.ToString(), name + cbxBTSelect2.SelectedItem.ToString());
                         break;
                     case "PIN":
-                        authMethodsList.Add(new Pin(tbxPin.Text));
+                        secondary = new Pin(tbxPin.Text);
                         break;
                 }
-                AuthenticationMethods authenticationMethods = new AuthenticationMethods(authMethodsList);
+                AuthenticationMethods authenticationMethods = new AuthenticationMethods(primary, secondary);
                 User.Create(name, permissionLevel, phoneNumber, null, authenticationMethods);
 
                 // Go to idle state
@@ -199,10 +200,9 @@ namespace BuzzLockGui
         private void SetupPrimaryAuthConfiguration(object sender, EventArgs e)
         {
             // Type check to ensure passed in object is a ComboBox
-            if (sender.GetType().Name == "ComboBox")
+            if (sender is ComboBox comboBox)
             {
                 // Call error provider validation
-                ComboBox comboBox = (ComboBox)sender;
                 ValidateComboBox(comboBox, e);
 
                 // Null check
@@ -274,9 +274,8 @@ namespace BuzzLockGui
         private void SetupSecondaryAuthConfiguration(object sender, EventArgs e)
         {
             // Type check to ensure passed in object is a ComboBox
-            if (sender.GetType().Name == "ComboBox")
+            if (sender is ComboBox comboBox)
             {
-                ComboBox comboBox = (ComboBox)sender;
                 ValidateComboBox(comboBox, e);
 
                 // Null check
@@ -646,7 +645,7 @@ namespace BuzzLockGui
 
         protected override void OnValidate()
         {
-            btnOptionsSave.Enabled = noErrors;
+            btnOptionsSave.Enabled = NoErrors;
         }
 
         protected new void ValidateTextBox(object sender, EventArgs e)

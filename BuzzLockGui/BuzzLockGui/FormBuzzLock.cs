@@ -28,7 +28,7 @@ namespace BuzzLockGui
 
         protected static State _globalState;
         protected static User _currentUser;
-        protected bool noErrors;
+        protected bool NoErrors => errorControls.Count == 0;
         static readonly bool IS_LINUX = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
         private static int keyboard_on = 0; //1 means on 0 means off
         private static int numberpad_on = 0; //1 means on 0 means off
@@ -43,8 +43,7 @@ namespace BuzzLockGui
         protected void ValidateTextBox(object sender, EventArgs e)
         {
             // Type check to ensure passed in object is a TextBox
-            if (sender.GetType().Name == "TextBox") {
-                TextBox textBox = (TextBox) sender;
+            if (sender is TextBox textBox) {
                 if (textBox.Visible && textBox.Text == "")
                 {
                     userError.SetError(textBox, (string)textBox.Tag);
@@ -56,16 +55,14 @@ namespace BuzzLockGui
                     errorControls.Remove(textBox);
                 }
             }
-            noErrors = errorControls.Count == 0;
             OnValidate();
         }
 
         protected void ValidatePhoneBox(object sender, EventArgs e)
         {
             // Type check to ensure passed in object is a TextBox
-            if (sender.GetType().Name == "TextBox")
+            if (sender is TextBox textBox)
             {
-                TextBox textBox = (TextBox)sender;
                 string errorMessage;
                 if (textBox.Visible && !ValidPhone(textBox.Text, out errorMessage))
                 {
@@ -78,7 +75,6 @@ namespace BuzzLockGui
                     errorControls.Remove(textBox);
                 }
             }
-            noErrors = errorControls.Count == 0;
             OnValidate();
         }
 
@@ -105,9 +101,8 @@ namespace BuzzLockGui
         protected void ValidatePinBox(object sender, EventArgs e)
         {
             // Type check to ensure passed in object is a TextBox
-            if (sender.GetType().Name == "TextBox")
+            if (sender is TextBox textBox)
             {
-                TextBox textBox = (TextBox) sender;
                 string errorMessage;
                 if (textBox.Visible && !ValidPin(textBox.Text, out errorMessage))
                 {
@@ -120,7 +115,6 @@ namespace BuzzLockGui
                     errorControls.Remove(textBox);
                 }
             }
-            noErrors = errorControls.Count == 0;
             OnValidate();
         }
 
@@ -148,9 +142,8 @@ namespace BuzzLockGui
         protected void ValidateComboBox(object sender, EventArgs e)
         {
             // Type check to ensure passed in object is a ComboBox
-            if (sender.GetType().Name == "ComboBox")
+            if (sender is ComboBox comboBox)
             {
-                ComboBox comboBox = (ComboBox) sender;
                 if (comboBox.Visible && comboBox.SelectedItem == null)
                 {
                     userError.SetError(comboBox, (string)comboBox.Tag);
@@ -162,7 +155,6 @@ namespace BuzzLockGui
                     errorControls.Remove(comboBox);
                 }
             }
-            noErrors = errorControls.Count == 0;
             OnValidate();
         }
 
