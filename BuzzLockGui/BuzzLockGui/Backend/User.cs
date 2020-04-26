@@ -164,6 +164,11 @@ namespace BuzzLockGui.Backend
             return Id.GetHashCode();
         }
 
+        public override string ToString()
+        {
+            return $"{Name} ({PermissionLevel})";
+        }
+
         public static bool operator ==(User a, User b)
             => a is null ? b is null : a.Equals(b);
         public static bool operator !=(User a, User b)

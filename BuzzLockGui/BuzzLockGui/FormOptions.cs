@@ -16,9 +16,13 @@ namespace BuzzLockGui
     public partial class FormOptions : FormBuzzLock
     {
         private FormStart _formStart;
+        private FormUserManagement _formUserManagement;
         private Stopwatch stopWatchOptionsStatus = new Stopwatch();
         private AuthenticationMethod origPrimary;
         private AuthenticationMethod origSecondary;
+        private bool newCardEntry = false;
+        private string cardInput = "";
+
 
         public FormOptions(FormStart formStart)
         {
@@ -31,6 +35,8 @@ namespace BuzzLockGui
             this.KeyPreview = true;
 
             _formStart = formStart;
+            _formUserManagement = new FormUserManagement(_formStart, this);
+
 
             foreach (Control control in Controls)
             {
@@ -98,7 +104,8 @@ namespace BuzzLockGui
 
         private void timerOptionsStatus_Tick(object sender, EventArgs e)
         {
-            txtOptionsStatus.Text = Utility.Pluralize(30 - stopWatchOptionsStatus.Elapsed.Seconds, "second") + " until timeout.";
+            txtOptionsStatus.Text = "This screen will timeout in "
+                + Utility.Pluralize(30 - stopWatchOptionsStatus.Elapsed.Seconds, "second") + ".";
         }
 
         private void btnOptionsSave_Click(object sender, EventArgs e)
@@ -114,7 +121,6 @@ namespace BuzzLockGui
             else if (_globalState == State.UserOptions_EditProfile)
             {
                 // saves new data to database
-                
                 _currentUser.Name = tbxNewName.Text;
                 _currentUser.PhoneNumber = tbxNewPhone.Text;
                 // ResetTimer();
@@ -123,13 +129,12 @@ namespace BuzzLockGui
             }
             else if (_globalState == State.UserOptions_EditAuth)
             {
-                string name = _currentUser.Name; // TODO: Update to be name of bluetooth device not user name
                 AuthenticationMethod primary = null;
                 AuthenticationMethod secondary = null;
                 switch (cbxPrimAuth.SelectedItem.ToString())
                 {
                     case "Bluetooth":
-                        primary = new BluetoothDevice(cbxBTSelect1.SelectedItem.ToString(), name + cbxBTSelect1.SelectedItem.ToString());
+                        primary = (BluetoothDevice)cbxBTSelect1.SelectedItem;
                         break;
                     case "Card":
                         primary = new Card(tbxCard.Text);
@@ -141,7 +146,7 @@ namespace BuzzLockGui
                         secondary = new Card(tbxCard.Text);
                         break;
                     case "Bluetooth":
-                        secondary = new BluetoothDevice(cbxBTSelect2.SelectedItem.ToString(), name + cbxBTSelect2.SelectedItem.ToString());
+                        secondary = (BluetoothDevice)cbxBTSelect2.SelectedItem;
                         break;
                     case "PIN":
                         secondary = new Pin(tbxPin.Text);
@@ -184,9 +189,28 @@ namespace BuzzLockGui
 
         private void btnRemoveUser_Click(object sender, EventArgs e)
         {
+            // Check to see if this is the last user with FULL permissions
+            List<User> userList = User.GetAll();
+            int numUsersFULLPermission = 0;
+            foreach (User user in userList)
+            {
+                if (!user.Equals(_currentUser))
+                {
+                    numUsersFULLPermission += 1;
+                }
+            }
+
+            string removalMsg = "Are you sure you want to remove your user? This cannot be undone.";
+            if (numUsersFULLPermission == 0)
+            {
+                removalMsg = "Are you sure you want to remove your user? This cannot be undone. \n\n" +
+                    "You are the last user with FULL permissions. Deleting yourself will also delete any other users.";
+            } 
+            
+
             // Initializes and displays the AutoClosingMessageBox.
             var result = AutoClosingMessageBox.Show(
-                text: "Are you sure you want to remove your user? This cannot be undone.",
+                text: removalMsg,
                 caption: "Remove User",
                 timeout: 5000, //5 seconds
                 buttons: MessageBoxButtons.YesNo,
@@ -194,8 +218,20 @@ namespace BuzzLockGui
 
             if (result == DialogResult.Yes)
             {
-                // Remove the current user from the database.
+                // Remove the current user from the database
                 _currentUser.Delete();
+
+                // Delete all other users if needed
+                if (numUsersFULLPermission == 0) 
+                {
+                    foreach (User user in userList)
+                    {
+                        if (!user.Equals(_currentUser))
+                        {
+                            user.Delete();
+                        }
+                    }
+                }
 
                 // Close options and stop both timers. Go back to IDLE or UNINITIALIZED depending on number of users
                 // registered in database after this user removal.
@@ -228,8 +264,6 @@ namespace BuzzLockGui
             this.UpdateComponents();
         }
 
-        private bool newCardEntry = false;
-        private string cardInput = "";
         private void FormOptions_KeyPress(object sender, KeyPressEventArgs e)
         {
             //Console.WriteLine("Form Start Key Pressed");
@@ -238,6 +272,9 @@ namespace BuzzLockGui
             //Console.WriteLine("New Card Entry: " + newCardEntry);
 
             RestartTimer();
+
+            // Disallow unwanted mag stripe interference in other states
+            if (!acceptMagStripeInput) return;
 
             // Check KeyPressed to see if it's the beginning of a new card entry
             if (e.KeyChar == ';' || (e.KeyChar == '%'))
@@ -259,14 +296,19 @@ namespace BuzzLockGui
                         Console.WriteLine("Invalid read. Swipe again.");
                         return;
                     }
-                    Console.WriteLine(cardInput);
 
-                    // Reset cardInput to allow for a new card swipe to be registered
                     if (_globalState == State.UserOptions_EditAuth)
                     {
-                        tbxCard.Text = cardInput;
+                        // Don't allow duplicate cards in the database
+                        AuthenticationSequence authSeq = AuthenticationSequence.Start(new Card(cardInput));
+                        bool cardNotAlreadyInDatabase = authSeq.NextAuthenticationMethod == null;
+                        if (cardNotAlreadyInDatabase)
+                        {
+                            tbxCard.Text = cardInput;
+                        }
                     }
                     newCardEntry = false;
+                    // Reset cardInput to allow for a new card swipe to be registered
                     cardInput = "";
                     return;
                 }
@@ -284,6 +326,8 @@ namespace BuzzLockGui
             btnEditAuth.Visible = _globalState == State.UserOptions;
             btnEditProfile.Visible = _globalState == State.UserOptions;
             btnRemoveUser.Visible = _globalState == State.UserOptions;
+            btnUserManagement.Visible = _globalState == State.UserOptions 
+                && _currentUser.PermissionLevel == User.PermissionLevels.FULL;
             txtEditAuth.Visible = _globalState == State.UserOptions;
             txtEditProfile.Visible = _globalState == State.UserOptions;
             txtRemoveUser.Visible = _globalState == State.UserOptions;
@@ -311,10 +355,11 @@ namespace BuzzLockGui
             cbxBTSelect2.Visible = false;
             tbxPin.Visible = false;
 
-            //Set the welcome textbox
-            tbxStatus.Text = $"Welcome, {_currentUser.Name}";
-            //Set the permission level textbox
-            txtUserPermission.Text = $"Permission Level: {_currentUser.PermissionLevel}";
+            //UserManagement
+
+
+            //Set the welcome textbox with user name and permissions
+            tbxStatus.Text = $"Welcome, {_currentUser.Name}. You have {_currentUser.PermissionLevel} permissions.";
 
             switch (_globalState)
             {
@@ -504,6 +549,13 @@ namespace BuzzLockGui
             => base.ValidatePinBox(sender, e);
         protected new void ValidateComboBox(object sender, EventArgs e)
             => base.ValidateComboBox(sender, e);
+
+        private void btnUserManagement_Click(object sender, EventArgs e)
+        {
+            _globalState = State.UserManagement;
+            _formUserManagement.Show();
+            this.Hide();
+        }
     }
 
 }

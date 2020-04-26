@@ -23,7 +23,9 @@ namespace BuzzLockGui
             AccessDenied,
             UserOptions,   //      and in Authenticated until timeout happens.
             UserOptions_EditProfile,
-            UserOptions_EditAuth
+            UserOptions_EditAuth,
+            UserManagement,
+            UserManagement_AddUser
         }
 
         protected static State _globalState;
@@ -32,6 +34,7 @@ namespace BuzzLockGui
         static readonly bool IS_LINUX = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
         private static int keyboard_on = 0; //1 means on 0 means off
         private static int numberpad_on = 0; //1 means on 0 means off
+        protected static bool acceptMagStripeInput = true;
 
         protected ErrorProvider userError = new ErrorProvider()
         {

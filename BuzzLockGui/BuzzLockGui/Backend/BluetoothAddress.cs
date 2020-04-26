@@ -100,7 +100,7 @@ namespace BuzzLockGui.Backend
         {
             byte[] buffer = new byte[6];
             long addressTemp = address;
-            for (int i = buffer.Length; i >= 0; i--)
+            for (int i = buffer.Length - 1; i >= 0; i--)
             {
                 buffer[i] = (byte)(addressTemp & 0xFF);
                 addressTemp >>= 8;

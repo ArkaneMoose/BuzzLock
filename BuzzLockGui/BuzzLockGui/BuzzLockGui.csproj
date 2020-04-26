@@ -132,6 +132,12 @@
     <Compile Include="Backend\BluetoothDevice.cs" />
     <Compile Include="Backend\Pin.cs" />
     <Compile Include="Backend\Card.cs" />
+    <Compile Include="FormUserManagement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormUserManagement.Designer.cs">
+      <DependentUpon>FormUserManagement.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormBuzzLock.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -151,6 +157,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility.cs" />
+    <EmbeddedResource Include="FormUserManagement.resx">
+      <DependentUpon>FormUserManagement.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormStart.resx">
       <DependentUpon>FormStart.cs</DependentUpon>
     </EmbeddedResource>
