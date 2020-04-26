@@ -550,6 +550,7 @@ namespace BuzzLockGui
 
                     btnOptionsSave.Text = "Options";
                     txtStatus.Text = "Hello! Please swipe your card or choose your device.";
+                    close_lock();
                     loseFocus();
                     enableBtnConfirmBTDevice(listIdleBTDevices, EventArgs.Empty);
                     break;
@@ -641,6 +642,7 @@ namespace BuzzLockGui
                     txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, this screen will timeout in 10 seconds.";
                     stopWatchAuthStatus.Reset();
                     stopWatchAuthStatus.Start();
+                    open_lock();
                     loseFocus();
                     break;
                 case State.AccessDenied:
@@ -694,7 +696,6 @@ namespace BuzzLockGui
 
         private void btnExit_Click(object sender, EventArgs e)
         {
-
             Application.Exit();
         }
 
@@ -854,6 +855,43 @@ namespace BuzzLockGui
                 _globalState = State.SecondFactor;
             }
             UpdateComponents();
+        }
+
+        //rotate the servo
+        private void open_lock()
+        {
+            if (IS_LINUX && !lock_open)
+            {
+                //I realize that this is unefficient, but it's the only way I could get it to work when not on the pi
+                GPIOPinDriver servo = new GPIOPinDriver(GPIOPinDriver.Pin.GPIO4);
+                for (int i = 0; i < 10; i++)
+                {
+                    servo.State = GPIOPinDriver.GPIOState.High;
+                    Thread.Sleep(20);
+                    servo.State = GPIOPinDriver.GPIOState.Low;
+                    Thread.Sleep(50);
+                }
+                lock_open = true;
+                servo.Unexport();
+
+            }
+        }
+
+        private void close_lock()
+        {
+            if(IS_LINUX && lock_open)
+            {
+                GPIOPinDriver servo = new GPIOPinDriver(GPIOPinDriver.Pin.GPIO4);
+                for (int i = 0; i < 10; i++)
+                {
+                    servo.State = GPIOPinDriver.GPIOState.High;
+                    Thread.Sleep(2);
+                    servo.State = GPIOPinDriver.GPIOState.Low;
+                    Thread.Sleep(50);
+                }
+                lock_open = false;
+                servo.Unexport();
+            }
         }
 
         private void btnDebugSecondFactor_Click(object sender, EventArgs e)
