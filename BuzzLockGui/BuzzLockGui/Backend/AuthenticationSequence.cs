@@ -57,6 +57,11 @@ namespace BuzzLockGui.Backend
             {
                 return false;
             }
+            if (remaining.Count == 0)
+            {
+                NextAuthenticationMethod = null;
+                return true;
+            }
             NextAuthenticationMethod = remaining.First();
             return true;
         }
