@@ -65,13 +65,15 @@
             this.timerTxtAccessDeniedStatus = new System.Windows.Forms.Timer(this.components);
             this.txtAccessDeniedStatus = new System.Windows.Forms.Label();
             this.btnDebugAccessDenied = new System.Windows.Forms.Button();
+            this.btnDebugSecondFactor = new System.Windows.Forms.Button();
+            this.txtSecondFactorStatus = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.userError)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errNewUser)).BeginInit();
             this.SuspendLayout();
             // 
             // btnOptionsSave
             // 
-            this.btnOptionsSave.Location = new System.Drawing.Point(1165, 406);
+            this.btnOptionsSave.Location = new System.Drawing.Point(1165, 436);
             this.btnOptionsSave.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.btnOptionsSave.Name = "btnOptionsSave";
             this.btnOptionsSave.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -454,11 +456,35 @@
             this.btnDebugAccessDenied.UseVisualStyleBackColor = true;
             this.btnDebugAccessDenied.Click += new System.EventHandler(this.btnDebugAccessDenied_Click);
             // 
+            // btnDebugSecondFactor
+            // 
+            this.btnDebugSecondFactor.Location = new System.Drawing.Point(1165, 368);
+            this.btnDebugSecondFactor.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.btnDebugSecondFactor.Name = "btnDebugSecondFactor";
+            this.btnDebugSecondFactor.Size = new System.Drawing.Size(288, 38);
+            this.btnDebugSecondFactor.TabIndex = 37;
+            this.btnDebugSecondFactor.Text = "Debug: Second Factor";
+            this.btnDebugSecondFactor.UseVisualStyleBackColor = true;
+            this.btnDebugSecondFactor.Click += new System.EventHandler(this.btnDebugSecondFactor_Click);
+            // 
+            // txtSecondFactorStatus
+            // 
+            this.txtSecondFactorStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtSecondFactorStatus.Location = new System.Drawing.Point(31, 495);
+            this.txtSecondFactorStatus.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.txtSecondFactorStatus.Name = "txtSecondFactorStatus";
+            this.txtSecondFactorStatus.Size = new System.Drawing.Size(780, 69);
+            this.txtSecondFactorStatus.TabIndex = 38;
+            this.txtSecondFactorStatus.Text = "Invalid authentication.";
+            this.txtSecondFactorStatus.Visible = false;
+            // 
             // FormStart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1568, 850);
+            this.Controls.Add(this.txtSecondFactorStatus);
+            this.Controls.Add(this.btnDebugSecondFactor);
             this.Controls.Add(this.btnDebugAccessDenied);
             this.Controls.Add(this.txtAuthStatus);
             this.Controls.Add(this.txtAccessDeniedStatus);
@@ -489,7 +515,7 @@
             this.Controls.Add(this.cbxBTSelect2);
             this.Controls.Add(this.txtStatus);
             this.Controls.Add(this.tbxPin);
-            this.Margin = new System.Windows.Forms.Padding(12, 12, 12, 12);
+            this.Margin = new System.Windows.Forms.Padding(12);
             this.Name = "FormStart";
             this.Text = "BuzzLock";
             this.Activated += new System.EventHandler(this.FormStart_Activated);
@@ -541,6 +567,8 @@
         private System.Windows.Forms.Timer timerTxtAccessDeniedStatus;
         private System.Windows.Forms.Label txtAccessDeniedStatus;
         private System.Windows.Forms.Button btnDebugAccessDenied;
+        private System.Windows.Forms.Button btnDebugSecondFactor;
+        private System.Windows.Forms.Label txtSecondFactorStatus;
     }
 }
 

@@ -170,6 +170,66 @@ namespace BuzzLockGui
                 UpdateComponents();
 
             }
+            else if (_globalState == State.SecondFactor)
+            {
+                bool primaryAuthenticated = false;
+                AuthenticationMethod primary = _currentUser.AuthenticationMethods.Primary;
+                switch (primary)
+                {
+                    case Card card:
+                        if (tbxCard.Text == card.Id)
+                        {
+                            primaryAuthenticated = true;
+                        }
+                        break;
+                    case BluetoothDevice btDevice:
+                        if (cbxBTSelect1.SelectedItem.ToString() == btDevice.Address)
+                        {
+                            primaryAuthenticated = true;
+                        }
+                        break;
+                }
+
+                bool secondaryAuthenticated = false;
+                AuthenticationMethod secondary = _currentUser.AuthenticationMethods.Secondary;
+                switch (secondary)
+                {
+                    case BluetoothDevice btDevice:
+                        if (cbxBTSelect2.SelectedItem.ToString() == btDevice.Address)
+                        {
+                            secondaryAuthenticated = true;
+                        }
+                        break;
+                    case Pin pin:
+                        if (tbxPin.Text == pin.PinValue)
+                        {
+                            secondaryAuthenticated = true;
+                        }
+                        break;
+                }
+
+                if (primaryAuthenticated && secondaryAuthenticated)
+                {
+                    _globalState = State.Authenticated;
+                    UpdateComponents();
+                }
+                else
+                {
+                    txtSecondFactorStatus.Visible = true;
+                    if (!primaryAuthenticated && !secondaryAuthenticated)
+                    {
+                        txtSecondFactorStatus.Text = "Both primary and secondary authentication failed. Please try again.";
+                    }
+                    else if (!primaryAuthenticated)
+                    {
+                        txtSecondFactorStatus.Text = "Primary authentication failed. Please try again.";
+                    }
+                    else if (!secondaryAuthenticated)
+                    {
+                        txtSecondFactorStatus.Text = "Secondary authentication failed. Please try again.";
+                    }
+                }
+            }
             else if (_globalState == State.Authenticated)
             {
                 _globalState = State.UserOptions;
@@ -329,18 +389,20 @@ namespace BuzzLockGui
 
         private void btnDebugSwipe_Click(object sender, EventArgs e)
         {
+            tbxCard.Text = "Test Card for people without card swipers";
             if (_globalState == State.Uninitialized)
             {
                 _globalState = State.Initializing;
                 UpdateComponents();
 
                 // Open initial setup page
-                tbxCard.Text = "Test Card for people without card swipers";
             }
             else if (_globalState == State.Idle)
             {
                 // Test authentication
-
+                _globalState = State.SecondFactor;
+                _currentUser = new User(1);
+                UpdateComponents();
             }
         }
 
@@ -354,12 +416,12 @@ namespace BuzzLockGui
             tbxUserName.Visible = _globalState == State.Initializing;
             txtUserPhone.Visible = _globalState == State.Initializing;
             tbxUserPhone.Visible = _globalState == State.Initializing;
-            txtPrimAuth.Visible = _globalState == State.Initializing;
-            cbxPrimAuth.Visible = _globalState == State.Initializing;
+            txtPrimAuth.Visible = _globalState == State.Initializing || _globalState == State.SecondFactor;
+            cbxPrimAuth.Visible = _globalState == State.Initializing || _globalState == State.SecondFactor;
             txtPrimChooseDev.Visible = false;
             cbxBTSelect1.Visible = false;
-            txtSecAuth.Visible = false;
-            cbxSecAuth.Visible = false;
+            txtSecAuth.Visible = _globalState == State.SecondFactor;
+            cbxSecAuth.Visible = _globalState == State.SecondFactor;
             txtSecChooseDevOrPin.Visible = false;
             tbxPin.Visible = false;
             cbxBTSelect2.Visible = false;
@@ -373,6 +435,9 @@ namespace BuzzLockGui
             btnConfirmBTDevices.Visible = _globalState == State.Idle;
             txtChooseBTDevice.Visible = _globalState == State.Idle;
 
+            // Second Factor State
+            txtSecondFactorStatus.Visible = false;
+
             // Authenticated State
             txtAuthStatus.Visible = _globalState == State.Authenticated;
             timerAuthTimeout.Enabled = _globalState == State.Authenticated;
@@ -384,7 +449,7 @@ namespace BuzzLockGui
             timerTxtAccessDeniedStatus.Enabled = _globalState == State.AccessDenied;
 
             // Multiple States
-            btnOptionsSave.Visible = _globalState == State.Initializing || _globalState == State.Authenticated;
+            btnOptionsSave.Visible = _globalState == State.Initializing || _globalState == State.SecondFactor || _globalState == State.Authenticated;
 
             switch (_globalState)
             {
@@ -422,19 +487,48 @@ namespace BuzzLockGui
                     enableBtnConfirmBTDevice(listIdleBTDevices, EventArgs.Empty);
                     break;
                 case State.SecondFactor:
-                    // txtStatus.Text = "Hello! Please swipe your card or choose your device.";
-                    _globalState = State.Authenticated;
-                    _currentUser = _currentAuthSequence.User;
-                    if(_currentUser.AuthenticationMethods.Secondary.GetType().Name == "BluetoothDevice")
+                    txtStatus.Text = "Please enter your second factor to authenticate.";
+                    btnOptionsSave.Text = "Authenticate";
+                    cbxPrimAuth.Items.Clear();
+                    AuthenticationMethod primary = _currentUser.AuthenticationMethods.Primary;
+                    switch(primary)
                     {
-                        //TODO: look for that user's bluetooth device
+                        case Card card:
+                            cbxPrimAuth.Items.Insert(0, "Card");
+                            txtCard.Visible = true;
+                            tbxCard.Visible = true;
+                            tbxCard.Text = card.Id;
+                            break;
+                        case BluetoothDevice btDevice:
+                            cbxPrimAuth.Items.Insert(0, "Bluetooth");
+                            txtPrimChooseDev.Visible = true;
+                            cbxBTSelect1.Visible = true;
+                            // TODO: Populate with all bluetooth devices associated with this user
+                            cbxBTSelect1.Items.Insert(0, btDevice.Address);
+                            cbxBTSelect1.SelectedIndex = 0;
+                            break;
+                    }
+                    cbxPrimAuth.SelectedIndex = 0;
 
-                    }
-                    else if (_currentUser.AuthenticationMethods.Secondary.GetType().Name == "Pin")
+                    cbxSecAuth.Items.Clear();
+                    AuthenticationMethod secondary = _currentUser.AuthenticationMethods.Secondary;
+                    txtSecChooseDevOrPin.Visible = true;
+                    switch(secondary)
                     {
-                        //TODO: look for pin 
+                        case BluetoothDevice btDevice:
+                            cbxSecAuth.Items.Insert(0, "Bluetooth");
+                            txtSecChooseDevOrPin.Text = "Choose device: ";
+                            cbxBTSelect2.Visible = true;
+                            // TODO: Populate with all bluetooth devices associated with this user
+                            cbxBTSelect2.Items.Insert(0, btDevice.Address);
+                            break;
+                        case Pin pin:
+                            cbxSecAuth.Items.Insert(0, "PIN");
+                            txtSecChooseDevOrPin.Text = "Insert PIN:";
+                            tbxPin.Visible = true;
+                            break;
                     }
-                    UpdateComponents();
+                    cbxSecAuth.SelectedIndex = 0;
                     break;
                 case State.Authenticated:
                     btnOptionsSave.Text = "Options";
@@ -640,6 +734,13 @@ namespace BuzzLockGui
                     _globalState = State.SecondFactor;
                 }
             }
+            UpdateComponents();
+        }
+
+        private void btnDebugSecondFactor_Click(object sender, EventArgs e)
+        {
+            _globalState = State.SecondFactor;
+            _currentUser = new User(1);
             UpdateComponents();
         }
 
