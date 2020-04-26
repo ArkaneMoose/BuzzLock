@@ -7,10 +7,10 @@ using BuzzLockGui.Backend;
 using ModernMessageBoxLib;
 using System.Diagnostics;
 using System.Linq;
-using Unosquare.WiringPi;
-using Unosquare.RaspberryIO;
-using Unosquare.RaspberryIO.Abstractions;
+using RaspberryGPIOManager;
 using System.Threading;
+using System.Threading.Tasks;
+
 
 namespace BuzzLockGui
 {
@@ -22,11 +22,14 @@ namespace BuzzLockGui
         private Stopwatch stopWatchAccessDeniedStatus = new Stopwatch();
         private bool newCardEntry = false;
         private string cardInput = "";
+<<<<<<< HEAD
+        static readonly bool IS_LINUX = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+        private bool lock_open = false; //true when open, false when closed
+=======
         private bool bluetoothFound = false;
-        private GpioPin servo;
-        private bool lock_open = false;
+>>>>>>> 96c28e8e89b14488a1c3285d9e02a38c66518e15
 
-        public FormStart()
+                public FormStart()
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
@@ -46,14 +49,6 @@ namespace BuzzLockGui
             } else
             {
                 _globalState = State.Idle;
-            }
-
-            if (IS_LINUX)
-            {
-                Pi.Init<BootstrapWiringPi>();
-                servo = (GpioPin)Pi.Gpio[13];
-                servo.PinMode = GpioPinDriveMode.Output;
-                servo.StartSoftPwm(0, 100);
             }
 
             // Update visibility of form components
@@ -858,15 +853,23 @@ namespace BuzzLockGui
             UpdateComponents();
         }
 
+<<<<<<< HEAD
         //rotate the servo
         private void open_lock()
         {
             if (IS_LINUX && !lock_open)
             {
-                servo.SoftPwmValue = 25;
-                Thread.Sleep(850);
-                servo.SoftPwmValue = 0;
+                //I realize that this is unefficient, but it's the only way I could get it to work when not on the pi
+                GPIOPinDriver servo = new GPIOPinDriver(GPIOPinDriver.Pin.GPIO4);
+                for (int i = 0; i < 10; i++)
+                {
+                    servo.State = GPIOPinDriver.GPIOState.High;
+                    Thread.Sleep(20);
+                    servo.State = GPIOPinDriver.GPIOState.Low;
+                    Thread.Sleep(50);
+                }
                 lock_open = true;
+                servo.Unexport();
 
             }
         }
@@ -875,18 +878,24 @@ namespace BuzzLockGui
         {
             if(IS_LINUX && lock_open)
             {
-                servo.SoftPwmValue = 5;
-                Thread.Sleep(850);
-                servo.SoftPwmValue = 0;
+                GPIOPinDriver servo = new GPIOPinDriver(GPIOPinDriver.Pin.GPIO4);
+                for (int i = 0; i < 10; i++)
+                {
+                    servo.State = GPIOPinDriver.GPIOState.High;
+                    Thread.Sleep(2);
+                    servo.State = GPIOPinDriver.GPIOState.Low;
+                    Thread.Sleep(50);
+                }
                 lock_open = false;
+                servo.Unexport();
             }
-        }
-
+=======
         private void btnDebugSecondFactor_Click(object sender, EventArgs e)
         {
             _globalState = State.SecondFactor;
             _currentUser = new User(1);
             UpdateComponents();
+>>>>>>> 96c28e8e89b14488a1c3285d9e02a38c66518e15
         }
 
         protected override void OnValidate()
@@ -959,26 +968,6 @@ namespace BuzzLockGui
                         listIdleBTDevices.Items.Add(bt);
                     }
                     break;
-            }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            if (IS_LINUX)
-            {
-                servo.SoftPwmValue = 25;
-                Thread.Sleep(850);
-                servo.SoftPwmValue = 0;
-            }
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            if (IS_LINUX)
-            {
-                servo.SoftPwmValue = 5;
-                Thread.Sleep(850);
-                servo.SoftPwmValue = 0;
             }
         }
     }
