@@ -7,6 +7,10 @@ using BuzzLockGui.Backend;
 using ModernMessageBoxLib;
 using System.Diagnostics;
 using System.Linq;
+using Unosquare.WiringPi;
+using Unosquare.RaspberryIO;
+using Unosquare.RaspberryIO.Abstractions;
+using System.Threading;
 
 namespace BuzzLockGui
 {
@@ -19,6 +23,7 @@ namespace BuzzLockGui
         private bool newCardEntry = false;
         private string cardInput = "";
         private bool bluetoothFound = false;
+        private GpioPin servo;
 
         public FormStart()
         {
@@ -40,6 +45,14 @@ namespace BuzzLockGui
             } else
             {
                 _globalState = State.Idle;
+            }
+
+            if (IS_LINUX)
+            {
+                Pi.Init<BootstrapWiringPi>();
+                servo = (GpioPin)Pi.Gpio[13];
+                servo.PinMode = GpioPinDriveMode.Output;
+                servo.StartSoftPwm(0, 100);
             }
 
             // Update visibility of form components
@@ -681,6 +694,7 @@ namespace BuzzLockGui
 
         private void btnExit_Click(object sender, EventArgs e)
         {
+
             Application.Exit();
         }
 
@@ -919,6 +933,26 @@ namespace BuzzLockGui
                         listIdleBTDevices.Items.Add(bt);
                     }
                     break;
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (IS_LINUX)
+            {
+                servo.SoftPwmValue = 25;
+                Thread.Sleep(850);
+                servo.SoftPwmValue = 0;
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (IS_LINUX)
+            {
+                servo.SoftPwmValue = 5;
+                Thread.Sleep(850);
+                servo.SoftPwmValue = 0;
             }
         }
     }
