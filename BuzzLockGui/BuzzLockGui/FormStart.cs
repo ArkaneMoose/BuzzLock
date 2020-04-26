@@ -474,11 +474,14 @@ namespace BuzzLockGui
                 case State.Idle:
 
                     //TODO: Combo box for selecting bluetooth devices already in database that are also in range
-                        // Clear the list
+                    // Clear the list
                     //listIdleBTDevices.Clear();
-                        //Query database for all bluetooth devices
-                        //For each bluetooth device in database, if it is in range, add it to the list.
-                        // for example listIdleBTDevices.Items.Add("00:11:22:33:44:55");
+                    //Query database for all bluetooth devices
+                    //For each bluetooth device in database, if it is in range, add it to the list.
+                    // for example listIdleBTDevices.Items.Add("00:11:22:33:44:55");
+
+                    // Reset _currentUser since we are in Idle State
+                    _currentUser = null;
 
                     btnOptionsSave.Text = "Options";
                     txtStatus.Text = "Hello! Please swipe your card or choose your device.";
@@ -641,7 +644,7 @@ namespace BuzzLockGui
             if (newCardEntry)
             {
                 // Stop adding to card input string when "Return" is entered
-                if (e.KeyChar == '\r') //|| e.KeyChar == '\n')
+                if (e.KeyChar == '\r' || e.KeyChar == '\n')
                 {
                     // Check for invalid read before anything else
                     if (cardInput.Contains(";E?") || cardInput.Contains("%E?") || cardInput.Contains("+E?"))
@@ -667,6 +670,8 @@ namespace BuzzLockGui
                     }
                     else
                     {
+                        // Set _currentUser since we recognize this user
+                        _currentUser = _currentAuthSequence.User;
                         if (_currentAuthSequence.User.PermissionLevel == User.PermissionLevels.NONE)
                         {
                             _globalState = State.AccessDenied;

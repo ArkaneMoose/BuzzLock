@@ -98,7 +98,8 @@ namespace BuzzLockGui
 
         private void timerOptionsStatus_Tick(object sender, EventArgs e)
         {
-            txtOptionsStatus.Text = Utility.Pluralize(30 - stopWatchOptionsStatus.Elapsed.Seconds, "second") + " until timeout.";
+            txtOptionsStatus.Text = "This screen will timeout in "
+                + Utility.Pluralize(30 - stopWatchOptionsStatus.Elapsed.Seconds, "second") + ".";
         }
 
         private void btnOptionsSave_Click(object sender, EventArgs e)
@@ -311,10 +312,8 @@ namespace BuzzLockGui
             cbxBTSelect2.Visible = false;
             tbxPin.Visible = false;
 
-            //Set the welcome textbox
-            tbxStatus.Text = $"Welcome, {_currentUser.Name}";
-            //Set the permission level textbox
-            txtUserPermission.Text = $"Permission Level: {_currentUser.PermissionLevel}";
+            //Set the welcome textbox with user name and permissions
+            tbxStatus.Text = $"Welcome, {_currentUser.Name}. You have {_currentUser.PermissionLevel} permissions.";
 
             switch (_globalState)
             {
