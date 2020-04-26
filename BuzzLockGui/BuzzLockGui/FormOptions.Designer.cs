@@ -38,7 +38,6 @@
             this.txtRemoveUser = new System.Windows.Forms.Label();
             this.tbxStatus = new System.Windows.Forms.Label();
             this.txtOptionsTitle = new System.Windows.Forms.Label();
-            this.txtUserPermission = new System.Windows.Forms.Label();
             this.timerOptionsTimeout = new System.Windows.Forms.Timer(this.components);
             this.txtOptionsStatus = new System.Windows.Forms.Label();
             this.timerOptionsStatus = new System.Windows.Forms.Timer(this.components);
@@ -160,17 +159,6 @@
             this.txtOptionsTitle.Size = new System.Drawing.Size(248, 26);
             this.txtOptionsTitle.TabIndex = 12;
             this.txtOptionsTitle.Text = "BuzzLock Options Menu";
-            // 
-            // txtUserPermission
-            // 
-            this.txtUserPermission.AutoSize = true;
-            this.txtUserPermission.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtUserPermission.Location = new System.Drawing.Point(14, 274);
-            this.txtUserPermission.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.txtUserPermission.Name = "txtUserPermission";
-            this.txtUserPermission.Size = new System.Drawing.Size(176, 16);
-            this.txtUserPermission.TabIndex = 13;
-            this.txtUserPermission.Text = "You have FULL priviledges. ";
             // 
             // timerOptionsTimeout
             // 
@@ -391,7 +379,6 @@
             this.Controls.Add(this.txtCurrentPhone);
             this.Controls.Add(this.txtCurrentName);
             this.Controls.Add(this.txtOptionsStatus);
-            this.Controls.Add(this.txtUserPermission);
             this.Controls.Add(this.txtOptionsTitle);
             this.Controls.Add(this.tbxStatus);
             this.Controls.Add(this.txtRemoveUser);
@@ -428,7 +415,6 @@
         private System.Windows.Forms.Label txtRemoveUser;
         private System.Windows.Forms.Label tbxStatus;
         private System.Windows.Forms.Label txtOptionsTitle;
-        private System.Windows.Forms.Label txtUserPermission;
         private System.Windows.Forms.Label txtOptionsStatus;
         public System.Windows.Forms.Timer timerOptionsTimeout;
         public System.Windows.Forms.Timer timerOptionsStatus;

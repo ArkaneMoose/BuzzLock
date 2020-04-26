@@ -67,6 +67,9 @@
             this.btnDebugAccessDenied = new System.Windows.Forms.Button();
             this.btnDebugSecondFactor = new System.Windows.Forms.Button();
             this.txtSecondFactorStatus = new System.Windows.Forms.Label();
+            this.tbxSecFactorPinOrCard = new System.Windows.Forms.TextBox();
+            this.txtSecFactorPinOrCard = new System.Windows.Forms.Label();
+            this.timerBTIdleBTDeviceListUpdate = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.userError)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errNewUser)).BeginInit();
             this.SuspendLayout();
@@ -150,7 +153,7 @@
             this.tbxCard.Location = new System.Drawing.Point(62, 45);
             this.tbxCard.Name = "tbxCard";
             this.tbxCard.ReadOnly = true;
-            this.tbxCard.Size = new System.Drawing.Size(455, 20);
+            this.tbxCard.Size = new System.Drawing.Size(513, 20);
             this.tbxCard.TabIndex = 11;
             this.tbxCard.Visible = false;
             this.tbxCard.TextChanged += new System.EventHandler(this.ValidateTextBox);
@@ -450,11 +453,39 @@
             this.txtSecondFactorStatus.Text = "Invalid authentication.";
             this.txtSecondFactorStatus.Visible = false;
             // 
+            // tbxSecFactorPinOrCard
+            // 
+            this.tbxSecFactorPinOrCard.Location = new System.Drawing.Point(19, 218);
+            this.tbxSecFactorPinOrCard.MaximumSize = new System.Drawing.Size(559, 20);
+            this.tbxSecFactorPinOrCard.MinimumSize = new System.Drawing.Size(105, 20);
+            this.tbxSecFactorPinOrCard.Name = "tbxSecFactorPinOrCard";
+            this.tbxSecFactorPinOrCard.Size = new System.Drawing.Size(559, 20);
+            this.tbxSecFactorPinOrCard.TabIndex = 40;
+            this.tbxSecFactorPinOrCard.Visible = false;
+            // 
+            // txtSecFactorPinOrCard
+            // 
+            this.txtSecFactorPinOrCard.AutoSize = true;
+            this.txtSecFactorPinOrCard.Location = new System.Drawing.Point(19, 199);
+            this.txtSecFactorPinOrCard.Name = "txtSecFactorPinOrCard";
+            this.txtSecFactorPinOrCard.Size = new System.Drawing.Size(57, 13);
+            this.txtSecFactorPinOrCard.TabIndex = 41;
+            this.txtSecFactorPinOrCard.Text = "Insert PIN:";
+            this.txtSecFactorPinOrCard.Visible = false;
+            // 
+            // timerBTIdleBTDeviceListUpdate
+            // 
+            this.timerBTIdleBTDeviceListUpdate.Enabled = true;
+            this.timerBTIdleBTDeviceListUpdate.Interval = 5000;
+            this.timerBTIdleBTDeviceListUpdate.Tick += new System.EventHandler(this.RefreshBTDeviceLists);
+            // 
             // FormStart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 442);
+            this.Controls.Add(this.txtSecFactorPinOrCard);
+            this.Controls.Add(this.tbxSecFactorPinOrCard);
             this.Controls.Add(this.txtSecondFactorStatus);
             this.Controls.Add(this.btnDebugSecondFactor);
             this.Controls.Add(this.btnDebugAccessDenied);
@@ -482,11 +513,11 @@
             this.Controls.Add(this.btnOptionsSave);
             this.Controls.Add(this.cbxBTSelect1);
             this.Controls.Add(this.tbxCard);
-            this.Controls.Add(this.cbxBTSelect2);
             this.Controls.Add(this.tbxPin);
             this.Controls.Add(this.txtStatus);
             this.Controls.Add(this.txtUserName);
             this.Controls.Add(this.listIdleBTDevices);
+            this.Controls.Add(this.cbxBTSelect2);
             this.Margin = new System.Windows.Forms.Padding(8);
             this.Name = "FormStart";
             this.Text = "BuzzLock";
@@ -541,6 +572,9 @@
         private System.Windows.Forms.Button btnDebugAccessDenied;
         private System.Windows.Forms.Button btnDebugSecondFactor;
         private System.Windows.Forms.Label txtSecondFactorStatus;
+        private System.Windows.Forms.Label txtSecFactorPinOrCard;
+        private System.Windows.Forms.TextBox tbxSecFactorPinOrCard;
+        private System.Windows.Forms.Timer timerBTIdleBTDeviceListUpdate;
     }
 }
 

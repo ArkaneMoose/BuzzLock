@@ -19,6 +19,9 @@ namespace BuzzLockGui
         private Stopwatch stopWatchOptionsStatus = new Stopwatch();
         private AuthenticationMethod origPrimary;
         private AuthenticationMethod origSecondary;
+        private bool newCardEntry = false;
+        private string cardInput = "";
+
 
         public FormOptions(FormStart formStart)
         {
@@ -115,7 +118,6 @@ namespace BuzzLockGui
             else if (_globalState == State.UserOptions_EditProfile)
             {
                 // saves new data to database
-                
                 _currentUser.Name = tbxNewName.Text;
                 _currentUser.PhoneNumber = tbxNewPhone.Text;
                 // ResetTimer();
@@ -124,13 +126,12 @@ namespace BuzzLockGui
             }
             else if (_globalState == State.UserOptions_EditAuth)
             {
-                string name = _currentUser.Name; // TODO: Update to be name of bluetooth device not user name
                 AuthenticationMethod primary = null;
                 AuthenticationMethod secondary = null;
                 switch (cbxPrimAuth.SelectedItem.ToString())
                 {
                     case "Bluetooth":
-                        primary = new BluetoothDevice(cbxBTSelect1.SelectedItem.ToString(), name + cbxBTSelect1.SelectedItem.ToString());
+                        primary = (BluetoothDevice)cbxBTSelect1.SelectedItem;
                         break;
                     case "Card":
                         primary = new Card(tbxCard.Text);
@@ -142,7 +143,7 @@ namespace BuzzLockGui
                         secondary = new Card(tbxCard.Text);
                         break;
                     case "Bluetooth":
-                        secondary = new BluetoothDevice(cbxBTSelect2.SelectedItem.ToString(), name + cbxBTSelect2.SelectedItem.ToString());
+                        secondary = (BluetoothDevice)cbxBTSelect2.SelectedItem;
                         break;
                     case "PIN":
                         secondary = new Pin(tbxPin.Text);
@@ -229,8 +230,6 @@ namespace BuzzLockGui
             this.UpdateComponents();
         }
 
-        private bool newCardEntry = false;
-        private string cardInput = "";
         private void FormOptions_KeyPress(object sender, KeyPressEventArgs e)
         {
             //Console.WriteLine("Form Start Key Pressed");
@@ -239,6 +238,9 @@ namespace BuzzLockGui
             //Console.WriteLine("New Card Entry: " + newCardEntry);
 
             RestartTimer();
+
+            // Disallow unwanted mag stripe interference in other states
+            if (!acceptMagStripeInput) return;
 
             // Check KeyPressed to see if it's the beginning of a new card entry
             if (e.KeyChar == ';' || (e.KeyChar == '%'))
@@ -260,14 +262,19 @@ namespace BuzzLockGui
                         Console.WriteLine("Invalid read. Swipe again.");
                         return;
                     }
-                    Console.WriteLine(cardInput);
 
-                    // Reset cardInput to allow for a new card swipe to be registered
                     if (_globalState == State.UserOptions_EditAuth)
                     {
-                        tbxCard.Text = cardInput;
+                        // Don't allow duplicate cards in the database
+                        AuthenticationSequence authSeq = AuthenticationSequence.Start(new Card(cardInput));
+                        bool cardNotAlreadyInDatabase = authSeq.NextAuthenticationMethod == null;
+                        if (cardNotAlreadyInDatabase)
+                        {
+                            tbxCard.Text = cardInput;
+                        }
                     }
                     newCardEntry = false;
+                    // Reset cardInput to allow for a new card swipe to be registered
                     cardInput = "";
                     return;
                 }
