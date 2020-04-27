@@ -1,5 +1,5 @@
 # BuzzLock
-The most secure door lock.
+The most secure door lock. <br/>
 Team members: Rishov Sarkar, Joshua Shafran, Andrew Gauker, and Celeste Smith
 
 # Components Used
