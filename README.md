@@ -19,3 +19,7 @@ Living in the dorms and having to carry around a key can be annoying. Students l
 <H3> Code Description </H3>
 
 C# was used for the base functionality along with SQL for the backend database to store user data. <a href = "https://unosquare.github.io/raspberryio/">Unosquare's</a> soft PWM function was used to control the servo for opening and closing the lock.  The automatic keyboard for editing text fields such as name, phone number, PIN, etc. is provided using <a href="http://t-sato.in.coocan.jp/xvkbd/">xvkbd</a> and the command line from C#.  
+
+<H3> User Instructions </H3>
+<H5> Initialization </H5>
+Upon startup, this device will be uninitialized and display the status message "Hello! Please swipe your BuzzCard to begin set up." Once the user swipes a magstripe card, the initialization screen will display, allowing the owner of the system to input their information and preferences. Clicking the 'Save' button will save the user to the database. 
