@@ -356,6 +356,11 @@ namespace BuzzLockGui
             switch (_globalState)
             {
                 case State.UserOptions:
+
+                    // Reset Errors
+                    errorControls.Clear();
+                    userError.Clear();
+
                     txtOptionsTitle.Text = "BuzzLock Options Menu";
                     break;
                 case State.UserOptions_EditProfile:

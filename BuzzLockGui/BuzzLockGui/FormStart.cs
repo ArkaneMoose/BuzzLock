@@ -489,6 +489,9 @@ namespace BuzzLockGui
             switch (_globalState)
             {
                 case State.Uninitialized:
+                    // Reset Errors
+                    errorControls.Clear();
+                    userError.Clear();
                     _currentUser = null;
                     bluetoothFound = false;
                     // Message for tbxStatus.Text for when the system is uninitialized
@@ -523,6 +526,10 @@ namespace BuzzLockGui
                     // Reset _currentUser since we are in Idle State
                     _currentUser = null;
                     bluetoothFound = false;
+
+                    // Reset Errors
+                    errorControls.Clear();
+                    userError.Clear();
 
                     btnOptionsSave.Text = "Options";
                     txtStatus.Text = "Hello! Please swipe your card or choose your device.";
@@ -575,6 +582,10 @@ namespace BuzzLockGui
                     btnOptionsSave.Text = "Options";
                     txtStatus.Text = $"Welcome, {_currentUser.Name}. Door is unlocked.";
 
+                    // Reset Errors
+                    errorControls.Clear();
+                    userError.Clear();
+
                     // Timeout stopwatch
                     txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, the door will lock in 10 seconds.";
                     stopWatchAuthStatus.Reset();
@@ -583,6 +594,11 @@ namespace BuzzLockGui
                     loseFocus();
                     break;
                 case State.AccessDenied:
+
+                    // Reset Errors
+                    errorControls.Clear();
+                    userError.Clear();
+
                     //Timeout stopwatch
                     stopWatchAccessDeniedStatus.Reset();
                     stopWatchAccessDeniedStatus.Start();
