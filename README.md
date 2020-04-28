@@ -6,7 +6,7 @@ Living in the dorms and having to carry around a key can be annoying. Students l
 
 ** Any magnetic stripe card can be used for authentication. **
 
-<H3> Components Used </H3>
+<H1> Components Used </H1>
  <ul>
   <li> <a href="https://www.raspberrypi.org/products/raspberry-pi-3-model-b/">Raspberry Pi 3</a></li>
  <li> <a href="https://www.adafruit.com/product/2407">Touchscreen 7 inch HDMI Screen</a></li>
@@ -14,7 +14,7 @@ Living in the dorms and having to carry around a key can be annoying. Students l
   <li><a href="https://www.amazon.com/2xhome-Magnetic-Registry-Register-Quickbook/dp/B00E85TH9I/ref=sr_1_10?crid=UIZM18I37O7M&keywords=magstripe%2Breader&qid=1584997590&sprefix=%2Caps%2C227&sr=8-10&th=1">Magnetic Stripe Card Reader</a></li>
 </ul> 
 
-<H3> Schematic and Block Diagram </H3>
+<H1> Schematic and Block Diagram </H1>
 
 Schematic with servo connecting to Raspberry Pi
  <div style="text-align:center"><img src="Documentation/4180 Schematic Window.png" width="700" align="middle" alt="BuzzLock Schematic"></div>
@@ -23,17 +23,17 @@ Schematic with servo connecting to Raspberry Pi
  <img src="Documentation/Screen Shot 2020-04-28 at 3.59.49 PM.png" alt="BuzzLock Block Diagram"> 
 
 
-<H3> Code Description </H3>
+<H1> Code Description </H1>
 
 Our GUI is implemented with Windows Forms (.NET/C#) and designed in Microsoft Visual Studio. <a href = "https://www.mono-project.com/">Mono</a> is used to open the GUI on the Raspberry Pi. We used C# for the base functionality, along with SQL for the backend database to store user data during runtime and across power cycles. <a href = "https://unosquare.github.io/raspberryio/">Unosquare's</a> soft PWM function was used to control the servo for opening and closing the lock. The automatic on-screen keyboard for editing text fields such as name, phone number, PIN, etc. is provided by calling <a href="http://t-sato.in.coocan.jp/xvkbd/">xvkbd</a> using shell calls directly from C#. 
 
 The USB magnetic stripe card reader acts as a keyboard. We use the unique formatting of magnetic card strings to identify a card swipe during any point in the program's execution. 
 
-<H5> Authentication Methods </H5>
+<H2> Authentication Methods </H2>
 
 For ultimate security, we enforce a two factor authentication system in which users can unlock the door by combining two out of three different authentication methods: swiping a card, entering a pin, and coming into range with a recognized Bluetooth device. Users are permitted to change their authentication methods any time they access the system.
 
-<H5> Permissions system </H5>
+<H2> Permissions system </H2>
 
 For finer granularity in who is able to use the system, we have a permission system. There are currently 3 possible permission levels a user may have:
 
@@ -43,13 +43,13 @@ For finer granularity in who is able to use the system, we have a permission sys
 
 The first user to initialize the system receives a FULL permission level. Subsequent users receive NONE permissions by default, though an administrator can later upgrade a user's permission level. 
 
-<H5> State Diagram </H5>
+<H2> State Diagram </H2>
 
 The program is implemented as a state machine with 11 states, whose diagram you can see below. During runtime, each state transition updates the GUI accordingly. 
 
 <img src="Documentation/4180 State Diagram.png" alt="State Diagram">
 
-<H5> Windows Forms </H5>
+<H2> Windows Forms </H2>
 
 In further detail, we approach this problem with an object oriented mindset. We created 4 Windows Forms: FormBuzzLock (a base class from which our 3 other forms inherit), FormStart, FormOptions, and FormUserManagement, which carry out the state machine's execution. 
 
@@ -60,8 +60,8 @@ In further detail, we approach this problem with an object oriented mindset. We 
 
 
 
-<H3> User Instructions </H3>
-<H5> Initialization </H5>
+<H1> User Instructions </H1>
+<H2> Initialization </H2>
 
 Upon startup, no devices will be uninitialized and the display will show the status message "Hello! Please swipe your BuzzCard to begin set up." Once the user swipes a magstripe card, the initialization screen will display, allowing the owner of the system to input their information and preferences. Clicking the 'Save' button will save the user to the database. <br/>
 
@@ -70,12 +70,14 @@ Upon correct entry of the second authentication method and sufficient permission
 
 If the authenticated user had full permissions they will be able to add and remove users from the options menu.  
 
-<H3> Further Work </H3>
+<H1> Further Work </H1>
 
 This semester came with significant limitation, so we have many ideas for future expansions on the project:
 <ul>
   <li> Have users will FULL permissions be notified by text message when a user with NONE permissions enters their authentication information</li>
  <li> Implement encryptions and techniques for making the system more secure </li>
- <li> 
+ <li> Connecting it to a real dorm style door </li>
+ <li> Implementing a logging system of every attempt</li>
+ <li> Sensing when the door closes to better time the lock feature </li>
   
  </ul>
