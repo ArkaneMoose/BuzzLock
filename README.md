@@ -63,7 +63,7 @@ In further detail, we approach this problem with an object oriented mindset. We 
 <H3> User Instructions </H3>
 <H5> Initialization </H5>
 
-Upon startup, this device will be uninitialized and display the status message "Hello! Please swipe your BuzzCard to begin set up." Once the user swipes a magstripe card, the initialization screen will display, allowing the owner of the system to input their information and preferences. Clicking the 'Save' button will save the user to the database. <br/>
+Upon startup, no devices will be uninitialized and the display will show the status message "Hello! Please swipe your BuzzCard to begin set up." Once the user swipes a magstripe card, the initialization screen will display, allowing the owner of the system to input their information and preferences. Clicking the 'Save' button will save the user to the database. <br/>
 
 The screen will now be in idle until an authentication method (card swipe or Bluetooth selected) is performed.  If the authentication method is already in the database, the user will be prompted for a second authentication method.  If the authentication method is not know, the user will be prompted to create a user account, but will not be able to open the door.  
 Upon correct entry of the second authentication method and sufficient permissions (full or limited) the user will be able to open the lock and enter the the options menu to edit fields such as name, phone number, authentication methods, etc.  <br/>
