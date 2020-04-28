@@ -52,6 +52,7 @@ namespace BuzzLockGui
                 listUsers.Items.Add(user);
                 Console.WriteLine("Adding user: " + user);
             }
+            if (_selectedUser == null) listUsers.SelectedIndex = 0;
         }
 
         private void btnOptionsSave_Click(object sender, EventArgs e)
@@ -71,6 +72,31 @@ namespace BuzzLockGui
                     _selectedUser.PermissionLevel = User.PermissionLevels.NONE;
                     break;
             }
+            AuthenticationMethod primary = null;
+            AuthenticationMethod secondary = null;
+            switch (cbxPrimAuth.SelectedItem.ToString())
+            {
+                case "Bluetooth":
+                    primary = (BluetoothDevice)cbxBTSelect1.SelectedItem;
+                    break;
+                case "Card":
+                    primary = new Card(tbxCard.Text);
+                    break;
+            }
+            switch (cbxSecAuth.SelectedItem.ToString())
+            {
+                case "Card":
+                    secondary = new Card(tbxCard.Text);
+                    break;
+                case "Bluetooth":
+                    secondary = (BluetoothDevice)cbxBTSelect2.SelectedItem;
+                    break;
+                case "PIN":
+                    secondary = new Pin(tbxPin.Text);
+                    break;
+            }
+            _selectedUser.AuthenticationMethods = new AuthenticationMethods(primary, secondary);
+
 
             populateUsers(null, EventArgs.Empty);
         }
@@ -80,6 +106,14 @@ namespace BuzzLockGui
             btnAddUser.Enabled = _globalState != State.UserManagement_AddUser;
             btnRemoveUser.Enabled = _currentUser != _selectedUser;
             btnClose.Enabled = _globalState != State.UserManagement_AddUser;
+
+            // Multiple States
+            acceptMagStripeInput = _globalState == State.Uninitialized
+                                || _globalState == State.Initializing
+                                || _globalState == State.Idle
+                                || _globalState == State.UserOptions_EditAuth
+                                || _globalState == State.UserManagement
+                                || _globalState == State.UserManagement_AddUser;
 
             AuthenticationMethod primary = _selectedUser.AuthenticationMethods.Primary;
             AuthenticationMethod secondary = _selectedUser.AuthenticationMethods.Secondary;
@@ -265,8 +299,8 @@ namespace BuzzLockGui
 
                 if (result == DialogResult.Yes)
                 {
-                    listUsers.Items.Remove(_selectedUser);
                     _selectedUser.Delete();
+                    populateUsers(listUsers, EventArgs.Empty);
                     UpdateComponents();
                 }
             }
@@ -290,6 +324,74 @@ namespace BuzzLockGui
             _globalState = State.UserOptions;
             this.Hide();
             _formOptions.Show();
+        }
+
+        protected override void OnValidate() {
+            btnSaveUser.Enabled = NoErrors;
+        }
+
+        protected new void ValidateTextBox(object sender, EventArgs e)
+            => base.ValidateTextBox(sender, e);
+        protected new void ValidatePhoneBox(object sender, EventArgs e)
+            => base.ValidatePhoneBox(sender, e);
+        protected new void ValidatePinBox(object sender, EventArgs e)
+            => base.ValidatePinBox(sender, e);
+        protected new void ValidateComboBox(object sender, EventArgs e)
+            => base.ValidateComboBox(sender, e);
+
+        protected new void numberpad_Click(object sender, EventArgs e)
+            => base.numberpad_Click(sender, e);
+        protected new void keyboard_Click(object sender, EventArgs e)
+            => base.keyboard_Click(sender, e);
+        protected new void keyboardClose_Leave(object sender, EventArgs e)
+            => base.keyboardClose_Leave(sender, e);
+
+        private bool newCardEntry = false;
+        private string cardInput = "";
+        private void FormUserManagement_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //Console.WriteLine("Form Start Key Pressed");
+            Console.WriteLine("Pressed: " + e.KeyChar);
+            //Console.WriteLine("Shift: " + shift);
+            //Console.WriteLine("New Card Entry: " + newCardEntry);
+
+            // Disallow unwanted mag stripe interference in other states
+            if (!acceptMagStripeInput) return;
+
+            // Check KeyPressed to see if it's the beginning of a new card entry
+            if (e.KeyChar == ';' || (e.KeyChar == '%'))
+            {
+                newCardEntry = true;
+            }
+
+            if (newCardEntry)
+            {
+                // Stop adding to card input string when "Return" is entered
+                if (e.KeyChar == '\r') //|| e.KeyChar == '\n')
+                {
+                    // Check for invalid read before anything else
+                    if (cardInput.Contains(";E?") || cardInput.Contains("%E?") || cardInput.Contains("+E?"))
+                    {
+                        // Invalid read. Swipe again.
+                        newCardEntry = false;
+                        cardInput = "";
+                        Console.WriteLine("Invalid read. Swipe again.");
+                        return;
+                    }
+
+                    Console.WriteLine(cardInput);
+                    tbxCard.Text = cardInput;
+                    newCardEntry = false;
+                    // Reset cardInput to allow for a new card swipe to be registered
+                    cardInput = "";
+                    return;
+                }
+                else
+                {
+                    cardInput += e.KeyChar;
+                    newCardEntry = true;
+                }
+            }
         }
     }
 }

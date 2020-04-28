@@ -67,7 +67,6 @@ namespace BuzzLockGui
 
         private void FormStart_Load(object sender, EventArgs e)
         {
-
             this.WindowState = FormWindowState.Normal;
             loseFocus();
             // this.TopMost = true;
@@ -79,7 +78,7 @@ namespace BuzzLockGui
         {
             this.UpdateComponents();
             RestartTimer();
-            RestartAccessDeniedTimer();
+            //RestartAccessDeniedTimer();
             base.Show();
         }
 
@@ -508,8 +507,10 @@ namespace BuzzLockGui
                                   || _globalState == State.Authenticated;
             acceptMagStripeInput = _globalState == State.Uninitialized
                                 || _globalState == State.Initializing
-                                || _globalState == State.Idle 
-                                || _globalState == State.UserOptions_EditAuth;
+                                || _globalState == State.Idle
+                                || _globalState == State.UserOptions_EditAuth
+                                || _globalState == State.UserManagement
+                                || _globalState == State.UserManagement_AddUser;
 
             switch (_globalState)
             {
@@ -685,7 +686,7 @@ namespace BuzzLockGui
         private void timerTxtAuthStatus_Tick(object sender, EventArgs e)
         {
             txtAuthStatus.Text = "If you wish to edit your account, click Options."
-                    + "Otherwise, this screen will timeout in "
+                    + " Otherwise, this screen will timeout in "
                     + Utility.Pluralize((10 - stopWatchAuthStatus.Elapsed.Seconds), "second") + ".";
         }
 
@@ -717,7 +718,7 @@ namespace BuzzLockGui
         private void btnDebugAuthUser_Click(object sender, EventArgs e)
         {
             _globalState = State.Authenticated;
-            _currentUser = new User(1);
+            _currentUser = User.GetAll().First();
             UpdateComponents();
         }
 

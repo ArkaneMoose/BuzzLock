@@ -40,6 +40,7 @@ namespace BuzzLockGui
 
             foreach (Control control in Controls)
             {
+                if (control.Name == "btnUserManagement") break;
                 control.MouseClick += OnAnyMouseClick;
             }
         }
@@ -191,17 +192,14 @@ namespace BuzzLockGui
         {
             // Check to see if this is the last user with FULL permissions
             List<User> userList = User.GetAll();
-            int numUsersFULLPermission = 0;
+            int numUsersFULLPermission = -1;
             foreach (User user in userList)
             {
-                if (!user.Equals(_currentUser))
-                {
-                    numUsersFULLPermission += 1;
-                }
+                numUsersFULLPermission += 1;
             }
 
             string removalMsg = "Are you sure you want to remove your user? This cannot be undone.";
-            if (numUsersFULLPermission == 0)
+            if (numUsersFULLPermission == 0 && _currentUser.PermissionLevel == User.PermissionLevels.FULL)
             {
                 removalMsg = "Are you sure you want to remove your user? This cannot be undone. \n\n" +
                     "You are the last user with FULL permissions. Deleting yourself will also delete any other users.";
@@ -357,9 +355,16 @@ namespace BuzzLockGui
 
             //UserManagement
 
+            // Multiple States
+            acceptMagStripeInput = _globalState == State.Uninitialized
+                                || _globalState == State.Initializing
+                                || _globalState == State.Idle
+                                || _globalState == State.UserOptions_EditAuth
+                                || _globalState == State.UserManagement
+                                || _globalState == State.UserManagement_AddUser;
 
             //Set the welcome textbox with user name and permissions
-            tbxStatus.Text = $"Welcome, {_currentUser.Name}. You have {_currentUser.PermissionLevel} permissions.";
+            txtStatus.Text = $"Welcome, {_currentUser.Name}. You have {_currentUser.PermissionLevel} permissions.";
 
             switch (_globalState)
             {
@@ -553,9 +558,17 @@ namespace BuzzLockGui
         private void btnUserManagement_Click(object sender, EventArgs e)
         {
             _globalState = State.UserManagement;
+            StopTimer();
             _formUserManagement.Show();
             this.Hide();
         }
+
+        protected new void numberpad_Click(object sender, EventArgs e)
+            => base.numberpad_Click(sender, e);
+        protected new void keyboard_Click(object sender, EventArgs e)
+            => base.keyboard_Click(sender, e);
+        protected new void keyboardClose_Leave(object sender, EventArgs e)
+            => base.keyboardClose_Leave(sender, e);
     }
 
 }
