@@ -8,7 +8,7 @@ namespace BuzzLockGui.Backend.Native
     class Libc
     {
         internal const int AF_BLUETOOTH = 31;
-        internal const int SOCK_SEQPACKET = 5;
+        internal const int SOCK_RAW = 3;
         internal const int BTPROTO_L2CAP = 0;
         internal const int SHUT_RDWR = 2;
 

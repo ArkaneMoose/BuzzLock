@@ -21,7 +21,6 @@ namespace BuzzLockGui.Backend
         private const short RSSI_THRESHOLD_BT_LOW_ENERGY = -60;
 
         private const string busName = "org.bluez";
-        private const ushort l2capPsm = 31;
         private static readonly Connection system = Bus.System;
         private static ObjectManager objectManager
             = system.GetObject<ObjectManager>(busName, new ObjectPath("/"));
@@ -564,15 +563,17 @@ namespace BuzzLockGui.Backend
                     Libbluetooth.sockaddr_l2 addr = new Libbluetooth.sockaddr_l2
                     {
                         l2_family = Libc.AF_BLUETOOTH,
-                        l2_psm = Libbluetooth.htobs(l2capPsm),
-                        l2_bdaddr = address
+                        l2_psm = 0,
+                        l2_bdaddr = address,
+                        l2_bdaddr_type = 0,
+                        l2_cid = 0
                     };
                     while (true)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         sockfd = Libc.socket(
                             Libc.AF_BLUETOOTH,
-                            Libc.SOCK_SEQPACKET,
+                            Libc.SOCK_RAW,
                             Libc.BTPROTO_L2CAP);
                         if (sockfd < 0)
                         {
