@@ -54,8 +54,10 @@ The program is implemented as a state machine with 11 states, whose diagram you 
 In further detail, we approach this problem with an object oriented mindset. We created 4 Windows Forms: FormBuzzLock (a base class from which our 3 other forms inherit), FormStart, FormOptions, and FormUserManagement, which carry out the state machine's execution. 
 
 - **FormStart** implements all the states in which the door is locked. 
-- **FormOptions** allows users with LIMITED permissions to change their name, **phone number**, and authentication methods. 
+- **FormOptions** allows users with LIMITED permissions to change their name, phone number, and authentication methods. 
 - **FormUserManagement** allows users with FULL permissions to edit any user's profile, authentication methods and permissions, in addition to adding and removing users.
+
+<H2> Backend </H2>
 
 
 
@@ -79,5 +81,4 @@ This semester came with significant limitation, so we have many ideas for future
  <li> Connecting it to a real dorm style door </li>
  <li> Implementing a logging system of every attempt</li>
  <li> Sensing when the door closes to better time the lock feature </li>
-  
  </ul>
