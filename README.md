@@ -70,3 +70,12 @@ Upon correct entry of the second authentication method and sufficient permission
 
 If the authenticated user had full permissions they will be able to add and remove users from the options menu.  
 
+<H3> Further Work </H3>
+
+This semester came with significant limitation, so we have many ideas for future expansions on the project:
+<ul>
+  <li> Have users will FULL permissions be notified by text message when a user with NONE permissions enters their authentication information</li>
+ <li> Implement encryptions and techniques for making the system more secure </li>
+ <li> 
+  
+ </ul>
