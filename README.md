@@ -31,15 +31,15 @@ The USB magnetic stripe card reader acts as a keyboard. We use the unique format
 
 <H5> Authentication Methods </H5>
 
-For ultimate security, we enforce a two factor authentication system in which users can unlock the door by combining two out of three different authentication methods: swiping a card, entering a pin and coming into range with a recognized bluetooth device. Users can change their authentication methods any time they access the system.
+For ultimate security, we enforce a two factor authentication system in which users can unlock the door by combining two out of three different authentication methods: swiping a card, entering a pin, and coming into range with a recognized Bluetooth device. Users are permitted to change their authentication methods any time they access the system.
 
 <H5> Permissions system </H5>
 
-For finer granularity in who is able to use the system, we came up with a permission system. There are currently 3 possible permission levels a User may have:
+For finer granularity in who is able to use the system, we have a permission system. There are currently 3 possible permission levels a user may have:
 
 - **NONE:** Cannot unlock the door or access the options menu, but their information is stored in the database.
 - **LIMITED:** Can unlock the door and access the options menu, but cannot change other user's information.
-- **FULL:** Can unlock the door, access the user management system and change any user's information.
+- **FULL:** Can unlock the door, access the user management system, and change any user's information.
 
 The first user to initialize the system receives a FULL permission level. Subsequent users receive NONE permissions by default, though an administrator can later upgrade a user's permission level. 
 
@@ -64,7 +64,9 @@ In further detail, we approach this problem with an object oriented mindset. We 
 <H5> Initialization </H5>
 
 Upon startup, this device will be uninitialized and display the status message "Hello! Please swipe your BuzzCard to begin set up." Once the user swipes a magstripe card, the initialization screen will display, allowing the owner of the system to input their information and preferences. Clicking the 'Save' button will save the user to the database. <br/>
+
 The screen will now be in idle until an authentication method (card swipe or Bluetooth selected) is performed.  If the authentication method is already in the database, the user will be prompted for a second authentication method.  If the authentication method is not know, the user will be prompted to create a user account, but will not be able to open the door.  
 Upon correct entry of the second authentication method and sufficient permissions (full or limited) the user will be able to open the lock and enter the the options menu to edit fields such as name, phone number, authentication methods, etc.  <br/>
+
 If the authenticated user had full permissions they will be able to add and remove users from the options menu.  
 
