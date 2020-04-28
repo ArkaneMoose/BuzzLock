@@ -46,6 +46,27 @@ namespace BuzzLockGui
             this.MouseClick += keyboardClose_Leave;
         }
 
+        private void FormUserManagement_Load(object sender, EventArgs e)
+        {
+            //this.TopMost = true;
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
+        }
+
+        public new void Show()
+        {
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
+            base.Show();
+        }
+
+        public new void Hide()
+        {
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
+            base.Hide();
+        }
+
         private void formUserManagement_Activated(object sender, EventArgs e)
         {
             populateUsers(sender, e);

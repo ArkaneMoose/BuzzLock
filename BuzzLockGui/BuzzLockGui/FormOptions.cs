@@ -57,9 +57,9 @@ namespace BuzzLockGui
         }
         private void FormOptions_Load(object sender, EventArgs e)
         {
-            // this.TopMost = true;
-            // this.FormBorderStyle = FormBorderStyle.None;
-            // this.WindowState = FormWindowState.Maximized;
+            //this.TopMost = true;
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
         }
         private void FormOptions_Activated(object sender, EventArgs e)
         {
@@ -70,12 +70,16 @@ namespace BuzzLockGui
         {
             this.UpdateComponents();
             RestartTimer();
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
             base.Show();
         }
 
         public new void Hide()
         {
             StopTimer();
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
             base.Hide();
         }
 
@@ -219,8 +223,8 @@ namespace BuzzLockGui
             {
                 removalMsg = "Are you sure you want to remove your user? This cannot be undone. \n\n" +
                     "You are the last user with FULL permissions. Deleting yourself will also delete any other users.";
-            } 
-            
+            }
+
 
             // Initializes and displays the AutoClosingMessageBox.
             var result = AutoClosingMessageBox.Show(
@@ -342,8 +346,6 @@ namespace BuzzLockGui
             btnEditAuth.Visible = _globalState == State.UserOptions;
             btnEditProfile.Visible = _globalState == State.UserOptions;
             btnRemoveUser.Visible = _globalState == State.UserOptions;
-            btnUserManagement.Visible = _globalState == State.UserOptions 
-                && _currentUser.PermissionLevel == User.PermissionLevels.FULL;
             txtEditAuth.Visible = _globalState == State.UserOptions;
             txtEditProfile.Visible = _globalState == State.UserOptions;
             txtRemoveUser.Visible = _globalState == State.UserOptions;
