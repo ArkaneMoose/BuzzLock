@@ -70,8 +70,6 @@
             this.tbxSecFactorPinOrCard = new System.Windows.Forms.TextBox();
             this.txtSecFactorPinOrCard = new System.Windows.Forms.Label();
             this.timerBTIdleBTDeviceListUpdate = new System.Windows.Forms.Timer(this.components);
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.userError)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errNewUser)).BeginInit();
             this.SuspendLayout();
@@ -483,35 +481,11 @@
             this.timerBTIdleBTDeviceListUpdate.Interval = 5000;
             this.timerBTIdleBTDeviceListUpdate.Tick += new System.EventHandler(this.RefreshBTDeviceLists);
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(605, 262);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(144, 23);
-            this.button1.TabIndex = 42;
-            this.button1.Text = "Debug: Servo Open";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(605, 293);
-            this.button2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(144, 23);
-            this.button2.TabIndex = 43;
-            this.button2.Text = "Debug: Servo Close";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
             // FormStart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 442);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.txtSecFactorPinOrCard);
             this.Controls.Add(this.tbxSecFactorPinOrCard);
             this.Controls.Add(this.txtSecondFactorStatus);
@@ -546,7 +520,7 @@
             this.Controls.Add(this.listIdleBTDevices);
             this.Controls.Add(this.txtAuthStatus);
             this.Controls.Add(this.cbxBTSelect2);
-            this.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.Margin = new System.Windows.Forms.Padding(8);
             this.Name = "FormStart";
             this.Text = "BuzzLock";
             this.Activated += new System.EventHandler(this.FormStart_Activated);
@@ -603,8 +577,6 @@
         private System.Windows.Forms.Label txtSecFactorPinOrCard;
         private System.Windows.Forms.TextBox tbxSecFactorPinOrCard;
         private System.Windows.Forms.Timer timerBTIdleBTDeviceListUpdate;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
     }
 }
 

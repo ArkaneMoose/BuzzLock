@@ -962,25 +962,5 @@ namespace BuzzLockGui
                     break;
             }
         }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            if (IS_LINUX)
-            {
-                servo.SoftPwmValue = 25;
-                Thread.Sleep(850);
-                servo.SoftPwmValue = 0;
-            }
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            if (IS_LINUX)
-            {
-                servo.SoftPwmValue = 5;
-                Thread.Sleep(850);
-                servo.SoftPwmValue = 0;
-            }
-        }
     }
 }
