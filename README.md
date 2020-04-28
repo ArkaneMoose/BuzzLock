@@ -17,7 +17,7 @@ Living in the dorms and having to carry around a key can be annoying. Students l
 <H3> Schematic and Block Diagram </H3>
 
 Schematic with servo connecting to Raspberry Pi
- <img src="Documentation/4180 Schematic Window.png" width="700" align="middle" alt="BuzzLock Schematic"> 
+ <div style="text-align:center"><img src="Documentation/4180 Schematic Window.png" width="700" align="middle" alt="BuzzLock Schematic"></div>
 
  Block diagram of all component connections
  <img src="Documentation/Screen Shot 2020-04-28 at 3.59.49 PM.png" alt="BuzzLock Block Diagram"> 
