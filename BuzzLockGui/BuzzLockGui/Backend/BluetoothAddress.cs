@@ -68,7 +68,7 @@ namespace BuzzLockGui.Backend
             }
 
             this.address = 0L;
-            foreach (byte octet in address)
+            foreach (byte octet in address.Reverse())
             {
                 this.address <<= 8;
                 this.address |= octet;
@@ -88,7 +88,7 @@ namespace BuzzLockGui.Backend
         {
             return string.Join(
                 separator,
-                ToBytes().Select(octet => octet.ToString(uppercase ? "X2" : "x2")));
+                ToBytes().Reverse().Select(octet => octet.ToString(uppercase ? "X2" : "x2")));
         }
 
         public override string ToString()
@@ -100,7 +100,7 @@ namespace BuzzLockGui.Backend
         {
             byte[] buffer = new byte[6];
             long addressTemp = address;
-            for (int i = buffer.Length - 1; i >= 0; i--)
+            for (int i = 0; i < buffer.Length; i++)
             {
                 buffer[i] = (byte)(addressTemp & 0xFF);
                 addressTemp >>= 8;

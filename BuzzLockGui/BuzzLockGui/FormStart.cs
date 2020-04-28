@@ -28,6 +28,7 @@ namespace BuzzLockGui
 
         public FormStart()
         {
+            Console.WriteLine("Mode set result: " + BluetoothService.SetModeAsync(BluetoothService.Mode.MONITORING).Result);
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
             this.Left = Top = 0;
@@ -901,18 +902,19 @@ namespace BuzzLockGui
             {
                 new BluetoothDevice(new BluetoothAddress("00:11:22:33:44:55"), "Andrew's iPhone")
             };
-            return dummyList;
+            return BluetoothDevice.GetAllAvailable().Result.ToList();
         }
 
         private List<BluetoothDevice> getBTDevicesInRangeAndRecognized()
         {
-            List<BluetoothDevice> inRange = getBTDevicesInRange();
+            /*List<BluetoothDevice> inRange = getBTDevicesInRange();
             List<BluetoothDevice> inRangeAndRecognized = new List<BluetoothDevice>();
             foreach (BluetoothDevice bt in inRange)
             {
                 if (AuthenticationSequence.Start(bt) != null) inRangeAndRecognized.Add(bt);
             }
-            return inRangeAndRecognized;
+            return inRangeAndRecognized;*/
+            return BluetoothDevice.GetAllAvailable().Result.ToList();
         }
 
         protected new void ValidateTextBox(object sender, EventArgs e)
