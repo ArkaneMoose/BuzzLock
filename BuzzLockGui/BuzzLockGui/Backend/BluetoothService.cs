@@ -1,6 +1,4 @@
-﻿using Tmds.DBus;
-using bluez.DBus;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using BuzzLockGui.Backend.Native;
@@ -9,7 +7,8 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Collections.Concurrent;
 using System.Data.SQLite;
-using Unosquare.RaspberryIO.Computer;
+using NDesk.DBus;
+using org.bluez;
 
 namespace BuzzLockGui.Backend
 {
@@ -23,13 +22,14 @@ namespace BuzzLockGui.Backend
 
         private const string busName = "org.bluez";
         private const ushort l2capPsm = 31;
-        private static readonly Connection system = Connection.System;
-        private static IObjectManager objectManager = system.CreateProxy<IObjectManager>(busName, "/");
-        private static HashSet<ObjectPath> adaptersDiscovering = new HashSet<ObjectPath>();
+        private static readonly Connection system = Bus.System;
+        private static ObjectManager objectManager
+            = system.GetObject<ObjectManager>(busName, new ObjectPath("/"));
+        private static HashSet<IAdapter1> adaptersDiscovering = new HashSet<IAdapter1>();
         private static ConcurrentDictionary<BluetoothAddress, BluetoothConnection> connections
             = new ConcurrentDictionary<BluetoothAddress, BluetoothConnection>();
         private static Mode mode = Mode.UNINITIALIZED;
-        private static Task modeSwitchTask = null;
+        private static Task modeSwitchTask = Task.CompletedTask;
 
         /// <summary>
         /// The state of the Bluetooth discovery and monitoring service.
@@ -51,7 +51,7 @@ namespace BuzzLockGui.Backend
         /// </returns>
         public static Mode? GetMode()
         {
-            return modeSwitchTask is null ? (Mode?)mode : null;
+            return modeSwitchTask.IsCompleted ? (Mode?)mode : null;
         }
 
         /// <summary>
@@ -63,10 +63,7 @@ namespace BuzzLockGui.Backend
         /// </returns>
         public static async Task<Mode> GetModeAsync()
         {
-            while (modeSwitchTask is object)
-            {
-                await modeSwitchTask;
-            }
+            await modeSwitchTask;
             return mode;
         }
 
@@ -97,12 +94,66 @@ namespace BuzzLockGui.Backend
         {
             Mode prevMode = mode;
             mode = desiredMode;
-            if (modeSwitchTask is null && prevMode != desiredMode)
+            if (modeSwitchTask.IsCompleted && prevMode != desiredMode)
             {
                 modeSwitchTask = ChangeMode(prevMode);
             }
             await modeSwitchTask;
             return mode == desiredMode;
+        }
+
+        /// <summary>
+        /// Gets all available Bluetooth devices in range. What counts as
+        /// available depends on the mode as reported by <see cref="GetMode"/>.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IEnumerable{T}"/> of the available
+        /// <see cref="BluetoothDevice"/>s.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// When the mode is <see cref="Mode.SCANNING"/>, all discoverable
+        /// Bluetooth devices are returned. Discoverable Bluetooth devices are
+        /// the ones with visible names.
+        /// </para>
+        /// <para>
+        /// When the mode is <see cref="Mode.MONITORING"/>, the behavior
+        /// differs for classic Bluetooth devices and BLE devices. The service
+        /// tries to connect to all known classic Bluetooth devices constantly.
+        /// The RSSI can be fetched for any connected classic Bluetooth device,
+        /// so classic Bluetooth devices are returned if they are connected and
+        /// their RSSI is greater than <see cref="RSSI_THRESHOLD_BT_CLASSIC"/>.
+        /// In contrast, BLE devices are scanned using the same discovery
+        /// procedure as for <see cref="Mode.SCANNING"/>, but only devices with
+        /// addresses in the database are considered, and the service does not
+        /// require them to have their names discoverable at time of
+        /// monitoring.
+        /// </para>
+        /// <para>
+        /// Any other mode, in particular <see cref="Mode.UNINITIALIZED"/>,
+        /// causes an <see cref="InvalidOperationException"/> to be thrown. The
+        /// same is also thrown if a mode switch is in progress. To wait until
+        /// all mode switches are complete before completing, use
+        /// <see cref="GetAvailableBluetoothDevicesAsync"/>.
+        /// </para>
+        /// </remarks>
+        public static IEnumerable<BluetoothDevice> GetAvailableBluetoothDevices()
+        {
+            Mode? mode = GetMode();
+            Console.Write($"Mode is null: {mode is null}");
+            Console.Write($"Mode switch task is null: {modeSwitchTask is null}");
+            Console.Write($"Mode switch task: {modeSwitchTask}");
+            switch (mode)
+            {
+                case Mode.SCANNING:
+                    return GetAvailableBluetoothDevicesFromScan();
+                case Mode.MONITORING:
+                    return GetAvailableBluetoothDevicesFromMonitoring();
+                default:
+                    throw new InvalidOperationException(
+                        "Must set mode for Bluetooth service or wait for mode "
+                        + "change to complete");
+            }
         }
 
         /// <summary>
@@ -140,27 +191,26 @@ namespace BuzzLockGui.Backend
         /// </para>
         /// </remarks>
         public static async Task<IEnumerable<BluetoothDevice>>
-            GetAvailableBluetoothDevices()
+            GetAvailableBluetoothDevicesAsync()
         {
             Mode mode = await GetModeAsync();
             switch (mode)
             {
                 case Mode.SCANNING:
-                    return await GetAvailableBluetoothDevicesFromScan();
+                    return GetAvailableBluetoothDevicesFromScan();
                 case Mode.MONITORING:
-                    return await GetAvailableBluetoothDevicesFromMonitoring();
+                    return GetAvailableBluetoothDevicesFromMonitoring();
                 default:
                     throw new InvalidOperationException(
                         "Must set mode for Bluetooth service");
             }
         }
 
-        private static async Task<IEnumerable<BluetoothDevice>>
+        private static IEnumerable<BluetoothDevice>
             GetAvailableBluetoothDevicesFromScan()
         {
             string iface = GetDBusInterfaceName<IDevice1>();
-            var objects = await objectManager.GetManagedObjectsAsync();
-            return objects
+            return objectManager.GetManagedObjects()
                 .Where(pair => pair.Value.ContainsKey(iface))
                 .Select(pair => pair.Value[iface])
                 .Where(device =>
@@ -171,7 +221,7 @@ namespace BuzzLockGui.Backend
                         (string)device["Address"], (string)device["Name"]));
         }
 
-        private static async Task<IEnumerable<BluetoothDevice>>
+        private static IEnumerable<BluetoothDevice>
             GetAvailableBluetoothDevicesFromMonitoring()
         {
             Console.WriteLine("GetAvailableBluetoothDevicesFromMonitoring"); // !!DEBUG!!
@@ -235,7 +285,7 @@ namespace BuzzLockGui.Backend
                 }
                 try
                 {
-                    return pair.Value
+                    return (IEnumerable<BluetoothDevice>)pair.Value
                         .Where(addressHandlePair =>
                         {
                             ushort handle = addressHandlePair.handle;
@@ -250,7 +300,8 @@ namespace BuzzLockGui.Backend
                             return rssi >= RSSI_THRESHOLD_BT_CLASSIC;
                         })
                         .Select(addressHandlePair =>
-                            new BluetoothDevice(addressHandlePair.address));
+                            new BluetoothDevice(addressHandlePair.address))
+                        .ToList();
                 }
                 finally
                 {
@@ -266,7 +317,7 @@ namespace BuzzLockGui.Backend
             Console.WriteLine($"Get...FromMonitoring: iface is {iface}. GetManagedObjectsAsync"); // !!DEBUG!!
             try
             { // !!DEBUG!!
-            var objects = await objectManager.GetManagedObjectsAsync();
+            var objects = objectManager.GetManagedObjects();
             Console.WriteLine($"Get...FromMonitoring: got {objects.Count} objects"); // !!DEBUG!!
             IEnumerable<BluetoothDevice> bleInRange = objects
                 .Where(pair => pair.Value.ContainsKey(iface))
@@ -293,27 +344,24 @@ namespace BuzzLockGui.Backend
         {
             await ExitMode(fromMode);
             Mode toMode = mode;
-            await EnterMode(toMode);
-            modeSwitchTask = mode != toMode ? ChangeMode(toMode) : null;
+            EnterMode(toMode);
         }
 
-        private static async Task EnterMode(Mode mode)
+        private static void EnterMode(Mode mode)
         {
             switch (mode)
             {
                 case Mode.SCANNING:
                     Console.WriteLine("EnterMode: entering SCANNING mode"); // !!DEBUG!!
-                    await StartDiscovery(new Dictionary<string, object>());
+                    StartDiscovery(new Dictionary<string, object>());
                     Console.WriteLine("EnterMode: started discovery"); // !!DEBUG!!
                     break;
                 case Mode.MONITORING:
                     Console.WriteLine("EnterMode: entering MONITORING mode"); // !!DEBUG!!
                     OpenConnections();
                     Backend.Update += OnDatabaseUpdate;
-                    Console.WriteLine("EnterMode: managed objects test"); // !!DEBUG!!
-                    Console.WriteLine(Connection.System.CreateProxy<IObjectManager>(busName, "/").GetManagedObjectsAsync().Result);
                     Console.WriteLine("EnterMode: start discovery"); // !!DEBUG!!
-                    await StartDiscovery(new Dictionary<string, object>
+                    StartDiscovery(new Dictionary<string, object>
                     {
                         ["Transport"] = "le"
                     });
@@ -327,37 +375,35 @@ namespace BuzzLockGui.Backend
             switch (mode)
             {
                 case Mode.SCANNING:
-                    await StopDiscovery();
+                    StopDiscovery();
                     break;
                 case Mode.MONITORING:
                     Backend.Update -= OnDatabaseUpdate;
-                    await Task.WhenAll(new Task[] {
-                        StopDiscovery(),
-                        CloseConnections()
-                    });
+                    StopDiscovery();
+                    await CloseConnections();
                     break;
             }
         }
 
-        private static async Task<IEnumerable<ObjectPath>>
+        private static IEnumerable<ObjectPath>
             GetObjectPathsWithInterface(string iface)
         {
-            var objects = await objectManager.GetManagedObjectsAsync();
+            var objects = objectManager.GetManagedObjects();
             return objects
                 .Where(pair => pair.Value.ContainsKey(iface))
                 .Select(pair => pair.Key);
         }
 
-        private static async Task<IEnumerable<T>> GetObjectsWithInterface<T>()
+        private static IEnumerable<T> GetObjectsWithInterface<T>()
         {
             return CreateProxies<T>(
-                await GetObjectPathsWithInterface(GetDBusInterfaceName<T>()));
+                GetObjectPathsWithInterface(GetDBusInterfaceName<T>()));
         }
 
         private static string GetDBusInterfaceName<T>()
         {
-            DBusInterfaceAttribute attribute = (DBusInterfaceAttribute)
-                Attribute.GetCustomAttribute(typeof(T), typeof(DBusInterfaceAttribute));
+            InterfaceAttribute attribute = (InterfaceAttribute)
+                Attribute.GetCustomAttribute(typeof(T), typeof(InterfaceAttribute));
             return attribute.Name;
         }
 
@@ -365,45 +411,48 @@ namespace BuzzLockGui.Backend
             CreateProxies<T>(IEnumerable<ObjectPath> objectPaths)
         {
             return objectPaths.Select(
-                path => system.CreateProxy<T>(busName, path));
+                path => system.GetObject<T>(busName, path));
         }
 
-        private static async Task StartDiscovery(
-            IDictionary<string, object> filter)
+        private static void StartDiscovery(IDictionary<string, object> filter)
         {
-            await StartDiscovery(
-                await GetObjectsWithInterface<IAdapter1>(), filter);
+            StartDiscovery(GetObjectsWithInterface<IAdapter1>(), filter);
         }
 
-        private static Task StartDiscovery(
+        private static void StartDiscovery(
             IEnumerable<IAdapter1> adapters, IDictionary<string, object> filter)
         {
-            return Task.WhenAll(adapters.Select(adapter =>
-                StartDiscovery(adapter, filter)));
+            foreach (IAdapter1 adapter in adapters)
+            {
+                StartDiscovery(adapter, filter);
+            }
         }
 
-        private static async Task StartDiscovery(
+        private static void StartDiscovery(
             IAdapter1 adapter, IDictionary<string, object> filter)
         {
-            await adapter.SetDiscoveryFilterAsync(filter);
-            await adapter.StartDiscoveryAsync();
-            adaptersDiscovering.Add(adapter.ObjectPath);
+            adapter.SetDiscoveryFilter(filter);
+            adapter.StartDiscovery();
+            adaptersDiscovering.Add(adapter);
         }
 
-        private static Task StopDiscovery()
+        private static void StopDiscovery()
         {
-            return StopDiscovery(CreateProxies<IAdapter1>(adaptersDiscovering));
+            StopDiscovery(adaptersDiscovering);
         }
 
-        private static Task StopDiscovery(IEnumerable<IAdapter1> adapters)
+        private static void StopDiscovery(IEnumerable<IAdapter1> adapters)
         {
-            return Task.WhenAll(adapters.Select(StopDiscovery));
+            foreach (IAdapter1 adapter in adapters)
+            {
+                StopDiscovery(adapter);
+            }
         }
 
-        private static async Task StopDiscovery(IAdapter1 adapter)
+        private static void StopDiscovery(IAdapter1 adapter)
         {
-            await adapter.StopDiscoveryAsync();
-            adaptersDiscovering.Remove(adapter.ObjectPath);
+            adapter.StopDiscovery();
+            adaptersDiscovering.Remove(adapter);
         }
 
         private static Task CloseConnections()

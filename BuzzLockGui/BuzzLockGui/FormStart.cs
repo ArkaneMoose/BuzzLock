@@ -902,7 +902,14 @@ namespace BuzzLockGui
             {
                 new BluetoothDevice(new BluetoothAddress("00:11:22:33:44:55"), "Andrew's iPhone")
             };
-            return BluetoothDevice.GetAllAvailable().Result.ToList();
+            try
+            {
+                return BluetoothDevice.GetAllAvailable().ToList();
+            }
+            catch (InvalidOperationException)
+            {
+                return new List<BluetoothDevice>();
+            }
         }
 
         private List<BluetoothDevice> getBTDevicesInRangeAndRecognized()
@@ -914,7 +921,7 @@ namespace BuzzLockGui
                 if (AuthenticationSequence.Start(bt) != null) inRangeAndRecognized.Add(bt);
             }
             return inRangeAndRecognized;*/
-            return BluetoothDevice.GetAllAvailable().Result.ToList();
+            return getBTDevicesInRange();
         }
 
         protected new void ValidateTextBox(object sender, EventArgs e)
