@@ -214,7 +214,8 @@ namespace BuzzLockGui.Backend
                 .Where(pair => pair.Value.ContainsKey(iface))
                 .Select(pair => pair.Value[iface])
                 .Where(device =>
-                    !string.IsNullOrEmpty((string)device["Name"])
+                    device.ContainsKey("Name")
+                    && !string.IsNullOrEmpty((string)device["Name"])
                     && device.ContainsKey("RSSI"))
                 .Select(device =>
                     new BluetoothDevice(

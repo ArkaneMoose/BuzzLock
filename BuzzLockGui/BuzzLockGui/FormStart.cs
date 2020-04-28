@@ -28,7 +28,6 @@ namespace BuzzLockGui
 
         public FormStart()
         {
-            Console.WriteLine("Mode set result: " + BluetoothService.SetModeAsync(BluetoothService.Mode.MONITORING).Result);
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
             this.Left = Top = 0;
@@ -511,6 +510,12 @@ namespace BuzzLockGui
                                 || _globalState == State.Initializing
                                 || _globalState == State.Idle 
                                 || _globalState == State.UserOptions_EditAuth;
+
+            _ = BluetoothService.SetModeAsync(
+                _globalState == State.Uninitialized
+                || _globalState == State.Initializing
+                ? BluetoothService.Mode.SCANNING
+                : BluetoothService.Mode.MONITORING);
 
             switch (_globalState)
             {
