@@ -297,6 +297,7 @@ namespace BuzzLockGui.Backend
                                 Libc.perror("Can't read RSSI");
                                 return false;
                             }
+                            Console.WriteLine($"RSSI {addressHandlePair.address}: {rssi}"); // !!DEBUG!!
                             return rssi >= RSSI_THRESHOLD_BT_CLASSIC;
                         })
                         .Select(addressHandlePair =>
@@ -588,8 +589,10 @@ namespace BuzzLockGui.Backend
                             if (ok < 0)
                             {
                                 Libc.perror("Couldn't connect");
+                                Console.WriteLine($"Failed to connect to {address}"); // !!DEBUG!!
                                 continue;
                             }
+                            Console.WriteLine($"Successfully connected to {address}"); // !!DEBUG!!
 
                             byte[] buffer = new byte[16];
                             int received;
