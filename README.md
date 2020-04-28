@@ -14,11 +14,22 @@ Living in the dorms and having to carry around a key can be annoying. Students l
   <li><a href="https://www.amazon.com/2xhome-Magnetic-Registry-Register-Quickbook/dp/B00E85TH9I/ref=sr_1_10?crid=UIZM18I37O7M&keywords=magstripe%2Breader&qid=1584997590&sprefix=%2Caps%2C227&sr=8-10&th=1">Magnetic Stripe Card Reader</a></li>
 </ul> 
 
-<H3> Schematic </H3>
+<H3> Schematic and Block Diagram </H3>
+
+Schematic with servo connecting to Raspberry Pi
+ <img src="Documentation/4180 Schematic Window.png" alt="BuzzLock Schematic"> 
+ 
+ Block diagram of all component connections
+ <img src="Documentation/Screen Shot 2020-04-27 at 8.40.37 PM.png" alt="BuzzLock Block Diagram"> 
+
 
 <H3> Code Description </H3>
 
 C# was used for the base functionality along with SQL for the backend database to store user data. <a href = "https://unosquare.github.io/raspberryio/">Unosquare's</a> soft PWM function was used to control the servo for opening and closing the lock.  The automatic keyboard for editing text fields such as name, phone number, PIN, etc. is provided using <a href="http://t-sato.in.coocan.jp/xvkbd/">xvkbd</a> and the command line from C#.  
+
+<H5> State Diagram </H5>
+
+<img src="Documentation/4180 State Diagram.png" alt="State Diagram">
 
 <H3> User Instructions </H3>
 <H5> Initialization </H5>

@@ -95,7 +95,6 @@ namespace BuzzLockGui
 
         private void FormStart_Load(object sender, EventArgs e)
         {
-            this.WindowState = FormWindowState.Normal;
             loseFocus();
             //this.TopMost = true;
             this.FormBorderStyle = FormBorderStyle.None;
@@ -104,6 +103,8 @@ namespace BuzzLockGui
 
         public new void Show()
         {
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
             this.UpdateComponents();
             RestartTimer();
             //RestartAccessDeniedTimer();
@@ -114,6 +115,8 @@ namespace BuzzLockGui
         {
             StopTimer();
             StopAccessDeniedTimer();
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
             base.Hide();
         }
 
@@ -577,7 +580,7 @@ namespace BuzzLockGui
                     txtStatus.Text = $"Welcome, {_currentUser.Name}. Door is unlocked.";
 
                     // Timeout stopwatch
-                    txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, this screen will timeout in 10 seconds.";
+                    txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, the door will lock in 10 seconds.";
                     stopWatchAuthStatus.Reset();
                     stopWatchAuthStatus.Start();
                     open_lock();
@@ -622,7 +625,7 @@ namespace BuzzLockGui
         private void timerTxtAuthStatus_Tick(object sender, EventArgs e)
         {
             txtAuthStatus.Text = "If you wish to edit your account, click Options."
-                    + " Otherwise, this screen will timeout in "
+                    + " Otherwise, the door will lock in "
                     + Utility.Pluralize((10 - stopWatchAuthStatus.Elapsed.Seconds), "second") + ".";
         }
 

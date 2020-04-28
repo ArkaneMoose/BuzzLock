@@ -76,11 +76,12 @@
             // 
             // btnOptionsSave
             // 
-            this.btnOptionsSave.Location = new System.Drawing.Point(605, 211);
+            this.btnOptionsSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnOptionsSave.Location = new System.Drawing.Point(390, 179);
             this.btnOptionsSave.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnOptionsSave.Name = "btnOptionsSave";
             this.btnOptionsSave.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.btnOptionsSave.Size = new System.Drawing.Size(119, 32);
+            this.btnOptionsSave.Size = new System.Drawing.Size(184, 85);
             this.btnOptionsSave.TabIndex = 2;
             this.btnOptionsSave.Text = "Options";
             this.btnOptionsSave.UseVisualStyleBackColor = true;
@@ -89,11 +90,10 @@
             // 
             // txtStatus
             // 
-            this.txtStatus.AutoSize = true;
-            this.txtStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.5F);
-            this.txtStatus.Location = new System.Drawing.Point(12, 9);
+            this.txtStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtStatus.Location = new System.Drawing.Point(8, 10);
             this.txtStatus.Name = "txtStatus";
-            this.txtStatus.Size = new System.Drawing.Size(507, 26);
+            this.txtStatus.Size = new System.Drawing.Size(673, 32);
             this.txtStatus.TabIndex = 5;
             this.txtStatus.Text = "Hello! Please swipe your BuzzCard to begin set up.";
             // 
@@ -172,6 +172,7 @@
             // 
             // cbxPrimAuth
             // 
+            this.cbxPrimAuth.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.cbxPrimAuth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxPrimAuth.FormattingEnabled = true;
             this.cbxPrimAuth.Items.AddRange(new object[] {
@@ -188,6 +189,7 @@
             // 
             // cbxSecAuth
             // 
+            this.cbxSecAuth.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.cbxSecAuth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxSecAuth.FormattingEnabled = true;
             this.cbxSecAuth.Items.AddRange(new object[] {
@@ -238,6 +240,7 @@
             // 
             // cbxBTSelect1
             // 
+            this.cbxBTSelect1.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.cbxBTSelect1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBTSelect1.FormattingEnabled = true;
             this.cbxBTSelect1.Location = new System.Drawing.Point(135, 175);
@@ -260,6 +263,7 @@
             // 
             // cbxBTSelect2
             // 
+            this.cbxBTSelect2.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.cbxBTSelect2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBTSelect2.FormattingEnabled = true;
             this.cbxBTSelect2.Location = new System.Drawing.Point(437, 175);
@@ -282,10 +286,10 @@
             // txtDate
             // 
             this.txtDate.AutoSize = true;
-            this.txtDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.5F);
-            this.txtDate.Location = new System.Drawing.Point(192, 75);
+            this.txtDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtDate.Location = new System.Drawing.Point(70, 124);
             this.txtDate.Name = "txtDate";
-            this.txtDate.Size = new System.Drawing.Size(80, 26);
+            this.txtDate.Size = new System.Drawing.Size(106, 36);
             this.txtDate.TabIndex = 26;
             this.txtDate.Text = "<date>";
             this.txtDate.Visible = false;
@@ -293,10 +297,10 @@
             // txtTime
             // 
             this.txtTime.AutoSize = true;
-            this.txtTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.5F);
-            this.txtTime.Location = new System.Drawing.Point(192, 108);
+            this.txtTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTime.Location = new System.Drawing.Point(70, 158);
             this.txtTime.Name = "txtTime";
-            this.txtTime.Size = new System.Drawing.Size(80, 26);
+            this.txtTime.Size = new System.Drawing.Size(103, 36);
             this.txtTime.TabIndex = 27;
             this.txtTime.Text = "<time>";
             this.txtTime.Visible = false;
@@ -323,19 +327,20 @@
             this.listIdleBTDevices.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.listIdleBTDevices.FormattingEnabled = true;
             this.listIdleBTDevices.ItemHeight = 16;
-            this.listIdleBTDevices.Location = new System.Drawing.Point(19, 75);
+            this.listIdleBTDevices.Location = new System.Drawing.Point(398, 124);
             this.listIdleBTDevices.Name = "listIdleBTDevices";
-            this.listIdleBTDevices.Size = new System.Drawing.Size(160, 114);
+            this.listIdleBTDevices.Size = new System.Drawing.Size(187, 130);
             this.listIdleBTDevices.TabIndex = 29;
             this.listIdleBTDevices.Visible = false;
             this.listIdleBTDevices.SelectedIndexChanged += new System.EventHandler(this.enableBtnConfirmBTDevice);
             // 
             // btnConfirmBTDevices
             // 
-            this.btnConfirmBTDevices.Location = new System.Drawing.Point(19, 211);
+            this.btnConfirmBTDevices.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnConfirmBTDevices.Location = new System.Drawing.Point(398, 283);
             this.btnConfirmBTDevices.Name = "btnConfirmBTDevices";
             this.btnConfirmBTDevices.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.btnConfirmBTDevices.Size = new System.Drawing.Size(119, 32);
+            this.btnConfirmBTDevices.Size = new System.Drawing.Size(186, 84);
             this.btnConfirmBTDevices.TabIndex = 30;
             this.btnConfirmBTDevices.Text = "Confirm Bluetooth";
             this.btnConfirmBTDevices.UseVisualStyleBackColor = true;
@@ -345,9 +350,10 @@
             // txtChooseBTDevice
             // 
             this.txtChooseBTDevice.AutoSize = true;
-            this.txtChooseBTDevice.Location = new System.Drawing.Point(16, 57);
+            this.txtChooseBTDevice.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtChooseBTDevice.Location = new System.Drawing.Point(396, 102);
             this.txtChooseBTDevice.Name = "txtChooseBTDevice";
-            this.txtChooseBTDevice.Size = new System.Drawing.Size(128, 13);
+            this.txtChooseBTDevice.Size = new System.Drawing.Size(188, 20);
             this.txtChooseBTDevice.TabIndex = 31;
             this.txtChooseBTDevice.Text = "Choose bluetooth device:";
             this.txtChooseBTDevice.Visible = false;
@@ -364,13 +370,13 @@
             // 
             // txtAuthStatus
             // 
-            this.txtAuthStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.txtAuthStatus.Location = new System.Drawing.Point(15, 39);
+            this.txtAuthStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtAuthStatus.Location = new System.Drawing.Point(10, 45);
             this.txtAuthStatus.Name = "txtAuthStatus";
-            this.txtAuthStatus.Size = new System.Drawing.Size(390, 36);
+            this.txtAuthStatus.Size = new System.Drawing.Size(584, 36);
             this.txtAuthStatus.TabIndex = 34;
-            this.txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, this screen will time" +
-    "out in 10 seconds.";
+            this.txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, the door will lock in" +
+    " 10 seconds.";
             this.txtAuthStatus.Visible = false;
             // 
             // timerAuthTimeout
@@ -411,21 +417,22 @@
             // 
             // txtSecondFactorStatus
             // 
-            this.txtSecondFactorStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.txtSecondFactorStatus.Location = new System.Drawing.Point(21, 322);
+            this.txtSecondFactorStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSecondFactorStatus.Location = new System.Drawing.Point(18, 206);
             this.txtSecondFactorStatus.Name = "txtSecondFactorStatus";
-            this.txtSecondFactorStatus.Size = new System.Drawing.Size(520, 45);
+            this.txtSecondFactorStatus.Size = new System.Drawing.Size(366, 29);
             this.txtSecondFactorStatus.TabIndex = 38;
             this.txtSecondFactorStatus.Text = "Invalid authentication.";
             this.txtSecondFactorStatus.Visible = false;
             // 
             // tbxSecFactorPinOrCard
             // 
-            this.tbxSecFactorPinOrCard.Location = new System.Drawing.Point(18, 95);
+            this.tbxSecFactorPinOrCard.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbxSecFactorPinOrCard.Location = new System.Drawing.Point(18, 101);
             this.tbxSecFactorPinOrCard.MaximumSize = new System.Drawing.Size(559, 20);
             this.tbxSecFactorPinOrCard.MinimumSize = new System.Drawing.Size(105, 20);
             this.tbxSecFactorPinOrCard.Name = "tbxSecFactorPinOrCard";
-            this.tbxSecFactorPinOrCard.Size = new System.Drawing.Size(559, 20);
+            this.tbxSecFactorPinOrCard.Size = new System.Drawing.Size(559, 23);
             this.tbxSecFactorPinOrCard.TabIndex = 40;
             this.tbxSecFactorPinOrCard.Visible = false;
             this.tbxSecFactorPinOrCard.Enter += new System.EventHandler(this.numberpad_Click);
@@ -433,20 +440,22 @@
             // txtSecFactorPinOrCard
             // 
             this.txtSecFactorPinOrCard.AutoSize = true;
+            this.txtSecFactorPinOrCard.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSecFactorPinOrCard.Location = new System.Drawing.Point(18, 76);
             this.txtSecFactorPinOrCard.Name = "txtSecFactorPinOrCard";
-            this.txtSecFactorPinOrCard.Size = new System.Drawing.Size(57, 13);
+            this.txtSecFactorPinOrCard.Size = new System.Drawing.Size(84, 20);
             this.txtSecFactorPinOrCard.TabIndex = 41;
             this.txtSecFactorPinOrCard.Text = "Insert PIN:";
             this.txtSecFactorPinOrCard.Visible = false;
             // 
             // btnLockNow
             // 
-            this.btnLockNow.Location = new System.Drawing.Point(456, 211);
+            this.btnLockNow.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLockNow.Location = new System.Drawing.Point(90, 180);
             this.btnLockNow.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnLockNow.Name = "btnLockNow";
             this.btnLockNow.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.btnLockNow.Size = new System.Drawing.Size(119, 32);
+            this.btnLockNow.Size = new System.Drawing.Size(186, 83);
             this.btnLockNow.TabIndex = 42;
             this.btnLockNow.Text = "Lock now";
             this.btnLockNow.UseVisualStyleBackColor = true;
@@ -455,11 +464,12 @@
             // 
             // btnAddNewUser
             // 
-            this.btnAddNewUser.Location = new System.Drawing.Point(456, 211);
+            this.btnAddNewUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAddNewUser.Location = new System.Drawing.Point(76, 283);
             this.btnAddNewUser.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnAddNewUser.Name = "btnAddNewUser";
             this.btnAddNewUser.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.btnAddNewUser.Size = new System.Drawing.Size(119, 32);
+            this.btnAddNewUser.Size = new System.Drawing.Size(186, 83);
             this.btnAddNewUser.TabIndex = 43;
             this.btnAddNewUser.Text = "Add new user";
             this.btnAddNewUser.UseVisualStyleBackColor = true;
@@ -468,7 +478,8 @@
             // 
             // btnCancelAddNewUser
             // 
-            this.btnCancelAddNewUser.Location = new System.Drawing.Point(457, 211);
+            this.btnCancelAddNewUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancelAddNewUser.Location = new System.Drawing.Point(291, 211);
             this.btnCancelAddNewUser.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnCancelAddNewUser.Name = "btnCancelAddNewUser";
             this.btnCancelAddNewUser.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -481,6 +492,7 @@
             // 
             // btnClearTextBox
             // 
+            this.btnClearTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnClearTextBox.Location = new System.Drawing.Point(291, 70);
             this.btnClearTextBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnClearTextBox.Name = "btnClearTextBox";
@@ -496,6 +508,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ClientSize = new System.Drawing.Size(800, 480);
             this.Controls.Add(this.btnClearTextBox);
             this.Controls.Add(this.btnAddNewUser);
@@ -532,8 +545,7 @@
             this.Controls.Add(this.txtTime);
             this.Controls.Add(this.tbxSecFactorPinOrCard);
             this.Controls.Add(this.listIdleBTDevices);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Margin = new System.Windows.Forms.Padding(8);
+            this.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
             this.Name = "FormStart";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "BuzzLock";

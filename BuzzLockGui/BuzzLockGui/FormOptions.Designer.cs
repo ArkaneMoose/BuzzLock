@@ -57,14 +57,15 @@
             this.tbxCard = new System.Windows.Forms.TextBox();
             this.txtCard = new System.Windows.Forms.Label();
             this.btnResetAuthMods = new System.Windows.Forms.Button();
-            this.btnUserManagement = new System.Windows.Forms.Button();
+
             this.btnClearTextBox = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.userError)).BeginInit();
             this.SuspendLayout();
             // 
             // btnOptionsSave
             // 
-            this.btnOptionsSave.Location = new System.Drawing.Point(605, 211);
+            this.btnOptionsSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnOptionsSave.Location = new System.Drawing.Point(546, 261);
             this.btnOptionsSave.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btnOptionsSave.Name = "btnOptionsSave";
             this.btnOptionsSave.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -76,7 +77,8 @@
             // 
             // btnEditProfile
             // 
-            this.btnEditProfile.Location = new System.Drawing.Point(12, 121);
+            this.btnEditProfile.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEditProfile.Location = new System.Drawing.Point(18, 136);
             this.btnEditProfile.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btnEditProfile.Name = "btnEditProfile";
             this.btnEditProfile.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -88,7 +90,8 @@
             // 
             // btnEditAuth
             // 
-            this.btnEditAuth.Location = new System.Drawing.Point(12, 159);
+            this.btnEditAuth.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEditAuth.Location = new System.Drawing.Point(18, 200);
             this.btnEditAuth.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btnEditAuth.Name = "btnEditAuth";
             this.btnEditAuth.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -100,7 +103,8 @@
             // 
             // btnRemoveUser
             // 
-            this.btnRemoveUser.Location = new System.Drawing.Point(12, 197);
+            this.btnRemoveUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRemoveUser.Location = new System.Drawing.Point(18, 264);
             this.btnRemoveUser.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btnRemoveUser.Name = "btnRemoveUser";
             this.btnRemoveUser.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -113,30 +117,33 @@
             // txtEditProfile
             // 
             this.txtEditProfile.AutoSize = true;
-            this.txtEditProfile.Location = new System.Drawing.Point(138, 131);
+            this.txtEditProfile.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtEditProfile.Location = new System.Drawing.Point(144, 146);
             this.txtEditProfile.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.txtEditProfile.Name = "txtEditProfile";
-            this.txtEditProfile.Size = new System.Drawing.Size(128, 13);
+            this.txtEditProfile.Size = new System.Drawing.Size(190, 20);
             this.txtEditProfile.TabIndex = 8;
             this.txtEditProfile.Text = "Edit name, phone, picture";
             // 
             // txtEditAuth
             // 
             this.txtEditAuth.AutoSize = true;
-            this.txtEditAuth.Location = new System.Drawing.Point(138, 169);
+            this.txtEditAuth.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtEditAuth.Location = new System.Drawing.Point(144, 210);
             this.txtEditAuth.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.txtEditAuth.Name = "txtEditAuth";
-            this.txtEditAuth.Size = new System.Drawing.Size(161, 13);
+            this.txtEditAuth.Size = new System.Drawing.Size(242, 20);
             this.txtEditAuth.TabIndex = 9;
             this.txtEditAuth.Text = "Edit your authentication methods";
             // 
             // txtRemoveUser
             // 
             this.txtRemoveUser.AutoSize = true;
-            this.txtRemoveUser.Location = new System.Drawing.Point(138, 207);
+            this.txtRemoveUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtRemoveUser.Location = new System.Drawing.Point(144, 274);
             this.txtRemoveUser.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.txtRemoveUser.Name = "txtRemoveUser";
-            this.txtRemoveUser.Size = new System.Drawing.Size(185, 13);
+            this.txtRemoveUser.Size = new System.Drawing.Size(275, 20);
             this.txtRemoveUser.TabIndex = 10;
             this.txtRemoveUser.Text = "Permanently delete your user account";
             // 
@@ -155,7 +162,7 @@
             // 
             this.txtOptionsTitle.AutoSize = true;
             this.txtOptionsTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.5F);
-            this.txtOptionsTitle.Location = new System.Drawing.Point(12, 83);
+            this.txtOptionsTitle.Location = new System.Drawing.Point(14, 83);
             this.txtOptionsTitle.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.txtOptionsTitle.Name = "txtOptionsTitle";
             this.txtOptionsTitle.Size = new System.Drawing.Size(248, 26);
@@ -170,11 +177,11 @@
             // txtOptionsStatus
             // 
             this.txtOptionsStatus.AutoSize = true;
-            this.txtOptionsStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtOptionsStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtOptionsStatus.Location = new System.Drawing.Point(15, 39);
             this.txtOptionsStatus.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.txtOptionsStatus.Name = "txtOptionsStatus";
-            this.txtOptionsStatus.Size = new System.Drawing.Size(233, 16);
+            this.txtOptionsStatus.Size = new System.Drawing.Size(277, 20);
             this.txtOptionsStatus.TabIndex = 14;
             this.txtOptionsStatus.Text = "This screen will timeout in 30 seconds.";
             // 
@@ -186,26 +193,28 @@
             // txtCurrentName
             // 
             this.txtCurrentName.AutoSize = true;
-            this.txtCurrentName.Location = new System.Drawing.Point(14, 132);
+            this.txtCurrentName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCurrentName.Location = new System.Drawing.Point(53, 127);
             this.txtCurrentName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.txtCurrentName.Name = "txtCurrentName";
-            this.txtCurrentName.Size = new System.Drawing.Size(38, 13);
+            this.txtCurrentName.Size = new System.Drawing.Size(55, 20);
             this.txtCurrentName.TabIndex = 15;
             this.txtCurrentName.Text = "Name:";
             // 
             // txtCurrentPhone
             // 
             this.txtCurrentPhone.AutoSize = true;
-            this.txtCurrentPhone.Location = new System.Drawing.Point(14, 190);
+            this.txtCurrentPhone.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCurrentPhone.Location = new System.Drawing.Point(324, 127);
             this.txtCurrentPhone.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.txtCurrentPhone.Name = "txtCurrentPhone";
-            this.txtCurrentPhone.Size = new System.Drawing.Size(79, 13);
+            this.txtCurrentPhone.Size = new System.Drawing.Size(117, 20);
             this.txtCurrentPhone.TabIndex = 17;
             this.txtCurrentPhone.Text = "Phone number:";
             // 
             // tbxNewName
             // 
-            this.tbxNewName.Location = new System.Drawing.Point(16, 150);
+            this.tbxNewName.Location = new System.Drawing.Point(56, 147);
             this.tbxNewName.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tbxNewName.MaxLength = 20;
             this.tbxNewName.Name = "tbxNewName";
@@ -216,7 +225,7 @@
             // 
             // tbxNewPhone
             // 
-            this.tbxNewPhone.Location = new System.Drawing.Point(16, 207);
+            this.tbxNewPhone.Location = new System.Drawing.Point(328, 147);
             this.tbxNewPhone.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tbxNewPhone.MaxLength = 10;
             this.tbxNewPhone.Name = "tbxNewPhone";
@@ -228,10 +237,11 @@
             // txtSecChooseDevOrPin
             // 
             this.txtSecChooseDevOrPin.AutoSize = true;
-            this.txtSecChooseDevOrPin.Location = new System.Drawing.Point(306, 162);
+            this.txtSecChooseDevOrPin.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSecChooseDevOrPin.Location = new System.Drawing.Point(382, 177);
             this.txtSecChooseDevOrPin.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.txtSecChooseDevOrPin.Name = "txtSecChooseDevOrPin";
-            this.txtSecChooseDevOrPin.Size = new System.Drawing.Size(57, 13);
+            this.txtSecChooseDevOrPin.Size = new System.Drawing.Size(84, 20);
             this.txtSecChooseDevOrPin.TabIndex = 33;
             this.txtSecChooseDevOrPin.Text = "Insert PIN:";
             this.txtSecChooseDevOrPin.Visible = false;
@@ -239,11 +249,12 @@
             // txtPrimChooseDev
             // 
             this.txtPrimChooseDev.AutoSize = true;
-            this.txtPrimChooseDev.Location = new System.Drawing.Point(14, 163);
+            this.txtPrimChooseDev.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPrimChooseDev.Location = new System.Drawing.Point(53, 178);
             this.txtPrimChooseDev.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.txtPrimChooseDev.Name = "txtPrimChooseDev";
             this.txtPrimChooseDev.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtPrimChooseDev.Size = new System.Drawing.Size(81, 13);
+            this.txtPrimChooseDev.Size = new System.Drawing.Size(117, 20);
             this.txtPrimChooseDev.TabIndex = 30;
             this.txtPrimChooseDev.Text = "Choose device:";
             this.txtPrimChooseDev.Visible = false;
@@ -251,33 +262,36 @@
             // txtSecAuth
             // 
             this.txtSecAuth.AutoSize = true;
-            this.txtSecAuth.Location = new System.Drawing.Point(306, 136);
+            this.txtSecAuth.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSecAuth.Location = new System.Drawing.Point(382, 126);
             this.txtSecAuth.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.txtSecAuth.Name = "txtSecAuth";
-            this.txtSecAuth.Size = new System.Drawing.Size(131, 13);
+            this.txtSecAuth.Size = new System.Drawing.Size(114, 40);
             this.txtSecAuth.TabIndex = 29;
-            this.txtSecAuth.Text = "Secondary authentication:";
+            this.txtSecAuth.Text = "Secondary\r\nauthentication:";
             this.txtSecAuth.Visible = false;
             // 
             // txtPrimAuth
             // 
             this.txtPrimAuth.AutoSize = true;
-            this.txtPrimAuth.Location = new System.Drawing.Point(14, 136);
+            this.txtPrimAuth.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPrimAuth.Location = new System.Drawing.Point(53, 127);
             this.txtPrimAuth.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.txtPrimAuth.Name = "txtPrimAuth";
-            this.txtPrimAuth.Size = new System.Drawing.Size(114, 13);
+            this.txtPrimAuth.Size = new System.Drawing.Size(114, 40);
             this.txtPrimAuth.TabIndex = 28;
-            this.txtPrimAuth.Text = "Primary authentication:";
+            this.txtPrimAuth.Text = "Primary\r\nauthentication:";
             this.txtPrimAuth.Visible = false;
             // 
             // cbxSecAuth
             // 
+            this.cbxSecAuth.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.cbxSecAuth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxSecAuth.FormattingEnabled = true;
             this.cbxSecAuth.Items.AddRange(new object[] {
             "Bluetooth",
             "PIN"});
-            this.cbxSecAuth.Location = new System.Drawing.Point(444, 132);
+            this.cbxSecAuth.Location = new System.Drawing.Point(499, 139);
             this.cbxSecAuth.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.cbxSecAuth.Name = "cbxSecAuth";
             this.cbxSecAuth.Size = new System.Drawing.Size(138, 21);
@@ -287,12 +301,13 @@
             // 
             // cbxPrimAuth
             // 
+            this.cbxPrimAuth.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.cbxPrimAuth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxPrimAuth.FormattingEnabled = true;
             this.cbxPrimAuth.Items.AddRange(new object[] {
             "Card",
             "Bluetooth"});
-            this.cbxPrimAuth.Location = new System.Drawing.Point(134, 132);
+            this.cbxPrimAuth.Location = new System.Drawing.Point(174, 140);
             this.cbxPrimAuth.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.cbxPrimAuth.Name = "cbxPrimAuth";
             this.cbxPrimAuth.Size = new System.Drawing.Size(138, 21);
@@ -302,9 +317,10 @@
             // 
             // cbxBTSelect1
             // 
+            this.cbxBTSelect1.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.cbxBTSelect1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBTSelect1.FormattingEnabled = true;
-            this.cbxBTSelect1.Location = new System.Drawing.Point(134, 159);
+            this.cbxBTSelect1.Location = new System.Drawing.Point(174, 177);
             this.cbxBTSelect1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.cbxBTSelect1.Name = "cbxBTSelect1";
             this.cbxBTSelect1.Size = new System.Drawing.Size(138, 21);
@@ -314,7 +330,7 @@
             // 
             // tbxPin
             // 
-            this.tbxPin.Location = new System.Drawing.Point(444, 160);
+            this.tbxPin.Location = new System.Drawing.Point(499, 177);
             this.tbxPin.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tbxPin.MaxLength = 6;
             this.tbxPin.Name = "tbxPin";
@@ -328,7 +344,7 @@
             // 
             this.cbxBTSelect2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBTSelect2.FormattingEnabled = true;
-            this.cbxBTSelect2.Location = new System.Drawing.Point(444, 160);
+            this.cbxBTSelect2.Location = new System.Drawing.Point(499, 177);
             this.cbxBTSelect2.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.cbxBTSelect2.Name = "cbxBTSelect2";
             this.cbxBTSelect2.Size = new System.Drawing.Size(138, 21);
@@ -338,9 +354,9 @@
             // 
             // tbxCard
             // 
-            this.tbxCard.BackColor = System.Drawing.SystemColors.Control;
-            this.tbxCard.Location = new System.Drawing.Point(50, 223);
-            this.tbxCard.Margin = new System.Windows.Forms.Padding(2);
+            this.tbxCard.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.tbxCard.Location = new System.Drawing.Point(105, 227);
+            this.tbxCard.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tbxCard.Name = "tbxCard";
             this.tbxCard.Size = new System.Drawing.Size(532, 20);
             this.tbxCard.TabIndex = 35;
@@ -348,17 +364,19 @@
             // txtCard
             // 
             this.txtCard.AutoSize = true;
-            this.txtCard.Location = new System.Drawing.Point(14, 226);
+            this.txtCard.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCard.Location = new System.Drawing.Point(53, 226);
             this.txtCard.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.txtCard.Name = "txtCard";
-            this.txtCard.Size = new System.Drawing.Size(32, 13);
+            this.txtCard.Size = new System.Drawing.Size(47, 20);
             this.txtCard.TabIndex = 36;
             this.txtCard.Text = "Card:";
             // 
             // btnResetAuthMods
             // 
-            this.btnResetAuthMods.Location = new System.Drawing.Point(605, 132);
-            this.btnResetAuthMods.Margin = new System.Windows.Forms.Padding(2);
+            this.btnResetAuthMods.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnResetAuthMods.Location = new System.Drawing.Point(412, 261);
+            this.btnResetAuthMods.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnResetAuthMods.Name = "btnResetAuthMods";
             this.btnResetAuthMods.Size = new System.Drawing.Size(118, 32);
             this.btnResetAuthMods.TabIndex = 37;
@@ -366,20 +384,9 @@
             this.btnResetAuthMods.UseVisualStyleBackColor = true;
             this.btnResetAuthMods.Click += new System.EventHandler(this.ResetAuthMods_Click);
             // 
-            // btnUserManagement
-            // 
-            this.btnUserManagement.Location = new System.Drawing.Point(605, 169);
-            this.btnUserManagement.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.btnUserManagement.Name = "btnUserManagement";
-            this.btnUserManagement.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.btnUserManagement.Size = new System.Drawing.Size(118, 32);
-            this.btnUserManagement.TabIndex = 38;
-            this.btnUserManagement.Text = "User Management";
-            this.btnUserManagement.UseVisualStyleBackColor = true;
-            this.btnUserManagement.Click += new System.EventHandler(this.btnUserManagement_Click);
-            // 
             // btnClearTextBox
             // 
+            this.btnClearTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnClearTextBox.Location = new System.Drawing.Point(489, 76);
             this.btnClearTextBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnClearTextBox.Name = "btnClearTextBox";
@@ -395,9 +402,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+
             this.ClientSize = new System.Drawing.Size(800, 480);
             this.Controls.Add(this.btnClearTextBox);
-            this.Controls.Add(this.btnUserManagement);
             this.Controls.Add(this.btnResetAuthMods);
             this.Controls.Add(this.txtCard);
             this.Controls.Add(this.tbxCard);
@@ -428,6 +436,7 @@
             this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.Name = "FormOptions";
             this.Text = "BuzzLock Options";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Activated += new System.EventHandler(this.FormOptions_Activated);
             this.Load += new System.EventHandler(this.FormOptions_Load);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FormOptions_KeyPress);
@@ -466,7 +475,6 @@
         private System.Windows.Forms.TextBox tbxCard;
         private System.Windows.Forms.Label txtCard;
         private System.Windows.Forms.Button btnResetAuthMods;
-        private System.Windows.Forms.Button btnUserManagement;
         private System.Windows.Forms.Timer timerOptionsTimeout;
         private System.Windows.Forms.Timer timerOptionsStatus;
         private System.Windows.Forms.Button btnClearTextBox;

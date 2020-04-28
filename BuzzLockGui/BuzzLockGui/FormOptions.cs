@@ -342,8 +342,6 @@ namespace BuzzLockGui
             btnEditAuth.Visible = _globalState == State.UserOptions;
             btnEditProfile.Visible = _globalState == State.UserOptions;
             btnRemoveUser.Visible = _globalState == State.UserOptions;
-            btnUserManagement.Visible = _globalState == State.UserOptions 
-                && _currentUser.PermissionLevel == User.PermissionLevels.FULL;
             txtEditAuth.Visible = _globalState == State.UserOptions;
             txtEditProfile.Visible = _globalState == State.UserOptions;
             txtRemoveUser.Visible = _globalState == State.UserOptions;
