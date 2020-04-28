@@ -25,7 +25,7 @@ Schematic with servo connecting to Raspberry Pi
 
 <H3> Code Description </H3>
 
-Our GUI is implemented with Windows Forms (.NET/C#) and designed in Microsoft Visual Studio. <a href = "https://www.mono-project.com/"> Mono</a> is used to open the GUI on the Raspberry Pi. C# was used for the base functionality along with SQL for the backend database to store user data during runtime and across power cycles. <a href = "https://unosquare.github.io/raspberryio/">Unosquare's</a> soft PWM function was used to control the servo for opening and closing the lock. The automatic on-screen keyboard for editing text fields such as name, phone number, PIN, etc. is provided by calling <a href="http://t-sato.in.coocan.jp/xvkbd/">xvkbd</a> using shell calls directly from C#.
+C# was used for the base functionality along with SQL for the backend database to store user data. <a href = "https://unosquare.github.io/raspberryio/">Unosquare's</a> soft PWM function was used to control the servo for opening and closing the lock.  The automatic keyboard for editing text fields such as name, phone number, PIN, etc. is provided using <a href="http://t-sato.in.coocan.jp/xvkbd/">xvkbd</a> and the command line from C#.  
 
 <H5> State Diagram </H5>
 
@@ -33,4 +33,7 @@ Our GUI is implemented with Windows Forms (.NET/C#) and designed in Microsoft Vi
 
 <H3> User Instructions </H3>
 <H5> Initialization </H5>
-Upon startup, this device will be uninitialized and display the status message "Hello! Please swipe your BuzzCard to begin set up." Once the user swipes a magstripe card, the initialization screen will display, allowing the owner of the system to input their information and preferences. Clicking the 'Save' button will save the user to the database. 
+Upon startup, this device will be uninitialized and display the status message "Hello! Please swipe your BuzzCard to begin set up." Once the user swipes a magstripe card, the initialization screen will display, allowing the owner of the system to input their information and preferences. Clicking the 'Save' button will save the user to the database. <br/>
+The screen will now be in idle until an authentication method (card swipe or Bluetooth selected) is performed.  If the authentication method is already in the database, the user will be prompted for a second authentication method.  If the authentication method is not know, the user will be prompted to create a user account, but will not be able to open the door.  
+Upon correct entry of the second authentication method and sufficient permissions (full or limited) the user will be able to open the lock and enter the the options menu to edit fields such as name, phone number, authentication methods, etc.  <br/>
+If the authenticated user had full permissions they will be able to add and remove users from the options menu.  
