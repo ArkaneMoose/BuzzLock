@@ -496,7 +496,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 442);
+            this.ClientSize = new System.Drawing.Size(800, 480);
             this.Controls.Add(this.btnClearTextBox);
             this.Controls.Add(this.btnAddNewUser);
             this.Controls.Add(this.txtSecFactorPinOrCard);
@@ -532,9 +532,13 @@
             this.Controls.Add(this.txtTime);
             this.Controls.Add(this.tbxSecFactorPinOrCard);
             this.Controls.Add(this.listIdleBTDevices);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Margin = new System.Windows.Forms.Padding(8);
             this.Name = "FormStart";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "BuzzLock";
+            this.TopMost = true;
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Activated += new System.EventHandler(this.FormStart_Activated);
             this.Load += new System.EventHandler(this.FormStart_Load);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FormStart_KeyPress);

@@ -57,9 +57,9 @@ namespace BuzzLockGui
         }
         private void FormOptions_Load(object sender, EventArgs e)
         {
-            // this.TopMost = true;
-            // this.FormBorderStyle = FormBorderStyle.None;
-            // this.WindowState = FormWindowState.Maximized;
+            this.TopMost = true;
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
         }
         private void FormOptions_Activated(object sender, EventArgs e)
         {
@@ -459,6 +459,14 @@ namespace BuzzLockGui
             {
                 ValidateComboBox(comboBox, e);
 
+                // Null check
+                if (comboBox.SelectedItem == null)
+                {
+                    cbxBTSelect1.Visible = false;
+                    txtPrimChooseDev.Visible = false;
+                    return;
+                }
+
                 string selected = comboBox.SelectedItem.ToString();
                 bool isCard = selected == "Card";
                 bool isBluetooth = selected == "Bluetooth";
@@ -519,6 +527,7 @@ namespace BuzzLockGui
                     }
                 }
             }
+            ModifySecondaryAuthConfiguration(cbxSecAuth, EventArgs.Empty);
             OnValidate();
         }
 
@@ -527,6 +536,18 @@ namespace BuzzLockGui
             if (sender is ComboBox comboBox)
             {
                 ValidateComboBox(comboBox, e);
+
+                // Null check
+                if (comboBox.SelectedItem == null)
+                {
+                    // Reset to default
+                    txtSecChooseDevOrPin.Visible = false;
+                    cbxBTSelect2.Visible = false;
+                    tbxPin.Visible = false;
+                    ValidateComboBox(cbxBTSelect2, EventArgs.Empty);
+                    ValidatePinBox(tbxPin, EventArgs.Empty);
+                    return;
+                }
 
                 string selected = comboBox.SelectedItem.ToString();
                 bool isCard = selected == "Card";
@@ -543,7 +564,11 @@ namespace BuzzLockGui
                 {
                     txtSecChooseDevOrPin.Text = "Choose device:";
                     if (cbxPrimAuth.SelectedItem.ToString() != "Card")
+                    {
+                        userError.SetError(tbxCard, null);
                         errorControls.Remove(tbxCard);
+                    }
+                    userError.SetError(tbxPin, null);
                     errorControls.Remove(tbxPin);
                     ValidateComboBox(cbxBTSelect2, EventArgs.Empty);
                 }
@@ -551,13 +576,19 @@ namespace BuzzLockGui
                 {
                     txtSecChooseDevOrPin.Text = "Insert PIN:";
                     if (cbxPrimAuth.SelectedItem.ToString() != "Card")
+                    {
+                        userError.SetError(cbxBTSelect2, null);
                         errorControls.Remove(tbxCard);
+                    }
+                    userError.SetError(cbxBTSelect2, null);
                     errorControls.Remove(cbxBTSelect2);
                     ValidatePinBox(tbxPin, EventArgs.Empty);
                 }
                 else if (isCard)
                 {
+                    userError.SetError(cbxBTSelect2, null);
                     errorControls.Remove(cbxBTSelect2);
+                    userError.SetError(tbxPin, null);
                     errorControls.Remove(tbxPin);
                     ValidateTextBox(tbxCard, EventArgs.Empty);
                 }

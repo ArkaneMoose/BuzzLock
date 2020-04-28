@@ -326,7 +326,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 442);
+            this.ClientSize = new System.Drawing.Size(800, 480);
             this.Controls.Add(this.btnClearTextBox);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnAddNewUser);
@@ -351,6 +351,7 @@
             this.Controls.Add(this.listUsers);
             this.Controls.Add(this.tbxPin);
             this.Controls.Add(this.cbxBTSelect2);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FormUserManagement";
             this.Text = "User Management";
             this.Activated += new System.EventHandler(this.formUserManagement_Activated);

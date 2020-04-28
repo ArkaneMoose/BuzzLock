@@ -74,7 +74,7 @@ namespace BuzzLockGui
             foreach (Control control in Controls)
             {
                 if (control != tbxPin && control != tbxUserPhone && control != btnClearTextBox
-                    && control != tbxUserName)
+                    && control != tbxUserName && control != tbxSecFactorPinOrCard)
                 {
                     control.MouseClick += keyboardClose_Leave;
                 }
@@ -97,9 +97,9 @@ namespace BuzzLockGui
         {
             this.WindowState = FormWindowState.Normal;
             loseFocus();
-            // this.TopMost = true;
-            // this.FormBorderStyle = FormBorderStyle.None;
-            // this.WindowState = FormWindowState.Maximized;
+            //this.TopMost = true;
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
         }
 
         public new void Show()

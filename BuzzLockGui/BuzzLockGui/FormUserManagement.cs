@@ -310,6 +310,7 @@ namespace BuzzLockGui
                     }
                 }
             }
+            ModifySecondaryAuthConfiguration(cbxSecAuth, EventArgs.Empty);
             OnValidate();
         }
 
@@ -346,7 +347,11 @@ namespace BuzzLockGui
                 {
                     txtSecChooseDevOrPin.Text = "Choose device:";
                     if (cbxPrimAuth.SelectedItem.ToString() != "Card")
+                    {
+                        userError.SetError(tbxCard, null);
                         errorControls.Remove(tbxCard);
+                    }
+                    userError.SetError(tbxPin, null);
                     errorControls.Remove(tbxPin);
                     ValidateComboBox(cbxBTSelect2, EventArgs.Empty);
                 }
@@ -354,13 +359,19 @@ namespace BuzzLockGui
                 {
                     txtSecChooseDevOrPin.Text = "Insert PIN:";
                     if (cbxPrimAuth.SelectedItem.ToString() != "Card")
+                    {
+                        userError.SetError(cbxBTSelect2, null);
                         errorControls.Remove(tbxCard);
+                    }
+                    userError.SetError(cbxBTSelect2, null);
                     errorControls.Remove(cbxBTSelect2);
                     ValidatePinBox(tbxPin, EventArgs.Empty);
                 }
                 else if (isCard)
                 {
+                    userError.SetError(cbxBTSelect2, null);
                     errorControls.Remove(cbxBTSelect2);
+                    userError.SetError(tbxPin, null);
                     errorControls.Remove(tbxPin);
                     ValidateTextBox(tbxCard, EventArgs.Empty);
                 }
