@@ -17,7 +17,8 @@ namespace BuzzLockGui
 
         private FormStart _formStart;
         private FormOptions _formOptions;
-        private User _selectedUser => (User)listUsers.SelectedItem;
+        private User _selectedUser;
+        private User _previousSelectedUser;
         private User _backupUser => (User)DeepClonerExtensions.DeepClone(_selectedUser);
 
         public FormUserManagement(FormStart formStart, FormOptions formOptions)
@@ -33,10 +34,16 @@ namespace BuzzLockGui
             this.Height = Screen.PrimaryScreen.WorkingArea.Height;
             this.KeyPreview = true;
 
-            //foreach (Control control in Controls)
-            //{
-            //    control.MouseClick += OnAnyMouseClick;
-            //}
+            // Close keypad upon selection of most components
+            foreach (Control control in Controls)
+            {
+                if (control != tbxPin && control != tbxUserPhone && control != btnClearTextBox
+                    && control != tbxUserName)
+                {
+                    control.MouseClick += keyboardClose_Leave;
+                }
+            }
+            this.MouseClick += keyboardClose_Leave;
         }
 
         private void formUserManagement_Activated(object sender, EventArgs e)
@@ -54,29 +61,61 @@ namespace BuzzLockGui
                 listUsers.Items.Add(user);
                 Console.WriteLine("Adding user: " + user);
             }
-            if (_selectedUser == null) listUsers.SelectedIndex = 0;
+
+            // Make it so that after clicking save, it will keep the user you were editing selected
+            if (_previousSelectedUser != null && listUsers.Items.Contains(_previousSelectedUser))
+            {
+                listUsers.SelectedItem = _previousSelectedUser;
+            }
+            else
+            {
+                listUsers.SelectedIndex = 0;
+            }
+
+            _selectedUser = (User)listUsers.SelectedItem;
         }
 
-        private void btnOptionsSave_Click(object sender, EventArgs e)
+        private void btnSaveUser_Click(object sender, EventArgs e)
         {
-            _selectedUser.Name = tbxUserName.Text;
-            _selectedUser.PhoneNumber = tbxUserPhone.Text;
-            
-            switch (cbxUserPermission.SelectedItem.ToString())
+            if (_globalState == State.UserManagement_AddUser)
+            {
+                string name = tbxUserName.Text;
+                string phone = tbxUserPhone.Text;
+                User.PermissionLevels perm = ExtractPermissionLevel(cbxUserPermission);
+                AuthenticationMethods auth = ExtractAuthenticationMethods(cbxPrimAuth, cbxSecAuth);
+                _selectedUser = User.Create(name, perm, phone, null, auth);
+            }
+            else if (_globalState == State.UserManagement)
+            {
+                _selectedUser.Name = tbxUserName.Text;
+                _selectedUser.PhoneNumber = tbxUserPhone.Text;
+                _selectedUser.PermissionLevel = ExtractPermissionLevel(cbxUserPermission);
+                _selectedUser.AuthenticationMethods = ExtractAuthenticationMethods(cbxPrimAuth, cbxSecAuth);
+            }
+
+            _globalState = State.UserManagement;
+            populateUsers(null, EventArgs.Empty);
+            UpdateComponents();
+        }
+
+        private User.PermissionLevels ExtractPermissionLevel(ComboBox permissionsComboBox)
+        {
+            switch (permissionsComboBox.SelectedItem.ToString())
             {
                 case "FULL":
-                    _selectedUser.PermissionLevel = User.PermissionLevels.FULL;
-                    break;
+                     return User.PermissionLevels.FULL;
                 case "LIMITED":
-                    _selectedUser.PermissionLevel = User.PermissionLevels.LIMITED;
-                    break;
+                    return User.PermissionLevels.LIMITED;
                 default:
-                    _selectedUser.PermissionLevel = User.PermissionLevels.NONE;
-                    break;
+                    return User.PermissionLevels.NONE;
             }
+        }
+
+        private AuthenticationMethods ExtractAuthenticationMethods(ComboBox primAuth, ComboBox secAuth)
+        {
             AuthenticationMethod primary = null;
             AuthenticationMethod secondary = null;
-            switch (cbxPrimAuth.SelectedItem.ToString())
+            switch (primAuth.SelectedItem.ToString())
             {
                 case "Bluetooth":
                     primary = (BluetoothDevice)cbxBTSelect1.SelectedItem;
@@ -85,7 +124,7 @@ namespace BuzzLockGui
                     primary = new Card(tbxCard.Text);
                     break;
             }
-            switch (cbxSecAuth.SelectedItem.ToString())
+            switch (secAuth.SelectedItem.ToString())
             {
                 case "Card":
                     secondary = new Card(tbxCard.Text);
@@ -97,77 +136,100 @@ namespace BuzzLockGui
                     secondary = new Pin(tbxPin.Text);
                     break;
             }
-            _selectedUser.AuthenticationMethods = new AuthenticationMethods(primary, secondary);
+            return new AuthenticationMethods(primary, secondary);
+        }
 
-            populateUsers(null, EventArgs.Empty);
+        private void ClearFields()
+        {
+            tbxCard.Text = "";
+            tbxPin.Text = "";
+            tbxUserName.Text = "";
+            tbxUserPhone.Text = "";
+        }
+
+        private void ClearComboBoxes()
+        {
+            cbxPrimAuth.SelectedIndex = -1;
+            cbxSecAuth.SelectedIndex = -1;
+            cbxBTSelect1.SelectedIndex = -1;
+            cbxBTSelect2.SelectedIndex = -1;
         }
 
         private void UpdateComponents()
         {
-            btnAddUser.Enabled = _globalState != State.UserManagement_AddUser;
-            btnRemoveUser.Enabled = _currentUser != _selectedUser;
-            btnClose.Enabled = _globalState != State.UserManagement_AddUser;
+            ClearFields();
+
+            btnAddNewUser.Enabled = _globalState != State.UserManagement_AddUser;
+            btnRemoveUserOrCancel.Enabled = true;
+            //btnClose.Enabled = _globalState != State.UserManagement_AddUser;
 
             // Multiple States
-            acceptMagStripeInput = true;
+            acceptMagStripeInput = checkIfMagStripeNeeded();
 
-            AuthenticationMethod primary = _selectedUser.AuthenticationMethods.Primary;
-            AuthenticationMethod secondary = _selectedUser.AuthenticationMethods.Secondary;
+            // Refresh and Update Bluetooth Lists
+            RefreshBTDeviceLists(null, EventArgs.Empty);
 
-            //origPrimary = primary;
-            switch(primary)
-            {
-                case Card card:
-                    cbxPrimAuth.SelectedIndex = 0;
-                    tbxCard.Text = card.Id;
-                    break;
-                case BluetoothDevice btDevice:
-                    cbxPrimAuth.SelectedIndex = 1;
-                    if (!cbxBTSelect1.Items.Contains(btDevice))
-                    {
-                        cbxBTSelect1.Items.Insert(0, btDevice);
-                        cbxBTSelect1.SelectedIndex = 0;
-                        cbxBTSelect2.Items.Insert(0, btDevice);
-                        cbxBTSelect2.SelectedIndex = 0;
-                    }
-                    break;
-            }
-            ModifyPrimaryAuthConfiguration(cbxPrimAuth, EventArgs.Empty);
-
-            //origSecondary = secondary;
-            switch (secondary)
-            {
-                case BluetoothDevice btDevice:
-                    cbxSecAuth.SelectedIndex = 0;
-                    if (!cbxBTSelect2.Items.Contains(btDevice))
-                    {
-                        cbxBTSelect1.Items.Insert(0, btDevice);
-                        cbxBTSelect1.SelectedIndex = 0;
-                        cbxBTSelect2.Items.Insert(0, btDevice);
-                        cbxBTSelect2.SelectedIndex = 0;
-                    }
-                    break;
-                case Pin pin:
-                    cbxSecAuth.SelectedIndex = 1;
-                    tbxPin.Text = pin.PinValue;
-                    break;
-            }
-            ModifySecondaryAuthConfiguration(cbxSecAuth, EventArgs.Empty);
 
             switch (_globalState)
             {
                 case State.UserManagement:
-                    txtStatus.Text = "Click on a user to see details and perform actions";
-                    btnRemoveUser.Text = "Remove user";
+
+                    _selectedUser = (User)listUsers.SelectedItem;
+
+                    txtStatus.Text = $"Hi {_currentUser.Name}. Click on a user for details and actions.";
+                    btnRemoveUserOrCancel.Text = "Remove user";
                     tbxUserName.Text = _selectedUser.Name;
                     tbxUserPhone.Text = _selectedUser.PhoneNumber;
                     cbxUserPermission.SelectedItem = _selectedUser.PermissionLevel.ToString();
+
+                    AuthenticationMethod primary = _selectedUser.AuthenticationMethods.Primary;
+                    AuthenticationMethod secondary = _selectedUser.AuthenticationMethods.Secondary;
                     cbxPrimAuth.SelectedItem = primary.ToString();
                     cbxSecAuth.SelectedItem = secondary.ToString();
+                    switch (primary)
+                    {
+                        case Card card:
+                            cbxPrimAuth.SelectedIndex = 0;
+                            tbxCard.Text = card.Id;
+                            break;
+                        case BluetoothDevice btDevice:
+                            cbxPrimAuth.SelectedIndex = 1;
+                            if (!cbxBTSelect1.Items.Contains(btDevice))
+                            {
+                                cbxBTSelect1.Items.Insert(0, btDevice);
+                                cbxBTSelect1.SelectedIndex = 0;
+                                cbxBTSelect2.Items.Insert(0, btDevice);
+                                cbxBTSelect2.SelectedIndex = 0;
+                            }
+                            break;
+                    }
+                    ModifyPrimaryAuthConfiguration(cbxPrimAuth, EventArgs.Empty);
+
+                    switch (secondary)
+                    {
+                        case BluetoothDevice btDevice:
+                            cbxSecAuth.SelectedIndex = 0;
+                            if (!cbxBTSelect2.Items.Contains(btDevice))
+                            {
+                                cbxBTSelect1.Items.Insert(0, btDevice);
+                                cbxBTSelect1.SelectedIndex = 0;
+                                cbxBTSelect2.Items.Insert(0, btDevice);
+                                cbxBTSelect2.SelectedIndex = 0;
+                            }
+                            break;
+                        case Pin pin:
+                            cbxSecAuth.SelectedIndex = 1;
+                            tbxPin.Text = pin.PinValue;
+                            break;
+                    }
+                    ModifySecondaryAuthConfiguration(cbxSecAuth, EventArgs.Empty);
                     break;
                 case State.UserManagement_AddUser:
                     txtStatus.Text = "Creating a new user:";
-                    btnRemoveUser.Text = "Cancel";
+                    btnRemoveUserOrCancel.Text = "Cancel";
+                    ClearFields();
+                    ClearComboBoxes();
+                    UserInputValidation();
                     break;
                 default:
                     break;
@@ -179,6 +241,14 @@ namespace BuzzLockGui
             if (sender is ComboBox comboBox)
             {
                 ValidateComboBox(comboBox, e);
+
+                // Null check
+                if (comboBox.SelectedItem == null)
+                {
+                    cbxBTSelect1.Visible = false;
+                    txtPrimChooseDev.Visible = false;
+                    return;
+                }
 
                 string selected = comboBox.SelectedItem.ToString();
                 bool isCard = selected == "Card";
@@ -249,6 +319,18 @@ namespace BuzzLockGui
             {
                 ValidateComboBox(comboBox, e);
 
+                // Null check
+                if (comboBox.SelectedItem == null)
+                {
+                    // Reset to default
+                    txtSecChooseDevOrPin.Visible = false;
+                    cbxBTSelect2.Visible = false;
+                    tbxPin.Visible = false;
+                    ValidateComboBox(cbxBTSelect2, EventArgs.Empty);
+                    ValidatePinBox(tbxPin, EventArgs.Empty);
+                    return;
+                }
+
                 string selected = comboBox.SelectedItem.ToString();
                 bool isCard = selected == "Card";
                 bool isBluetooth = selected == "Bluetooth";
@@ -286,51 +368,37 @@ namespace BuzzLockGui
             OnValidate();
         }
 
-        private void btnAddUser_Click(object sender, EventArgs e)
+        private void btnAddNewUser_Click(object sender, EventArgs e)
         {
             _globalState = State.UserManagement_AddUser;
+            if (!listUsers.Items.Contains("New User (NONE)"))
+            {
+                listUsers.Items.Add("New User (NONE)"); //TODO: remove this guy and replace it with the actual user
+            }
+            listUsers.SelectedItem = "New User (NONE)";
             UpdateComponents();
-        }
-
-        private void btnRemoveUser_Click(object sender, EventArgs e)
-        {
-            if (_globalState == State.UserManagement)
-            {
-                // Initializes and displays the AutoClosingMessageBox.
-                var result = AutoClosingMessageBox.Show(
-                    text: "Are you sure you want to remove this user? This cannot be undone.",
-                    caption: "Remove User",
-                    timeout: 5000, //5 seconds
-                    buttons: MessageBoxButtons.YesNo,
-                    defaultResult: DialogResult.No);
-
-                if (result == DialogResult.Yes)
-                {
-                    _selectedUser.Delete();
-                    populateUsers(listUsers, EventArgs.Empty);
-                    UpdateComponents();
-                }
-            }
-            else if (_globalState == State.UserManagement_AddUser)
-            {
-                // TODO: cancel addition of a new user
-                _globalState = State.UserManagement;
-                UpdateComponents();
-            }
         }
 
         private void listUsers_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_selectedUser == null) listUsers.SelectedIndex = 0;
+
+            object curSelection = listUsers.SelectedItem;
+            if (curSelection is User)
+                _selectedUser = (User)curSelection;
+
+            _previousSelectedUser = _selectedUser;
             UpdateComponents();
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            _globalState = State.UserOptions;
+            _globalState = State.Authenticated;
             this.Hide();
-            _formOptions.Show();
+            _formStart.Show();
         }
+
+        // Validation Stuff
 
         protected override void OnValidate() {
             btnSaveUser.Enabled = NoErrors;
@@ -345,16 +413,60 @@ namespace BuzzLockGui
         protected new void ValidateComboBox(object sender, EventArgs e)
             => base.ValidateComboBox(sender, e);
 
-        protected new void numberpad_Click(object sender, EventArgs e)
-            => base.numberpad_Click(sender, e);
+        // Virtual Keyboard Stuff
+
         protected new void keyboard_Click(object sender, EventArgs e)
-            => base.keyboard_Click(sender, e);
+        {
+            base.keyboard_Click(sender, e);
+            base.lastActiveTextBox = (TextBox)sender;
+            btnClearTextBox.Visible = true;
+        }
         protected new void keyboardClose_Leave(object sender, EventArgs e)
-            => base.keyboardClose_Leave(sender, e);
+        {
+            base.keyboardClose_Leave(sender, e);
+            btnClearTextBox.Visible = false;
+        }
+        protected new void numberpad_Click(object sender, EventArgs e)
+        {
+            base.numberpad_Click(sender, e);
+            base.lastActiveTextBox = (TextBox)sender;
+            btnClearTextBox.Visible = true;
+        }
+        private void btnClearTextBox_Click(object sender, EventArgs e)
+        {
+            base.lastActiveTextBox.Text = "";
+            this.ActiveControl = base.lastActiveTextBox;
+        }
+
+        // Bluetooth Stuff
+
         protected new List<BluetoothDevice> getBTDevicesInRange()
             => base.getBTDevicesInRange();
+
         protected new List<BluetoothDevice> getBTDevicesInRangeAndRecognized()
             => base.getBTDevicesInRangeAndRecognized();
+
+        protected override void RefreshBTDeviceLists(object sender, EventArgs e)
+        {
+            // Backup user's already selected devices
+            BluetoothDevice selected1 = (BluetoothDevice)cbxBTSelect1.SelectedItem;
+            BluetoothDevice selected2 = (BluetoothDevice)cbxBTSelect2.SelectedItem;
+            // Refresh combo box lists
+            cbxBTSelect1.Items.Clear();
+            cbxBTSelect2.Items.Clear();
+            var inRange = getBTDevicesInRange();
+            foreach (BluetoothDevice bt in inRange)
+            {
+                // Only add device to list if not in database
+                if (AuthenticationSequence.Start(bt) == null)
+                {
+                    cbxBTSelect1.Items.Add(bt);
+                    cbxBTSelect2.Items.Add(bt);
+                    if (bt.Equals(selected1)) cbxBTSelect1.SelectedItem = selected1;
+                    if (bt.Equals(selected2)) cbxBTSelect2.SelectedItem = selected2;
+                }
+            }
+        }
 
         private bool newCardEntry = false;
         private string cardInput = "";
@@ -389,10 +501,15 @@ namespace BuzzLockGui
                         return;
                     }
 
+                    // Don't allow duplicate cards in the database
+                    AuthenticationSequence authSeq = AuthenticationSequence.Start(new Card(cardInput));
+                    bool cardNotAlreadyInDatabase = authSeq == null;
+                    if (cardNotAlreadyInDatabase) tbxCard.Text = cardInput;
+
                     Console.WriteLine(cardInput);
-                    tbxCard.Text = cardInput;
-                    newCardEntry = false;
+
                     // Reset cardInput to allow for a new card swipe to be registered
+                    newCardEntry = false;
                     cardInput = "";
                     return;
                 }
@@ -402,6 +519,106 @@ namespace BuzzLockGui
                     newCardEntry = true;
                 }
             }
+        }
+
+        private void UserInputValidation()
+        {
+            tbxUserName.Tag = "Please enter your full name.";
+            tbxUserPhone.Tag = "Please enter your phone number, no spaces or dashes.";
+            cbxPrimAuth.Tag = "Please choose a primary authentication method.";
+            cbxSecAuth.Tag = "Please choose a secondary authentication method.";
+            cbxBTSelect1.Tag = cbxBTSelect2.Tag = "Please choose your Bluetooth device.";
+            tbxPin.Tag = "Please enter a 6-digit PIN you will remember.";
+
+            // Call these so that the red exclamations will appear immediately
+            ValidateTextBox(tbxUserName, EventArgs.Empty);
+            ValidatePhoneBox(tbxUserPhone, EventArgs.Empty);
+            ValidateComboBox(cbxPrimAuth, EventArgs.Empty);
+            ValidateComboBox(cbxSecAuth, EventArgs.Empty);
+        }
+
+        private void btnRemoveUserOrCancel_Click(object sender, EventArgs e)
+        {
+            if (_globalState == State.UserManagement)
+            {
+                List<User> userList = User.GetAll();
+                int numUsersFULLPermission = -1;
+                foreach (User user in userList)
+                {
+                    if (user.PermissionLevel == User.PermissionLevels.FULL) numUsersFULLPermission += 1;
+                }
+
+                string removalMsg = $"Are you sure you want to remove {_selectedUser.Name}? This cannot be undone.";
+                if (numUsersFULLPermission == 0)
+                {
+                    removalMsg = $"{_selectedUser.Name} is the last user with FULL permissions. Deleting this user " +
+                        $"will also delete any and all other users. Are you sure you want to proceed? " +
+                        $"This cannot be undone.";
+                }
+                else if (_selectedUser == _currentUser)
+                {
+                    removalMsg = $"Do you want to delete yourself from the database? This cannot be undone. " +
+                        $"Are you sure you want to proceed? \n\nWARNING: Pressing YES will close the user management " +
+                        $"system, lock the door and return the system to IDLE.";
+                }
+
+                // Initializes and displays the AutoClosingMessageBox.
+                var result = AutoClosingMessageBox.Show(
+                    text: removalMsg,
+                    caption: "Remove User",
+                    timeout: 10000, //10 seconds
+                    buttons: MessageBoxButtons.YesNo,
+                    defaultResult: DialogResult.No);
+
+                if (result == DialogResult.Yes)
+                {
+                    // Proceeding with User Removal
+
+                    if (numUsersFULLPermission == 0)
+                    {
+                        foreach (User user in User.GetAll()) user.Delete();
+                        _globalState = State.Uninitialized;
+                        _currentUser = null;
+                        _selectedUser = null;
+                        _formStart.Show();
+                        this.Hide();
+                    }
+                    else if (_selectedUser == _currentUser)
+                    {
+                        _selectedUser.Delete();
+                        _globalState = State.Idle;
+                        _currentUser = null;
+                        _selectedUser = null;
+                        _formStart.Show();
+                        this.Hide();
+                    } 
+                    else
+                    {
+                        _selectedUser.Delete();
+                        populateUsers(listUsers, EventArgs.Empty);
+                        UpdateComponents();
+                    }
+                }
+            }
+            else if (_globalState == State.UserManagement_AddUser)
+            {
+                // TODO: cancel addition of a new user
+                listUsers.Items.Remove("New User (NONE)");
+                listUsers.SelectedIndex = 0;
+                _selectedUser = (User)listUsers.SelectedItem;
+                _globalState = State.UserManagement;
+                UpdateComponents();
+            }
+        }
+
+        private void FormUserManagement_MouseClick(object sender, MouseEventArgs e)
+        {
+            loseFocus();
+        }
+
+        private void loseFocus()
+        {
+            this.ActiveControl = txtStatus;
         }
     }
 }

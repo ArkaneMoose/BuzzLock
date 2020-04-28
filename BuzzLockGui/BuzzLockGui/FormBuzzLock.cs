@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using BuzzLockGui.Backend;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Runtime.CompilerServices;
 
 namespace BuzzLockGui
 {
@@ -34,14 +35,15 @@ namespace BuzzLockGui
         protected static readonly bool IS_LINUX = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
         private static int keyboard_on = 0; //1 means on 0 means off
         private static int numberpad_on = 0; //1 means on 0 means off
-        protected static bool acceptMagStripeInput = true;
-
+        protected static bool acceptMagStripeInput = false;
         protected ErrorProvider userError = new ErrorProvider()
         {
             BlinkStyle = ErrorBlinkStyle.NeverBlink
         };
-
+        protected Timer timerBTIdleBTDeviceListUpdate;
+        private System.ComponentModel.IContainer components;
         protected static HashSet<Control> errorControls = new HashSet<Control>();
+        protected Control lastActiveTextBox;
 
         protected void ValidateTextBox(object sender, EventArgs e)
         {
@@ -59,6 +61,7 @@ namespace BuzzLockGui
                 }
             }
             OnValidate();
+            
         }
 
         protected void ValidatePhoneBox(object sender, EventArgs e)
@@ -182,7 +185,7 @@ namespace BuzzLockGui
                 process.Start();
                 keyboard_on = 1;
                 //string result = process.StandardOutput.ReadToEnd();
-                //Console.WriteLine(result);
+                //Console.WriteLine(result); 
             }
         }
 
@@ -208,6 +211,8 @@ namespace BuzzLockGui
                 numberpad_on = 1;
                 //string result = process.StandardOutput.ReadToEnd();
                 //Console.WriteLine(result);
+
+                // Save active component for clear button
             }
         }
 
@@ -244,7 +249,8 @@ namespace BuzzLockGui
         {
             List<BluetoothDevice> inRange = new List<BluetoothDevice>
             {
-                new BluetoothDevice(new BluetoothAddress("00:11:22:33:44:55"), "Andrew's iPhone")
+                new BluetoothDevice(new BluetoothAddress("00:11:22:33:44:55"), "Andrew's iPhone"),
+                new BluetoothDevice(new BluetoothAddress("99:99:99:99:99:99"), "Big Bad Watch")
             };
             return inRange;
         }
@@ -259,6 +265,27 @@ namespace BuzzLockGui
             }
             return inRangeAndRecognized;
         }
+
+        protected bool checkIfMagStripeNeeded()
+        {
+            return _globalState == State.Uninitialized
+                || _globalState == State.Initializing
+                || _globalState == State.Idle
+                || _globalState == State.UserOptions_EditAuth
+                || _globalState == State.UserManagement
+                || _globalState == State.UserManagement_AddUser;
+        }
+
+        protected void InitializeBTRefreshBTDeviceListsTimer()
+        {
+            this.components = new System.ComponentModel.Container();
+            this.timerBTIdleBTDeviceListUpdate = new System.Windows.Forms.Timer(this.components);
+            this.timerBTIdleBTDeviceListUpdate.Enabled = true;
+            this.timerBTIdleBTDeviceListUpdate.Interval = 5000;
+            this.timerBTIdleBTDeviceListUpdate.Tick += new System.EventHandler(this.RefreshBTDeviceLists);
+        }
+
+        protected virtual void RefreshBTDeviceLists(object sender, EventArgs e) { }
 
     }
 }

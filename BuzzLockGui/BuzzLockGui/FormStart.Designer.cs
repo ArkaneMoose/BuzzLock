@@ -32,7 +32,6 @@
             this.btnOptionsSave = new System.Windows.Forms.Button();
             this.txtStatus = new System.Windows.Forms.Label();
             this.btnDebugSwipe = new System.Windows.Forms.Button();
-            this.btnDebugBluetooth = new System.Windows.Forms.Button();
             this.txtCard = new System.Windows.Forms.Label();
             this.txtUserName = new System.Windows.Forms.Label();
             this.txtUserPhone = new System.Windows.Forms.Label();
@@ -64,13 +63,13 @@
             this.timerAccessDeniedTimeout = new System.Windows.Forms.Timer(this.components);
             this.timerTxtAccessDeniedStatus = new System.Windows.Forms.Timer(this.components);
             this.txtAccessDeniedStatus = new System.Windows.Forms.Label();
-            this.btnDebugAccessDenied = new System.Windows.Forms.Button();
-            this.btnDebugSecondFactor = new System.Windows.Forms.Button();
             this.txtSecondFactorStatus = new System.Windows.Forms.Label();
             this.tbxSecFactorPinOrCard = new System.Windows.Forms.TextBox();
             this.txtSecFactorPinOrCard = new System.Windows.Forms.Label();
-            this.timerBTIdleBTDeviceListUpdate = new System.Windows.Forms.Timer(this.components);
             this.btnLockNow = new System.Windows.Forms.Button();
+            this.btnAddNewUser = new System.Windows.Forms.Button();
+            this.btnCancelAddNewUser = new System.Windows.Forms.Button();
+            this.btnClearTextBox = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.userError)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errNewUser)).BeginInit();
             this.SuspendLayout();
@@ -101,23 +100,13 @@
             // btnDebugSwipe
             // 
             this.btnDebugSwipe.CausesValidation = false;
-            this.btnDebugSwipe.Location = new System.Drawing.Point(605, 41);
+            this.btnDebugSwipe.Location = new System.Drawing.Point(605, 70);
             this.btnDebugSwipe.Name = "btnDebugSwipe";
             this.btnDebugSwipe.Size = new System.Drawing.Size(109, 23);
             this.btnDebugSwipe.TabIndex = 6;
             this.btnDebugSwipe.Text = "Debug: Swipe card";
             this.btnDebugSwipe.UseVisualStyleBackColor = true;
             this.btnDebugSwipe.Click += new System.EventHandler(this.btnDebugSwipe_Click);
-            // 
-            // btnDebugBluetooth
-            // 
-            this.btnDebugBluetooth.Location = new System.Drawing.Point(605, 70);
-            this.btnDebugBluetooth.Name = "btnDebugBluetooth";
-            this.btnDebugBluetooth.Size = new System.Drawing.Size(137, 23);
-            this.btnDebugBluetooth.TabIndex = 7;
-            this.btnDebugBluetooth.Text = "Debug: Bluetooth found";
-            this.btnDebugBluetooth.UseVisualStyleBackColor = true;
-            this.btnDebugBluetooth.Click += new System.EventHandler(this.btnDebugBluetooth_Click);
             // 
             // txtCard
             // 
@@ -169,7 +158,6 @@
             this.tbxUserName.Visible = false;
             this.tbxUserName.Click += new System.EventHandler(this.keyboard_Click);
             this.tbxUserName.TextChanged += new System.EventHandler(this.ValidateTextBox);
-            this.tbxUserName.Leave += new System.EventHandler(this.keyboardClose_Leave);
             // 
             // tbxUserPhone
             // 
@@ -179,9 +167,8 @@
             this.tbxUserPhone.Size = new System.Drawing.Size(210, 20);
             this.tbxUserPhone.TabIndex = 13;
             this.tbxUserPhone.Visible = false;
-            this.tbxUserPhone.Click += new System.EventHandler(this.numberpad_Click);
             this.tbxUserPhone.TextChanged += new System.EventHandler(this.ValidatePhoneBox);
-            this.tbxUserPhone.Leave += new System.EventHandler(this.keyboardClose_Leave);
+            this.tbxUserPhone.Enter += new System.EventHandler(this.numberpad_Click);
             // 
             // cbxPrimAuth
             // 
@@ -268,9 +255,8 @@
             this.tbxPin.Size = new System.Drawing.Size(138, 20);
             this.tbxPin.TabIndex = 23;
             this.tbxPin.Visible = false;
-            this.tbxPin.Click += new System.EventHandler(this.numberpad_Click);
             this.tbxPin.TextChanged += new System.EventHandler(this.ValidatePinBox);
-            this.tbxPin.Leave += new System.EventHandler(this.keyboardClose_Leave);
+            this.tbxPin.Enter += new System.EventHandler(this.numberpad_Click);
             // 
             // cbxBTSelect2
             // 
@@ -323,7 +309,7 @@
             // 
             // btnExit
             // 
-            this.btnExit.Location = new System.Drawing.Point(605, 14);
+            this.btnExit.Location = new System.Drawing.Point(605, 43);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(75, 23);
             this.btnExit.TabIndex = 28;
@@ -423,27 +409,6 @@
             this.txtAccessDeniedStatus.Size = new System.Drawing.Size(67, 15);
             this.txtAccessDeniedStatus.TabIndex = 35;
             // 
-            // btnDebugAccessDenied
-            // 
-            this.btnDebugAccessDenied.Location = new System.Drawing.Point(605, 128);
-            this.btnDebugAccessDenied.Name = "btnDebugAccessDenied";
-            this.btnDebugAccessDenied.Size = new System.Drawing.Size(144, 23);
-            this.btnDebugAccessDenied.TabIndex = 36;
-            this.btnDebugAccessDenied.Text = "Debug: Access Denied";
-            this.btnDebugAccessDenied.UseVisualStyleBackColor = true;
-            this.btnDebugAccessDenied.Click += new System.EventHandler(this.btnDebugAccessDenied_Click);
-            // 
-            // btnDebugSecondFactor
-            // 
-            this.btnDebugSecondFactor.Location = new System.Drawing.Point(605, 156);
-            this.btnDebugSecondFactor.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnDebugSecondFactor.Name = "btnDebugSecondFactor";
-            this.btnDebugSecondFactor.Size = new System.Drawing.Size(144, 23);
-            this.btnDebugSecondFactor.TabIndex = 37;
-            this.btnDebugSecondFactor.Text = "Debug: Second Factor";
-            this.btnDebugSecondFactor.UseVisualStyleBackColor = true;
-            this.btnDebugSecondFactor.Click += new System.EventHandler(this.btnDebugSecondFactor_Click);
-            // 
             // txtSecondFactorStatus
             // 
             this.txtSecondFactorStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
@@ -463,8 +428,7 @@
             this.tbxSecFactorPinOrCard.Size = new System.Drawing.Size(559, 20);
             this.tbxSecFactorPinOrCard.TabIndex = 40;
             this.tbxSecFactorPinOrCard.Visible = false;
-            this.tbxSecFactorPinOrCard.Click += new System.EventHandler(this.numberpad_Click);
-            this.tbxSecFactorPinOrCard.Leave += new System.EventHandler(this.keyboardClose_Leave);
+            this.tbxSecFactorPinOrCard.Enter += new System.EventHandler(this.numberpad_Click);
             // 
             // txtSecFactorPinOrCard
             // 
@@ -475,12 +439,6 @@
             this.txtSecFactorPinOrCard.TabIndex = 41;
             this.txtSecFactorPinOrCard.Text = "Insert PIN:";
             this.txtSecFactorPinOrCard.Visible = false;
-            // 
-            // timerBTIdleBTDeviceListUpdate
-            // 
-            this.timerBTIdleBTDeviceListUpdate.Enabled = true;
-            this.timerBTIdleBTDeviceListUpdate.Interval = 5000;
-            this.timerBTIdleBTDeviceListUpdate.Tick += new System.EventHandler(this.RefreshBTDeviceLists);
             // 
             // btnLockNow
             // 
@@ -495,26 +453,62 @@
             this.btnLockNow.Visible = false;
             this.btnLockNow.Click += new System.EventHandler(this.btnLockNow_Click);
             // 
+            // btnAddNewUser
+            // 
+            this.btnAddNewUser.Location = new System.Drawing.Point(456, 211);
+            this.btnAddNewUser.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnAddNewUser.Name = "btnAddNewUser";
+            this.btnAddNewUser.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.btnAddNewUser.Size = new System.Drawing.Size(119, 32);
+            this.btnAddNewUser.TabIndex = 43;
+            this.btnAddNewUser.Text = "Add new user";
+            this.btnAddNewUser.UseVisualStyleBackColor = true;
+            this.btnAddNewUser.Visible = false;
+            this.btnAddNewUser.Click += new System.EventHandler(this.btnAddNewUser_Click);
+            // 
+            // btnCancelAddNewUser
+            // 
+            this.btnCancelAddNewUser.Location = new System.Drawing.Point(457, 211);
+            this.btnCancelAddNewUser.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnCancelAddNewUser.Name = "btnCancelAddNewUser";
+            this.btnCancelAddNewUser.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.btnCancelAddNewUser.Size = new System.Drawing.Size(119, 32);
+            this.btnCancelAddNewUser.TabIndex = 44;
+            this.btnCancelAddNewUser.Text = "Cancel";
+            this.btnCancelAddNewUser.UseVisualStyleBackColor = true;
+            this.btnCancelAddNewUser.Visible = false;
+            this.btnCancelAddNewUser.Click += new System.EventHandler(this.btnCancelAddNewUser_Click);
+            // 
+            // btnClearTextBox
+            // 
+            this.btnClearTextBox.Location = new System.Drawing.Point(291, 70);
+            this.btnClearTextBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnClearTextBox.Name = "btnClearTextBox";
+            this.btnClearTextBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.btnClearTextBox.Size = new System.Drawing.Size(93, 47);
+            this.btnClearTextBox.TabIndex = 45;
+            this.btnClearTextBox.Text = "Clear";
+            this.btnClearTextBox.UseVisualStyleBackColor = true;
+            this.btnClearTextBox.Visible = false;
+            this.btnClearTextBox.Click += new System.EventHandler(this.btnClearTextBox_Click);
+            // 
             // FormStart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 442);
+            this.Controls.Add(this.btnClearTextBox);
+            this.Controls.Add(this.btnAddNewUser);
             this.Controls.Add(this.txtSecFactorPinOrCard);
-            this.Controls.Add(this.tbxSecFactorPinOrCard);
             this.Controls.Add(this.txtSecondFactorStatus);
-            this.Controls.Add(this.btnDebugSecondFactor);
-            this.Controls.Add(this.btnDebugAccessDenied);
             this.Controls.Add(this.txtAccessDeniedStatus);
             this.Controls.Add(this.tbxAccessDenied);
             this.Controls.Add(this.btnDebugAuthUser);
             this.Controls.Add(this.txtChooseBTDevice);
             this.Controls.Add(this.btnConfirmBTDevices);
-            this.Controls.Add(this.txtTime);
             this.Controls.Add(this.txtDate);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.txtCard);
-            this.Controls.Add(this.btnDebugBluetooth);
             this.Controls.Add(this.btnDebugSwipe);
             this.Controls.Add(this.btnOptionsSave);
             this.Controls.Add(this.tbxCard);
@@ -529,12 +523,15 @@
             this.Controls.Add(this.tbxUserName);
             this.Controls.Add(this.txtUserPhone);
             this.Controls.Add(this.cbxBTSelect1);
-            this.Controls.Add(this.tbxPin);
             this.Controls.Add(this.txtUserName);
-            this.Controls.Add(this.listIdleBTDevices);
             this.Controls.Add(this.txtAuthStatus);
             this.Controls.Add(this.cbxBTSelect2);
             this.Controls.Add(this.btnLockNow);
+            this.Controls.Add(this.btnCancelAddNewUser);
+            this.Controls.Add(this.tbxPin);
+            this.Controls.Add(this.txtTime);
+            this.Controls.Add(this.tbxSecFactorPinOrCard);
+            this.Controls.Add(this.listIdleBTDevices);
             this.Margin = new System.Windows.Forms.Padding(8);
             this.Name = "FormStart";
             this.Text = "BuzzLock";
@@ -554,7 +551,6 @@
         private System.Windows.Forms.Button btnOptionsSave;
         private System.Windows.Forms.Label txtStatus;
         private System.Windows.Forms.Button btnDebugSwipe;
-        private System.Windows.Forms.Button btnDebugBluetooth;
         private System.Windows.Forms.Label txtCard;
         private System.Windows.Forms.Label txtUserName;
         private System.Windows.Forms.Label txtUserPhone;
@@ -586,13 +582,13 @@
         private System.Windows.Forms.Timer timerAccessDeniedTimeout;
         private System.Windows.Forms.Timer timerTxtAccessDeniedStatus;
         private System.Windows.Forms.Label txtAccessDeniedStatus;
-        private System.Windows.Forms.Button btnDebugAccessDenied;
-        private System.Windows.Forms.Button btnDebugSecondFactor;
         private System.Windows.Forms.Label txtSecondFactorStatus;
         private System.Windows.Forms.Label txtSecFactorPinOrCard;
         private System.Windows.Forms.TextBox tbxSecFactorPinOrCard;
-        private System.Windows.Forms.Timer timerBTIdleBTDeviceListUpdate;
         private System.Windows.Forms.Button btnLockNow;
+        private System.Windows.Forms.Button btnAddNewUser;
+        private System.Windows.Forms.Button btnCancelAddNewUser;
+        private System.Windows.Forms.Button btnClearTextBox;
     }
 }
 

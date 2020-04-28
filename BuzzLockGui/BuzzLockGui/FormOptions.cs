@@ -43,6 +43,17 @@ namespace BuzzLockGui
                 if (control.Name == "btnUserManagement") break;
                 control.MouseClick += OnAnyMouseClick;
             }
+
+            // Close keypad upon selection of most components
+            foreach (Control control in Controls)
+            {
+                if (control != tbxPin && control != tbxNewPhone && control != btnClearTextBox
+                    && control != tbxNewName)
+                {
+                    control.MouseClick += keyboardClose_Leave;
+                }
+            }
+            this.MouseClick += keyboardClose_Leave;
         }
         private void FormOptions_Load(object sender, EventArgs e)
         {
@@ -50,7 +61,10 @@ namespace BuzzLockGui
             // this.FormBorderStyle = FormBorderStyle.None;
             // this.WindowState = FormWindowState.Maximized;
         }
-
+        private void FormOptions_Activated(object sender, EventArgs e)
+        {
+            loseFocus();
+        }
 
         public new void Show()
         {
@@ -130,6 +144,8 @@ namespace BuzzLockGui
             }
             else if (_globalState == State.UserOptions_EditAuth)
             {
+                
+
                 AuthenticationMethod primary = null;
                 AuthenticationMethod secondary = null;
                 switch (cbxPrimAuth.SelectedItem.ToString())
@@ -195,7 +211,7 @@ namespace BuzzLockGui
             int numUsersFULLPermission = -1;
             foreach (User user in userList)
             {
-                numUsersFULLPermission += 1;
+                if (user.PermissionLevel == User.PermissionLevels.FULL) numUsersFULLPermission += 1;
             }
 
             string removalMsg = "Are you sure you want to remove your user? This cannot be undone.";
@@ -241,6 +257,8 @@ namespace BuzzLockGui
                 _formStart.Show();
                 this.Hide();
             }
+
+            loseFocus();
         }
 
         private void FormOptions_MouseClick(object sender, EventArgs e)
@@ -299,7 +317,7 @@ namespace BuzzLockGui
                     {
                         // Don't allow duplicate cards in the database
                         AuthenticationSequence authSeq = AuthenticationSequence.Start(new Card(cardInput));
-                        bool cardNotAlreadyInDatabase = authSeq.NextAuthenticationMethod == null;
+                        bool cardNotAlreadyInDatabase = authSeq == null;
                         if (cardNotAlreadyInDatabase)
                         {
                             tbxCard.Text = cardInput;
@@ -356,15 +374,12 @@ namespace BuzzLockGui
             //UserManagement
 
             // Multiple States
-            acceptMagStripeInput = _globalState == State.Uninitialized
-                                || _globalState == State.Initializing
-                                || _globalState == State.Idle
-                                || _globalState == State.UserOptions_EditAuth
-                                || _globalState == State.UserManagement
-                                || _globalState == State.UserManagement_AddUser;
+            acceptMagStripeInput = checkIfMagStripeNeeded();
 
             //Set the welcome textbox with user name and permissions
             txtStatus.Text = $"Welcome, {_currentUser.Name}. You have {_currentUser.PermissionLevel} permissions.";
+
+            loseFocus();
 
             switch (_globalState)
             {
@@ -385,6 +400,8 @@ namespace BuzzLockGui
                     break;
                 case State.UserOptions_EditAuth:
                     txtOptionsTitle.Text = "Edit your authentication methods:";
+                    // Update BT Devices list
+                    RefreshBTDeviceLists(timerBTIdleBTDeviceListUpdate, EventArgs.Empty);
                     // Query database for current primary and secondary authentication method.
                     AuthenticationMethod primary = _currentUser.AuthenticationMethods.Primary;
                     origPrimary = primary;
@@ -575,12 +592,57 @@ namespace BuzzLockGui
             this.Hide();
         }
 
-        protected new void numberpad_Click(object sender, EventArgs e)
-            => base.numberpad_Click(sender, e);
+        protected override void RefreshBTDeviceLists(object sender, EventArgs e)
+        {
+            if (_globalState == State.UserOptions_EditAuth)
+            {
+                // Backup user's already selected devices
+                BluetoothDevice selected1 = (BluetoothDevice)cbxBTSelect1.SelectedItem;
+                BluetoothDevice selected2 = (BluetoothDevice)cbxBTSelect2.SelectedItem;
+                // Refresh combo box lists
+                cbxBTSelect1.Items.Clear();
+                cbxBTSelect2.Items.Clear();
+                var inRange = getBTDevicesInRange();
+                foreach (BluetoothDevice bt in inRange)
+                {
+                    // Only add device to list if not in database
+                    if (AuthenticationSequence.Start(bt) == null)
+                    {
+                        cbxBTSelect1.Items.Add(bt);
+                        cbxBTSelect2.Items.Add(bt);
+                        if (bt.Equals(selected1)) cbxBTSelect1.SelectedItem = selected1;
+                        if (bt.Equals(selected2)) cbxBTSelect2.SelectedItem = selected2;
+                    }
+                }
+            }
+        }
+
+        // Virtual Keyboard Stuff
+
         protected new void keyboard_Click(object sender, EventArgs e)
-            => base.keyboard_Click(sender, e);
+        {
+            base.keyboard_Click(sender, e);
+            base.lastActiveTextBox = (TextBox)sender;
+            btnClearTextBox.Visible = true;
+        }
         protected new void keyboardClose_Leave(object sender, EventArgs e)
-            => base.keyboardClose_Leave(sender, e);
+        {
+            base.keyboardClose_Leave(sender, e);
+            btnClearTextBox.Visible = false;
+        }
+        protected new void numberpad_Click(object sender, EventArgs e)
+        {
+            base.numberpad_Click(sender, e);
+            base.lastActiveTextBox = (TextBox)sender;
+            btnClearTextBox.Visible = true;
+        }
+        private void btnClearTextBox_Click(object sender, EventArgs e)
+        {
+            base.lastActiveTextBox.Text = "";
+            this.ActiveControl = base.lastActiveTextBox;
+        }
+
+        // Bluetooth Stuff
         protected new List<BluetoothDevice> getBTDevicesInRange()
             => base.getBTDevicesInRange();
         protected new List<BluetoothDevice> getBTDevicesInRangeAndRecognized()
