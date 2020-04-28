@@ -179,6 +179,7 @@ namespace BuzzLockGui
         private void UpdateComponents()
         {
             ClearFields();
+            loseFocus();
 
             btnAddNewUser.Enabled = _globalState != State.UserManagement_AddUser;
             btnRemoveUserOrCancel.Enabled = true;
@@ -536,7 +537,20 @@ namespace BuzzLockGui
                     // Don't allow duplicate cards in the database
                     AuthenticationSequence authSeq = AuthenticationSequence.Start(new Card(cardInput));
                     bool cardNotAlreadyInDatabase = authSeq == null;
-                    if (cardNotAlreadyInDatabase) tbxCard.Text = cardInput;
+                    if (cardNotAlreadyInDatabase)
+                    {
+                        txtAddNewUserStatus.Visible = false;
+                        tbxCard.Text = cardInput;
+                    }
+                    else
+                    {
+                        // Error: Two separate users cannot use the same card for authentication
+                        txtAddNewUserStatus.Visible = true;
+                        txtAddNewUserStatus.Text = "Cannot add an authentication method which already exists in the database. Please try again.";
+                        tbxCard.Text = "";
+                        cardInput = ""; // just in case
+                        loseFocus();
+                    }
 
                     Console.WriteLine(cardInput);
 
@@ -644,6 +658,7 @@ namespace BuzzLockGui
         private void FormUserManagement_MouseClick(object sender, MouseEventArgs e)
         {
             loseFocus();
+            txtAddNewUserStatus.Visible = false;
         }
 
         private void loseFocus()
