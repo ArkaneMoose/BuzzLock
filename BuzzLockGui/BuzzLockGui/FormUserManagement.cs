@@ -405,7 +405,7 @@ namespace BuzzLockGui
             _globalState = State.UserManagement_AddUser;
             if (!listUsers.Items.Contains("New User (NONE)"))
             {
-                listUsers.Items.Add("New User (NONE)"); //TODO: remove this guy and replace it with the actual user
+                listUsers.Items.Add("New User (NONE)"); 
             }
             listUsers.SelectedItem = "New User (NONE)";
             UpdateComponents();
@@ -594,13 +594,11 @@ namespace BuzzLockGui
                         $"system, lock the door and return the system to IDLE.";
                 }
 
-                // Initializes and displays the AutoClosingMessageBox.
-                var result = AutoClosingMessageBox.Show(
+                // Initializes and displays the MessageBox.
+                var result = MessageBox.Show(
                     text: removalMsg,
                     caption: "Remove User",
-                    timeout: 10000, //10 seconds
-                    buttons: MessageBoxButtons.YesNo,
-                    defaultResult: DialogResult.No);
+                    buttons: MessageBoxButtons.YesNo);
 
                 if (result == DialogResult.Yes)
                 {

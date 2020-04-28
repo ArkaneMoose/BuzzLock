@@ -208,13 +208,14 @@ namespace BuzzLockGui
         {
             string removalMsg = "Are you sure you want to remove your user? This cannot be undone.";
 
-            // Initializes and displays the AutoClosingMessageBox.
-            var result = AutoClosingMessageBox.Show(
+            // Stop Timer
+            StopTimer();
+
+            // Initializes and displays the MessageBox.
+            var result = MessageBox.Show(
                 text: removalMsg,
                 caption: "Remove User",
-                timeout: 5000, //5 seconds
-                buttons: MessageBoxButtons.YesNo,
-                defaultResult: DialogResult.No);
+                buttons: MessageBoxButtons.YesNo);
 
             if (result == DialogResult.Yes)
             {
@@ -230,6 +231,9 @@ namespace BuzzLockGui
                 _formStart.UpdateComponents();
                 _formStart.Show();
                 this.Hide();
+            } else
+            {
+                RestartTimer();
             }
 
             loseFocus();
