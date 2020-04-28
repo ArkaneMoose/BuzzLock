@@ -538,7 +538,7 @@ namespace BuzzLockGui
 
         private void loseFocus()
         {
-            this.ActiveControl = tbxStatus;
+            this.ActiveControl = txtStatus;
         }
 
         protected override void OnValidate()
