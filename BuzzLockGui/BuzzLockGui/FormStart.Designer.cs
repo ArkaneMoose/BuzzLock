@@ -544,7 +544,6 @@
             this.Name = "FormStart";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "BuzzLock";
-            this.TopMost = true;
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Activated += new System.EventHandler(this.FormStart_Activated);
             this.Load += new System.EventHandler(this.FormStart_Load);

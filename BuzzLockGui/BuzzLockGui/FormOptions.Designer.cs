@@ -434,7 +434,6 @@
             this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.Name = "FormOptions";
             this.Text = "BuzzLock Options";
-            this.TopMost = true;
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Activated += new System.EventHandler(this.FormOptions_Activated);
             this.Load += new System.EventHandler(this.FormOptions_Load);
