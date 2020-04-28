@@ -65,7 +65,6 @@ namespace BuzzLockGui
             // Update visibility of form components
             UpdateComponents();
 
-            // Set mouse click events for all components
             foreach (Control control in Controls)
             {
                 control.MouseClick += OnAnyMouseClick;
@@ -82,9 +81,16 @@ namespace BuzzLockGui
             }
             this.MouseClick += keyboardClose_Leave;
 
-
             // Initialize timer that refreshes the bluetooth device lists every 5 seconds
             base.InitializeBTRefreshBTDeviceListsTimer();
+        }
+
+        private void AttemptKeyboardClose(object sender, EventArgs e)
+        {
+            if (this.ActiveControl != lastActiveTextBox && this.ActiveControl != btnClearTextBox)
+            {
+                keyboardClose_Leave(sender, e);
+            }
         }
 
         private void FormStart_Load(object sender, EventArgs e)
@@ -810,7 +816,7 @@ namespace BuzzLockGui
         protected new void keyboard_Click(object sender, EventArgs e)
         {
             base.keyboard_Click(sender, e);
-            base.lastActiveTextBox = (TextBox)sender;
+            lastActiveTextBox = (TextBox)sender;
             btnClearTextBox.Visible = true;
         }
         protected new void keyboardClose_Leave(object sender, EventArgs e)
@@ -821,14 +827,14 @@ namespace BuzzLockGui
         protected new void numberpad_Click(object sender, EventArgs e)
         {
             base.numberpad_Click(sender, e);
-            base.lastActiveTextBox = (TextBox)sender;
+            lastActiveTextBox = (TextBox)sender;
             btnClearTextBox.Visible = true;
         }
 
         private void btnClearTextBox_Click(object sender, EventArgs e)
         {
-            base.lastActiveTextBox.Text = "";
-            this.ActiveControl = base.lastActiveTextBox;
+            lastActiveTextBox.Text = "";
+            this.ActiveControl = lastActiveTextBox;
         }
 
         // Bluetooth Stuff

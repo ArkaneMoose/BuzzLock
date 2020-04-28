@@ -166,9 +166,13 @@ namespace BuzzLockGui
 
         protected void keyboard_Click(object sender, EventArgs e)
         {
+            if (numberpad_on == 1 && IS_LINUX)
+            {
+                keyboardClose_Leave(sender, e);
+            }
             if (keyboard_on == 0 && IS_LINUX)
             {
-                System.Threading.Thread.Sleep(100);
+                System.Threading.Thread.Sleep(150);
                 var args = string.Format("xvkbd -compact -geometry 800x200+0+280");
                 Process process = new Process();
                 ProcessStartInfo startInfo = new ProcessStartInfo
@@ -191,9 +195,13 @@ namespace BuzzLockGui
 
         protected void numberpad_Click(object sender, EventArgs e)
         {
+            if (keyboard_on == 1 && IS_LINUX)
+            {
+                keyboardClose_Leave(sender, e);
+            }
             if (numberpad_on == 0 && IS_LINUX)
             {
-                System.Threading.Thread.Sleep(100);
+                System.Threading.Thread.Sleep(150);
                 var args = string.Format("xvkbd -keypad -geometry 260x230+0+250");
                 Process process = new Process();
                 ProcessStartInfo startInfo = new ProcessStartInfo
@@ -218,7 +226,7 @@ namespace BuzzLockGui
 
         protected void keyboardClose_Leave(object sender, EventArgs e)
         {
-            if (IS_LINUX)
+            if (IS_LINUX && (keyboard_on == 1 || numberpad_on == 1))
             {
                 var args = string.Format("sudo killall xvkbd");
                 Process process = new Process();
