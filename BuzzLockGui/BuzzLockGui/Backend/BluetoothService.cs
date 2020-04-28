@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using BuzzLockGui.Backend.Native;
 using System;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Collections.Concurrent;
 using System.Data.SQLite;
 using NDesk.DBus;
 using org.bluez;
+using System.Diagnostics;
 
 namespace BuzzLockGui.Backend
 {
@@ -25,8 +23,8 @@ namespace BuzzLockGui.Backend
         private static ObjectManager objectManager
             = system.GetObject<ObjectManager>(busName, new ObjectPath("/"));
         private static HashSet<IAdapter1> adaptersDiscovering = new HashSet<IAdapter1>();
-        private static ConcurrentDictionary<BluetoothAddress, BluetoothConnection> connections
-            = new ConcurrentDictionary<BluetoothAddress, BluetoothConnection>();
+        private static Dictionary<BluetoothAddress, BluetoothConnection> connections
+            = new Dictionary<BluetoothAddress, BluetoothConnection>();
         private static Mode mode = Mode.UNINITIALIZED;
         private static Task modeSwitchTask = Task.CompletedTask;
 
@@ -508,26 +506,25 @@ namespace BuzzLockGui.Backend
 
         private class BluetoothConnection
         {
-            private int sockfd = -1;
             private BluetoothAddress address;
-            private CancellationTokenSource cancellationTokenSource
-                = new CancellationTokenSource();
-            private CancellationToken cancellationToken;
+            private ProcessStartInfo startInfo;
+            private Process process;
             private Task task;
-            internal bool StopRequested =>
-                cancellationTokenSource.IsCancellationRequested;
+            internal bool StopRequested { get; private set; }
 
             private BluetoothConnection(BluetoothAddress address)
             {
                 Console.WriteLine($"new BluetoothConnection({address})"); // !!DEBUG!!
+                startInfo = new ProcessStartInfo
+                {
+                    FileName = "sudo",
+                    Arguments = $"l2ping {(string)address}",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                };
                 this.address = address;
-                cancellationToken = cancellationTokenSource.Token;
-                task = Task.Factory.StartNew(
-                    TaskTarget,
-                    cancellationToken,
-                    TaskCreationOptions.LongRunning,
-                    TaskScheduler.Default);
-                connections[address] = this;
+                _ = StartProcessLoop();
             }
 
             internal static BluetoothConnection Start(BluetoothAddress address)
@@ -539,95 +536,53 @@ namespace BuzzLockGui.Backend
                 return new BluetoothConnection(address);
             }
 
-            internal async Task Stop()
+            private async Task StartProcessLoop()
+            {
+                connections[address] = this;
+                while (!StopRequested)
+                {
+                    StartProcessOnce();
+                    await task;
+                }
+                connections.Remove(address);
+            }
+
+            private void StartProcessOnce()
+            {
+                process = new Process
+                {
+                    StartInfo = startInfo,
+                };
+                TaskCompletionSource<int> taskSource
+                    = new TaskCompletionSource<int>();
+                process.Exited += (object sender, EventArgs e) =>
+                {
+                    taskSource.SetResult(process.ExitCode);
+                };
+                process.EnableRaisingEvents = true;
+                task = taskSource.Task;
+                process.Start();
+            }
+
+            internal Task Stop()
             {
                 if (!StopRequested)
                 {
-                    cancellationTokenSource.Cancel();
-                    if (sockfd >= 0)
+                    StopRequested = true;
+                    Process kill = new Process
                     {
-                        Libc.shutdown(sockfd, Libc.SHUT_RDWR);
-                    }
-                }
-                try
-                {
-                    await task;
-                }
-                catch (OperationCanceledException) { }
-            }
-
-            private void TaskTarget()
-            {
-                Console.WriteLine($"TaskTarget: started for {address}"); // !!DEBUG!!
-                try
-                {
-                    Libbluetooth.sockaddr_l2 addr = new Libbluetooth.sockaddr_l2
-                    {
-                        l2_family = Libc.AF_BLUETOOTH,
-                        l2_psm = 0,
-                        l2_bdaddr = address,
-                        l2_bdaddr_type = 0,
-                        l2_cid = 0
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = "sudo",
+                            Arguments = $"kill {process.Id}",
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                            WindowStyle = ProcessWindowStyle.Hidden,
+                        }
                     };
-                    while (true)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        sockfd = Libc.socket(
-                            Libc.AF_BLUETOOTH,
-                            Libc.SOCK_RAW,
-                            Libc.BTPROTO_L2CAP);
-                        if (sockfd < 0)
-                        {
-                            Libc.perror("Couldn't create Bluetooth socket");
-                            continue;
-                        }
-                        try
-                        {
-                            cancellationToken.ThrowIfCancellationRequested();
-                            int ok = Libc.connect(
-                                sockfd, ref addr, (uint)Marshal.SizeOf(addr));
-                            if (ok < 0)
-                            {
-                                Libc.perror("Couldn't connect");
-                                Console.WriteLine($"Failed to connect to {address}"); // !!DEBUG!!
-                                continue;
-                            }
-                            Console.WriteLine($"Successfully connected to {address}"); // !!DEBUG!!
-
-                            byte[] buffer = new byte[16];
-                            int received;
-                            do
-                            {
-                                cancellationToken.ThrowIfCancellationRequested();
-                                received = Libc.recv(
-                                    sockfd, buffer, (uint)buffer.Length, 0);
-                            }
-                            while (received > 0);
-                            if (received < 0)
-                            {
-                                Libc.perror("Receive error");
-                                continue;
-                            }
-                        }
-                        finally
-                        {
-                            if (Libc.close(sockfd) < 0)
-                            {
-                                Libc.perror("Couldn't close socket");
-                            }
-                            sockfd = -1;
-                        }
-                    }
+                    kill.Start();
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-                finally
-                {
-                    Console.WriteLine($"TaskTarget: exited for {address}"); // !!DEBUG!!
-                    connections.TryRemove(address, out _);
-                }
+                return task;
             }
         }
     }
