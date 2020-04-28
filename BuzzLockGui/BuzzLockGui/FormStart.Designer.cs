@@ -42,7 +42,6 @@
             this.cbxSecAuth = new System.Windows.Forms.ComboBox();
             this.txtPrimAuth = new System.Windows.Forms.Label();
             this.txtSecAuth = new System.Windows.Forms.Label();
-            this.errNewUser = new System.Windows.Forms.ErrorProvider(this.components);
             this.txtPrimChooseDev = new System.Windows.Forms.Label();
             this.cbxBTSelect1 = new System.Windows.Forms.ComboBox();
             this.tbxPin = new System.Windows.Forms.TextBox();
@@ -71,7 +70,6 @@
             this.btnCancelAddNewUser = new System.Windows.Forms.Button();
             this.btnClearTextBox = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.userError)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.errNewUser)).BeginInit();
             this.SuspendLayout();
             // 
             // btnOptionsSave
@@ -222,10 +220,6 @@
             this.txtSecAuth.TabIndex = 18;
             this.txtSecAuth.Text = "Secondary authentication:";
             this.txtSecAuth.Visible = false;
-            // 
-            // errNewUser
-            // 
-            this.errNewUser.ContainerControl = this;
             // 
             // txtPrimChooseDev
             // 
@@ -557,7 +551,6 @@
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FormStart_KeyPress);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.FormStart_MouseClick);
             ((System.ComponentModel.ISupportInitialize)(this.userError)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.errNewUser)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -578,7 +571,6 @@
         private System.Windows.Forms.ComboBox cbxSecAuth;
         private System.Windows.Forms.Label txtPrimAuth;
         private System.Windows.Forms.Label txtSecAuth;
-        private System.Windows.Forms.ErrorProvider errNewUser;
         private System.Windows.Forms.Label txtPrimChooseDev;
         private System.Windows.Forms.TextBox tbxPin;
         private System.Windows.Forms.ComboBox cbxBTSelect2;

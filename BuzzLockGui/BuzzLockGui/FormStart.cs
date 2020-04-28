@@ -483,8 +483,7 @@ namespace BuzzLockGui
             btnOptionsSave.Visible = _globalState == State.Initializing 
                                   || _globalState == State.SecondFactor 
                                   || _globalState == State.Authenticated;
-            btnAddNewUser.Visible = _globalState == State.Uninitialized
-                                     || _globalState == State.Idle;
+            btnAddNewUser.Visible = _globalState == State.Idle;
             acceptMagStripeInput = checkIfMagStripeNeeded();
 
             switch (_globalState)

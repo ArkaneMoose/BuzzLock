@@ -370,7 +370,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FormUserManagement";
             this.Text = "User Management";
-            this.TopMost = true;
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Activated += new System.EventHandler(this.formUserManagement_Activated);
             this.Load += new System.EventHandler(this.FormUserManagement_Load);

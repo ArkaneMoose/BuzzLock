@@ -206,21 +206,7 @@ namespace BuzzLockGui
 
         private void btnRemoveUser_Click(object sender, EventArgs e)
         {
-            // Check to see if this is the last user with FULL permissions
-            List<User> userList = User.GetAll();
-            int numUsersFULLPermission = -1;
-            foreach (User user in userList)
-            {
-                if (user.PermissionLevel == User.PermissionLevels.FULL) numUsersFULLPermission += 1;
-            }
-
             string removalMsg = "Are you sure you want to remove your user? This cannot be undone.";
-            if (numUsersFULLPermission == 0 && _currentUser.PermissionLevel == User.PermissionLevels.FULL)
-            {
-                removalMsg = "Are you sure you want to remove your user? This cannot be undone. \n\n" +
-                    "You are the last user with FULL permissions. Deleting yourself will also delete any other users.";
-            } 
-            
 
             // Initializes and displays the AutoClosingMessageBox.
             var result = AutoClosingMessageBox.Show(
@@ -234,18 +220,6 @@ namespace BuzzLockGui
             {
                 // Remove the current user from the database
                 _currentUser.Delete();
-
-                // Delete all other users if needed
-                if (numUsersFULLPermission == 0) 
-                {
-                    foreach (User user in userList)
-                    {
-                        if (!user.Equals(_currentUser))
-                        {
-                            user.Delete();
-                        }
-                    }
-                }
 
                 // Close options and stop both timers. Go back to IDLE or UNINITIALIZED depending on number of users
                 // registered in database after this user removal.
