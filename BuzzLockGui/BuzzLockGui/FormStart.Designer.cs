@@ -91,7 +91,7 @@
             this.txtStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtStatus.Location = new System.Drawing.Point(8, 10);
             this.txtStatus.Name = "txtStatus";
-            this.txtStatus.Size = new System.Drawing.Size(673, 32);
+            this.txtStatus.Size = new System.Drawing.Size(770, 32);
             this.txtStatus.TabIndex = 5;
             this.txtStatus.Text = "Hello! Please swipe your BuzzCard to begin set up.";
             // 
