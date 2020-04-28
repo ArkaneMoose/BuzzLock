@@ -698,6 +698,7 @@ namespace BuzzLockGui
             //Console.WriteLine("Shift: " + shift);
             //Console.WriteLine("New Card Entry: " + newCardEntry);
 
+            if (_globalState == State.AccessDenied) return;
             RestartTimer();
             RestartAccessDeniedTimer(); //??
             
