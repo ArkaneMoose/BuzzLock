@@ -494,6 +494,7 @@ namespace BuzzLockGui
                     userError.Clear();
                     _currentUser = null;
                     bluetoothFound = false;
+                    close_lock();
                     // Message for tbxStatus.Text for when the system is uninitialized
                     txtStatus.Text = "Hello! Please swipe your BuzzCard to begin set up.";
                     break;
