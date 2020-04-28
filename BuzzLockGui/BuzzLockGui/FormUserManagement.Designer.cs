@@ -167,11 +167,12 @@
             // 
             this.txtSecChooseDevOrPin.AutoSize = true;
             this.txtSecChooseDevOrPin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSecChooseDevOrPin.Location = new System.Drawing.Point(433, 171);
+            this.txtSecChooseDevOrPin.Location = new System.Drawing.Point(433, 182);
             this.txtSecChooseDevOrPin.Name = "txtSecChooseDevOrPin";
             this.txtSecChooseDevOrPin.Size = new System.Drawing.Size(68, 17);
             this.txtSecChooseDevOrPin.TabIndex = 49;
             this.txtSecChooseDevOrPin.Text = "User PIN:";
+            this.txtSecChooseDevOrPin.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.txtSecChooseDevOrPin.Visible = false;
             // 
             // cbxBTSelect2
@@ -187,7 +188,7 @@
             // 
             // tbxPin
             // 
-            this.tbxPin.Location = new System.Drawing.Point(533, 172);
+            this.tbxPin.Location = new System.Drawing.Point(533, 182);
             this.tbxPin.MaxLength = 6;
             this.tbxPin.Name = "tbxPin";
             this.tbxPin.Size = new System.Drawing.Size(133, 20);
@@ -316,7 +317,7 @@
             this.btnClose.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btnClose.Name = "btnClose";
             this.btnClose.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.btnClose.Size = new System.Drawing.Size(166, 33);
+            this.btnClose.Size = new System.Drawing.Size(166, 48);
             this.btnClose.TabIndex = 62;
             this.btnClose.Text = "Close User Management";
             this.btnClose.UseVisualStyleBackColor = true;
