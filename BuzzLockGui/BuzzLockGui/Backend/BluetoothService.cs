@@ -242,7 +242,7 @@ namespace BuzzLockGui.Backend
                     conn_info = new Libbluetooth.hci_conn_info[32]
                 };
                 Console.WriteLine($"Get...FromMonitoring: making ioctl HCIGETCONNLIST for hci {hci}"); // !!DEBUG!!
-                if (Libc.ioctl(sockfd, Libbluetooth.HCIGETCONNLIST, ref request) < 0)
+                if (Libbluetoothext.hci_get_conn_list(sockfd, ref request) < 0)
                 {
                     Libc.perror("Can't get connection list");
                     return 0;

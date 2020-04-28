@@ -139,6 +139,7 @@
     <Compile Include="Backend\BluetoothService.cs" />
     <Compile Include="Backend\DBus\org.bluez.cs" />
     <Compile Include="Backend\Native\Libbluetooth.cs" />
+    <Compile Include="Backend\Native\Libbluetoothext.cs" />
     <Compile Include="Backend\Native\Libc.cs" />
     <Compile Include="Backend\Pin.cs" />
     <Compile Include="Backend\Card.cs" />

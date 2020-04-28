@@ -22,8 +22,6 @@ namespace BuzzLockGui.Backend.Native
         internal static extern int shutdown(int sockfd, int how);
         [DllImport("libc", SetLastError = true, ExactSpelling = true)]
         internal static extern int close(int fd);
-        [DllImport("libc", SetLastError = true, ExactSpelling = true)]
-        internal static extern int ioctl(int fd, ulong request, ref Libbluetooth.hci_conn_list_req data);
         [DllImport("libc", ExactSpelling = true)]
         internal static extern IntPtr strerror(int errnum);
 

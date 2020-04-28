@@ -6,7 +6,6 @@ namespace BuzzLockGui.Backend.Native
     class Libbluetooth
     {
         internal const int HCI_UP = 0;
-        internal const ulong HCIGETCONNLIST = 2147764436;
 
         [DllImport("libbluetooth.so", SetLastError = true, ExactSpelling = true)]
         internal static extern int hci_for_each_dev(int flag, HciForEachDevCallback func, long arg);
