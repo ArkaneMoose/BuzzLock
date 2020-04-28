@@ -25,7 +25,7 @@ Schematic with servo connecting to Raspberry Pi
 
 <H3> Code Description </H3>
 
-Our GUI is implemented with Windows Forms (.NET/C#) and designed in Microsoft Visual Studio. Mono is used to open the GUI on the Raspberry Pi. C# was used for the base functionality along with SQL for the backend database to store user data during runtime and across power cycles. Unosquare's soft PWM function was used to control the servo for opening and closing the lock. The automatic on-screen keyboard for editing text fields such as name, phone number, PIN, etc. is provided by calling xvkbd using shell calls directly from C#.
+Our GUI is implemented with Windows Forms (.NET/C#) and designed in Microsoft Visual Studio. <a href = "https://www.mono-project.com/"> Mono</a> is used to open the GUI on the Raspberry Pi. C# was used for the base functionality along with SQL for the backend database to store user data during runtime and across power cycles. <a href = "https://unosquare.github.io/raspberryio/">Unosquare's</a> soft PWM function was used to control the servo for opening and closing the lock. The automatic on-screen keyboard for editing text fields such as name, phone number, PIN, etc. is provided by calling <a href="http://t-sato.in.coocan.jp/xvkbd/">xvkbd</a> using shell calls directly from C#.
 
 <H5> State Diagram </H5>
 
