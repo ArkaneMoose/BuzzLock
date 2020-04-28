@@ -54,6 +54,7 @@ namespace BuzzLockGui
                 servo = (GpioPin)Pi.Gpio[13];
                 servo.PinMode = GpioPinDriveMode.Output;
                 servo.StartSoftPwm(0, 100);
+                close_lock();
             }
 
             // Update visibility of form components
@@ -218,66 +219,6 @@ namespace BuzzLockGui
                     tbxSecFactorPinOrCard.Text = "";
                     cardInput = ""; // just in case
                 }
-
-                //bool primaryAuthenticated = false;
-                //AuthenticationMethod primary = _currentAuthSequence.User.AuthenticationMethods.Primary;
-                //switch (primary)
-                //{
-                //    case Card card:
-                //        if (tbxCard.Text == card.Id)
-                //        {
-                //            primaryAuthenticated = true;
-                //        }
-                //        break;
-                //    case BluetoothDevice btDevice:
-                //        if (cbxBTSelect1.SelectedItem.ToString() == btDevice.Address)
-                //        {
-                //            primaryAuthenticated = true;
-                //        }
-                //        break;
-                //}
-
-                //bool secondaryAuthenticated = false;
-                //AuthenticationMethod secondary = _currentAuthSequence.User.AuthenticationMethods.Secondary;
-                //switch (secondary)
-                //{
-                //    case BluetoothDevice btDevice:
-                //        if (cbxBTSelect2.SelectedItem.ToString() == btDevice.Address)
-                //        {
-                //            secondaryAuthenticated = true;
-                //        }
-                //        break;
-                //    case Pin pin:
-                //        if (tbxPin.Text == pin.PinValue)
-                //        {
-                //            secondaryAuthenticated = true;
-                //        }
-                //        break;
-                //}
-
-                //if (primaryAuthenticated && secondaryAuthenticated)
-                //{
-                //    // Succesful authentication
-                //    _globalState = State.Authenticated;
-                //    _currentUser = _currentAuthSequence.User;
-                //    UpdateComponents();
-                //}
-                //else
-                //{
-                //    txtSecondFactorStatus.Visible = true;
-                //    if (!primaryAuthenticated && !secondaryAuthenticated)
-                //    {
-                //        txtSecondFactorStatus.Text = "Both primary and secondary authentication failed. Please try again.";
-                //    }
-                //    else if (!primaryAuthenticated)
-                //    {
-                //        txtSecondFactorStatus.Text = "Primary authentication failed. Please try again.";
-                //    }
-                //    else if (!secondaryAuthenticated)
-                //    {
-                //        txtSecondFactorStatus.Text = "Secondary authentication failed. Please try again.";
-                //    }
-                //}
             }
             else if (_globalState == State.Authenticated)
             {
@@ -496,6 +437,7 @@ namespace BuzzLockGui
             txtAuthStatus.Visible = _globalState == State.Authenticated;
             timerAuthTimeout.Enabled = _globalState == State.Authenticated;
             timerTxtAuthStatus.Enabled = _globalState == State.Authenticated;
+            btnLockNow.Visible = _globalState == State.Authenticated;
 
             // AccessDenied State
             timerAccessDeniedTimeout.Enabled = _globalState == State.AccessDenied;
@@ -595,49 +537,9 @@ namespace BuzzLockGui
                             btnOptionsSave_Click(btnOptionsSave, EventArgs.Empty);
                             break;
                     }
-
-                    //switch(primary)
-                    //{
-                    //    case Card card:
-                    //        cbxPrimAuth.Items.Insert(0, "Card");
-                    //        txtCard.Visible = true;
-                    //        tbxCard.Visible = true;
-                    //        tbxCard.Text = card.Id;
-                    //        break;
-                    //    case BluetoothDevice btDevice:
-                    //        cbxPrimAuth.Items.Insert(0, "Bluetooth");
-                    //        txtPrimChooseDev.Visible = true;
-                    //        cbxBTSelect1.Visible = true;
-                    //        // TODO: Populate with all bluetooth devices associated with this user
-                    //        cbxBTSelect1.Items.Insert(0, btDevice.Address);
-                    //        cbxBTSelect1.SelectedIndex = 0;
-                    //        break;
-                    //}
-                    //cbxPrimAuth.SelectedIndex = 0;
-
-                    //cbxSecAuth.Items.Clear();
-                    //AuthenticationMethod secondary = _currentAuthSequence.User.AuthenticationMethods.Secondary;
-                    //txtSecChooseDevOrPin.Visible = true;
-                    //switch(secondary)
-                    //{
-                    //    case BluetoothDevice btDevice:
-                    //        cbxSecAuth.Items.Insert(0, "Bluetooth");
-                    //        txtSecChooseDevOrPin.Text = "Choose device: ";
-                    //        cbxBTSelect2.Visible = true;
-                    //        // TODO: Populate with all bluetooth devices associated with this user
-                    //        cbxBTSelect2.Items.Insert(0, btDevice.Address);
-                    //        break;
-                    //    case Pin pin:
-                    //        cbxSecAuth.Items.Insert(0, "PIN");
-                    //        txtSecChooseDevOrPin.Text = "Insert PIN:";
-                    //        tbxPin.Visible = true;
-                    //        break;
-                    //}
-                    //cbxSecAuth.SelectedIndex = 0;
                     break;
                 case State.Authenticated:
                     btnOptionsSave.Text = "Options";
-
                     txtStatus.Text = $"Welcome, {_currentUser.Name}. Door is unlocked.";
 
                     // Timeout stopwatch
@@ -942,6 +844,11 @@ namespace BuzzLockGui
                     }
                     break;
             }
+        }
+
+        private void btnLockNow_Click(object sender, EventArgs e)
+        {
+            timeoutAuth_Tick(null, EventArgs.Empty);
         }
     }
 }

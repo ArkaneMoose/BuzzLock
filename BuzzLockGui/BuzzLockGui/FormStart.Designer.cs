@@ -70,6 +70,7 @@
             this.tbxSecFactorPinOrCard = new System.Windows.Forms.TextBox();
             this.txtSecFactorPinOrCard = new System.Windows.Forms.Label();
             this.timerBTIdleBTDeviceListUpdate = new System.Windows.Forms.Timer(this.components);
+            this.btnLockNow = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.userError)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errNewUser)).BeginInit();
             this.SuspendLayout();
@@ -481,6 +482,19 @@
             this.timerBTIdleBTDeviceListUpdate.Interval = 5000;
             this.timerBTIdleBTDeviceListUpdate.Tick += new System.EventHandler(this.RefreshBTDeviceLists);
             // 
+            // btnLockNow
+            // 
+            this.btnLockNow.Location = new System.Drawing.Point(456, 211);
+            this.btnLockNow.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnLockNow.Name = "btnLockNow";
+            this.btnLockNow.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.btnLockNow.Size = new System.Drawing.Size(119, 32);
+            this.btnLockNow.TabIndex = 42;
+            this.btnLockNow.Text = "Lock now";
+            this.btnLockNow.UseVisualStyleBackColor = true;
+            this.btnLockNow.Visible = false;
+            this.btnLockNow.Click += new System.EventHandler(this.btnLockNow_Click);
+            // 
             // FormStart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -520,6 +534,7 @@
             this.Controls.Add(this.listIdleBTDevices);
             this.Controls.Add(this.txtAuthStatus);
             this.Controls.Add(this.cbxBTSelect2);
+            this.Controls.Add(this.btnLockNow);
             this.Margin = new System.Windows.Forms.Padding(8);
             this.Name = "FormStart";
             this.Text = "BuzzLock";
@@ -577,6 +592,7 @@
         private System.Windows.Forms.Label txtSecFactorPinOrCard;
         private System.Windows.Forms.TextBox tbxSecFactorPinOrCard;
         private System.Windows.Forms.Timer timerBTIdleBTDeviceListUpdate;
+        private System.Windows.Forms.Button btnLockNow;
     }
 }
 
