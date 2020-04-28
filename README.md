@@ -59,7 +59,7 @@ In further detail, we approach this problem with an object oriented mindset. We 
 
 <H3> Backend </H3>
 
-We have detailed documentation of the classes and methods used in our backend available at <a href="">this website</a>. 
+We have detailed documentation of the classes and methods used in our backend available at <a href="https://buzzlock-docs.netlify.app/api/buzzlockgui.backend">this website</a>. 
 
 <H2> User Instructions </H2>
 <H3> Initialization </H3>
