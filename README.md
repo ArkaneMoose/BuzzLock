@@ -20,7 +20,7 @@ Schematic with servo connecting to Raspberry Pi
  <img src="Documentation/4180 Schematic Window.png" alt="BuzzLock Schematic"> 
  
  Block diagram of all component connections
- <img src="Documentation/Screen Shot 2020-04-27 at 8.40.37 PM.png" alt="BuzzLock Block Diagram"> 
+ <img src="Documentation/Screen Shot 2020-04-28 at 3.59.49 PM.png" alt="BuzzLock Block Diagram"> 
 
 
 <H3> Code Description </H3>
