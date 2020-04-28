@@ -545,7 +545,8 @@
             this.Controls.Add(this.txtTime);
             this.Controls.Add(this.tbxSecFactorPinOrCard);
             this.Controls.Add(this.listIdleBTDevices);
-            this.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Margin = new System.Windows.Forms.Padding(8);
             this.Name = "FormStart";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "BuzzLock";
