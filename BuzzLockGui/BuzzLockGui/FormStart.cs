@@ -26,6 +26,9 @@ namespace BuzzLockGui
         private bool bluetoothFound = false;
         private GpioPin servo;
         private bool lock_open = false;
+        private int numTriesLeftSecondFactor;
+
+        private const int NUM_TRIES = 3;
 
         public FormStart()
         {
@@ -241,10 +244,20 @@ namespace BuzzLockGui
                 } 
                 else
                 {
-                    txtSecondFactorStatus.Visible = true;
-                    txtSecondFactorStatus.Text = "Secondary authentication failed. Please try again.";
-                    tbxSecFactorPinOrCard.Text = "";
-                    cardInput = ""; // just in case
+                    if (numTriesLeftSecondFactor == 0)
+                    {
+                        _globalState = State.AccessDenied;
+                        UpdateComponents();
+                    }
+                    else
+                    {
+                        txtSecondFactorStatus.Visible = true;
+                        string pluralTries = numTriesLeftSecondFactor == 1 ? "try" : "tries";
+                        txtSecondFactorStatus.Text = "Secondary authentication failed. You have " + numTriesLeftSecondFactor + " " + pluralTries + " left. Please try again.";
+                        --numTriesLeftSecondFactor;
+                        tbxSecFactorPinOrCard.Text = "";
+                        cardInput = ""; // just in case
+                    }
                 }
             }
             else if (_globalState == State.Authenticated)
@@ -454,7 +467,6 @@ namespace BuzzLockGui
             txtSecChooseDevOrPin.Visible = false;
             tbxPin.Visible = false;
             cbxBTSelect2.Visible = false;
-            btnCancelAddNewUser.Visible = _globalState == State.Initializing;
 
             // Idle State
             btnDebugAuthUser.Enabled = (_globalState == State.Idle);
@@ -464,6 +476,7 @@ namespace BuzzLockGui
             btnConfirmBTDevices.Visible = _globalState == State.Idle;
             txtChooseBTDevice.Visible = _globalState == State.Idle;
             txtAddNewUserStatus.Visible = false;
+            btnAddNewUser.Visible = _globalState == State.Idle;
 
             // Second Factor State
             txtSecondFactorStatus.Visible = false;
@@ -484,8 +497,9 @@ namespace BuzzLockGui
             btnOptionsSave.Visible = _globalState == State.Initializing 
                                   || _globalState == State.SecondFactor 
                                   || _globalState == State.Authenticated;
-            btnAddNewUser.Visible = _globalState == State.Idle;
             acceptMagStripeInput = checkIfMagStripeNeeded();
+            btnCancelAddNewUser.Visible = _globalState == State.Initializing
+                                  || _globalState == State.SecondFactor;
 
             switch (_globalState)
             {
@@ -659,6 +673,7 @@ namespace BuzzLockGui
         {
             Console.WriteLine("Form Start Clicked");
             txtAddNewUserStatus.Visible = false;
+            txtSecondFactorStatus.Visible = false;
             // If the user clicks on the form, then active control leaves whatever it was and goes to default
             loseFocus();
             RestartTimer();
@@ -751,6 +766,7 @@ namespace BuzzLockGui
                         else
                         {
                             // request second factor authentication
+                            numTriesLeftSecondFactor = NUM_TRIES; // Give the user NUM_TRIES tries before denying access
                             _globalState = State.SecondFactor;
                             UpdateComponents();
                         }

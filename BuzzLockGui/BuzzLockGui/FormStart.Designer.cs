@@ -89,7 +89,7 @@
             // 
             // txtStatus
             // 
-            this.txtStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtStatus.Location = new System.Drawing.Point(8, 10);
             this.txtStatus.Name = "txtStatus";
             this.txtStatus.Size = new System.Drawing.Size(770, 32);
@@ -421,9 +421,9 @@
             // txtSecondFactorStatus
             // 
             this.txtSecondFactorStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSecondFactorStatus.Location = new System.Drawing.Point(18, 206);
+            this.txtSecondFactorStatus.Location = new System.Drawing.Point(19, 150);
             this.txtSecondFactorStatus.Name = "txtSecondFactorStatus";
-            this.txtSecondFactorStatus.Size = new System.Drawing.Size(366, 29);
+            this.txtSecondFactorStatus.Size = new System.Drawing.Size(398, 44);
             this.txtSecondFactorStatus.TabIndex = 38;
             this.txtSecondFactorStatus.Text = "Invalid authentication.";
             this.txtSecondFactorStatus.Visible = false;
@@ -524,6 +524,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ClientSize = new System.Drawing.Size(800, 480);
+            this.Controls.Add(this.txtSecondFactorStatus);
             this.Controls.Add(this.btnCancelAddNewUser);
             this.Controls.Add(this.txtAddNewUserStatus);
             this.Controls.Add(this.txtSecAuth);
@@ -556,12 +557,11 @@
             this.Controls.Add(this.txtTime);
             this.Controls.Add(this.tbxSecFactorPinOrCard);
             this.Controls.Add(this.listIdleBTDevices);
-            this.Controls.Add(this.txtSecondFactorStatus);
             this.Controls.Add(this.btnConfirmBTDevices);
             this.Controls.Add(this.btnLockNow);
             this.Controls.Add(this.txtSecFactorPinOrCard);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.Margin = new System.Windows.Forms.Padding(8);
             this.Name = "FormStart";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "BuzzLock";
