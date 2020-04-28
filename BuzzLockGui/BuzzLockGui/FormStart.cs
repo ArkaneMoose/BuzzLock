@@ -463,6 +463,7 @@ namespace BuzzLockGui
             listIdleBTDevices.Visible = _globalState == State.Idle;
             btnConfirmBTDevices.Visible = _globalState == State.Idle;
             txtChooseBTDevice.Visible = _globalState == State.Idle;
+            txtAddNewUserStatus.Visible = false;
 
             // Second Factor State
             txtSecondFactorStatus.Visible = false;
@@ -656,6 +657,7 @@ namespace BuzzLockGui
         private void FormStart_MouseClick(object sender, MouseEventArgs e)
         {
             Console.WriteLine("Form Start Clicked");
+            txtAddNewUserStatus.Visible = false;
             // If the user clicks on the form, then active control leaves whatever it was and goes to default
             loseFocus();
             RestartTimer();
@@ -721,6 +723,9 @@ namespace BuzzLockGui
                         {
                             _globalState = State.Initializing;
                             UpdateComponents();
+                        } else
+                        {
+                            txtAddNewUserStatus.Visible = false;
                         }
                     }
                     else
@@ -729,6 +734,11 @@ namespace BuzzLockGui
                         if (_globalState == State.Initializing)
                         {
                             // Error: Two separate users cannot use the same card for authentication
+                            txtAddNewUserStatus.Visible = true;
+                            txtAddNewUserStatus.Text = "Cannot add an authentication method which already exists in the database. Please try again.";
+                            tbxCard.Text = "";
+                            cardInput = ""; // just in case
+                            loseFocus();
                             // TODO: Set Validation of some kind telling them to swipe a different card
                         }
                         else if (_currentAuthSequence.User.PermissionLevel == User.PermissionLevels.NONE)

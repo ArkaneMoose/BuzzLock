@@ -108,7 +108,7 @@
             this.cbxPrimAuth.Items.AddRange(new object[] {
             "Card",
             "Bluetooth"});
-            this.cbxPrimAuth.Location = new System.Drawing.Point(279, 145);
+            this.cbxPrimAuth.Location = new System.Drawing.Point(274, 145);
             this.cbxPrimAuth.Name = "cbxPrimAuth";
             this.cbxPrimAuth.Size = new System.Drawing.Size(133, 21);
             this.cbxPrimAuth.TabIndex = 44;
@@ -155,7 +155,7 @@
             // 
             this.cbxBTSelect1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBTSelect1.FormattingEnabled = true;
-            this.cbxBTSelect1.Location = new System.Drawing.Point(279, 186);
+            this.cbxBTSelect1.Location = new System.Drawing.Point(274, 186);
             this.cbxBTSelect1.Name = "cbxBTSelect1";
             this.cbxBTSelect1.Size = new System.Drawing.Size(133, 21);
             this.cbxBTSelect1.TabIndex = 48;
