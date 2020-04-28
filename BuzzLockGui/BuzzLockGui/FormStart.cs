@@ -816,7 +816,7 @@ namespace BuzzLockGui
         private void enableBtnConfirmBTDevice(object sender, EventArgs e)
         {
             ListBox listBox = (ListBox)sender;
-            btnConfirmBTDevices.Enabled = listBox.Items.Count > 0;
+            btnConfirmBTDevices.Enabled = listBox.Items.Count > 0 && listBox.SelectedItem != null;
         }
 
         private void btnDebugBluetooth_Click(object sender, EventArgs e)
@@ -832,7 +832,6 @@ namespace BuzzLockGui
             {
                 listIdleBTDevices.Items.Add(device);
             }
-            
         }
 
         private void btnConfirmBTDevices_Click(object sender, EventArgs e)
@@ -868,7 +867,6 @@ namespace BuzzLockGui
                 Thread.Sleep(850);
                 servo.SoftPwmValue = 0;
                 lock_open = true;
-
             }
         }
 
@@ -895,27 +893,6 @@ namespace BuzzLockGui
             btnOptionsSave.Enabled = NoErrors;
         }
 
-        // For debugging bluetooth authentication
-        private List<BluetoothDevice> getBTDevicesInRange()
-        {
-            List<BluetoothDevice> dummyList = new List<BluetoothDevice>
-            {
-                new BluetoothDevice(new BluetoothAddress("00:11:22:33:44:55"), "Andrew's iPhone")
-            };
-            return dummyList;
-        }
-
-        private List<BluetoothDevice> getBTDevicesInRangeAndRecognized()
-        {
-            List<BluetoothDevice> inRange = getBTDevicesInRange();
-            List<BluetoothDevice> inRangeAndRecognized = new List<BluetoothDevice>();
-            foreach (BluetoothDevice bt in inRange)
-            {
-                if (AuthenticationSequence.Start(bt) != null) inRangeAndRecognized.Add(bt);
-            }
-            return inRangeAndRecognized;
-        }
-
         protected new void ValidateTextBox(object sender, EventArgs e)
             => base.ValidateTextBox(sender, e);
         protected new void ValidatePhoneBox(object sender, EventArgs e)
@@ -930,6 +907,10 @@ namespace BuzzLockGui
             => base.keyboardClose_Leave(sender, e);
         protected new void numberpad_Click(object sender, EventArgs e)
             => base.numberpad_Click(sender, e);
+        protected new List<BluetoothDevice> getBTDevicesInRange()
+            => base.getBTDevicesInRange();
+        protected new List<BluetoothDevice> getBTDevicesInRangeAndRecognized()
+            => base.getBTDevicesInRangeAndRecognized();
 
         private void RefreshBTDeviceLists(object sender, EventArgs e)
         {

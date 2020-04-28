@@ -358,7 +358,7 @@
             this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "FormUserManagement";
             this.Text = "User Management";
-            this.Activated += new System.EventHandler(this.populateUsers);
+            this.Activated += new System.EventHandler(this.formUserManagement_Activated);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FormUserManagement_KeyPress);
             ((System.ComponentModel.ISupportInitialize)(this.userError)).EndInit();
             this.ResumeLayout(false);

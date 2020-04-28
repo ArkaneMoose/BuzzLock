@@ -1,4 +1,5 @@
 ﻿using BuzzLockGui.Backend;
+using Force.DeepCloner;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +18,7 @@ namespace BuzzLockGui
         private FormStart _formStart;
         private FormOptions _formOptions;
         private User _selectedUser => (User)listUsers.SelectedItem;
-        private User _backupUser;
+        private User _backupUser => (User)DeepClonerExtensions.DeepClone(_selectedUser);
 
         public FormUserManagement(FormStart formStart, FormOptions formOptions)
         {
@@ -38,9 +39,10 @@ namespace BuzzLockGui
             //}
         }
 
-        public new void Show()
+        private void formUserManagement_Activated(object sender, EventArgs e)
         {
-            base.Show();
+            populateUsers(sender, e);
+            UpdateComponents();
         }
 
         private void populateUsers(object sender, EventArgs e)
@@ -97,7 +99,6 @@ namespace BuzzLockGui
             }
             _selectedUser.AuthenticationMethods = new AuthenticationMethods(primary, secondary);
 
-
             populateUsers(null, EventArgs.Empty);
         }
 
@@ -108,18 +109,10 @@ namespace BuzzLockGui
             btnClose.Enabled = _globalState != State.UserManagement_AddUser;
 
             // Multiple States
-            acceptMagStripeInput = _globalState == State.Uninitialized
-                                || _globalState == State.Initializing
-                                || _globalState == State.Idle
-                                || _globalState == State.UserOptions_EditAuth
-                                || _globalState == State.UserManagement
-                                || _globalState == State.UserManagement_AddUser;
+            acceptMagStripeInput = true;
 
             AuthenticationMethod primary = _selectedUser.AuthenticationMethods.Primary;
             AuthenticationMethod secondary = _selectedUser.AuthenticationMethods.Secondary;
-
-            cbxPrimAuth.SelectedItem = primary.ToString();
-            cbxSecAuth.SelectedItem = secondary.ToString();
 
             //origPrimary = primary;
             switch(primary)
@@ -130,7 +123,13 @@ namespace BuzzLockGui
                     break;
                 case BluetoothDevice btDevice:
                     cbxPrimAuth.SelectedIndex = 1;
-                    cbxBTSelect1.Items.Insert(0, btDevice.Address);
+                    if (!cbxBTSelect1.Items.Contains(btDevice))
+                    {
+                        cbxBTSelect1.Items.Insert(0, btDevice);
+                        cbxBTSelect1.SelectedIndex = 0;
+                        cbxBTSelect2.Items.Insert(0, btDevice);
+                        cbxBTSelect2.SelectedIndex = 0;
+                    }
                     break;
             }
             ModifyPrimaryAuthConfiguration(cbxPrimAuth, EventArgs.Empty);
@@ -140,7 +139,13 @@ namespace BuzzLockGui
             {
                 case BluetoothDevice btDevice:
                     cbxSecAuth.SelectedIndex = 0;
-                    cbxBTSelect2.Items.Insert(0, btDevice.Address);
+                    if (!cbxBTSelect2.Items.Contains(btDevice))
+                    {
+                        cbxBTSelect1.Items.Insert(0, btDevice);
+                        cbxBTSelect1.SelectedIndex = 0;
+                        cbxBTSelect2.Items.Insert(0, btDevice);
+                        cbxBTSelect2.SelectedIndex = 0;
+                    }
                     break;
                 case Pin pin:
                     cbxSecAuth.SelectedIndex = 1;
@@ -157,6 +162,8 @@ namespace BuzzLockGui
                     tbxUserName.Text = _selectedUser.Name;
                     tbxUserPhone.Text = _selectedUser.PhoneNumber;
                     cbxUserPermission.SelectedItem = _selectedUser.PermissionLevel.ToString();
+                    cbxPrimAuth.SelectedItem = primary.ToString();
+                    cbxSecAuth.SelectedItem = secondary.ToString();
                     break;
                 case State.UserManagement_AddUser:
                     txtStatus.Text = "Creating a new user:";
@@ -315,7 +322,6 @@ namespace BuzzLockGui
         private void listUsers_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_selectedUser == null) listUsers.SelectedIndex = 0;
-
             UpdateComponents();
         }
 
@@ -345,13 +351,17 @@ namespace BuzzLockGui
             => base.keyboard_Click(sender, e);
         protected new void keyboardClose_Leave(object sender, EventArgs e)
             => base.keyboardClose_Leave(sender, e);
+        protected new List<BluetoothDevice> getBTDevicesInRange()
+            => base.getBTDevicesInRange();
+        protected new List<BluetoothDevice> getBTDevicesInRangeAndRecognized()
+            => base.getBTDevicesInRangeAndRecognized();
 
         private bool newCardEntry = false;
         private string cardInput = "";
         private void FormUserManagement_KeyPress(object sender, KeyPressEventArgs e)
         {
             //Console.WriteLine("Form Start Key Pressed");
-            Console.WriteLine("Pressed: " + e.KeyChar);
+            //Console.WriteLine("Pressed: " + e.KeyChar);
             //Console.WriteLine("Shift: " + shift);
             //Console.WriteLine("New Card Entry: " + newCardEntry);
 

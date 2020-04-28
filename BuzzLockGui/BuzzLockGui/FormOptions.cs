@@ -396,7 +396,13 @@ namespace BuzzLockGui
                             break;
                         case BluetoothDevice btDevice:
                             cbxPrimAuth.SelectedIndex = 1;
-                            cbxBTSelect1.Items.Insert(0, btDevice.Address);
+                            if (!cbxBTSelect2.Items.Contains(btDevice))
+                            {
+                                cbxBTSelect1.Items.Insert(0, btDevice);
+                                cbxBTSelect1.SelectedIndex = 0;
+                                cbxBTSelect2.Items.Insert(0, btDevice);
+                                cbxBTSelect2.SelectedIndex = 0;
+                            }
                             break;
                     }
                     ModifyPrimaryAuthConfiguration(cbxPrimAuth, EventArgs.Empty);
@@ -407,7 +413,13 @@ namespace BuzzLockGui
                     {
                         case BluetoothDevice btDevice:
                             cbxSecAuth.SelectedIndex = 0;
-                            cbxBTSelect2.Items.Insert(0, btDevice.Address);
+                            if (!cbxBTSelect2.Items.Contains(btDevice))
+                            {
+                                cbxBTSelect1.Items.Insert(0, btDevice);
+                                cbxBTSelect1.SelectedIndex = 0;
+                                cbxBTSelect2.Items.Insert(0, btDevice);
+                                cbxBTSelect2.SelectedIndex = 0;
+                            }
                             break;
                         case Pin pin:
                             cbxSecAuth.SelectedIndex = 1;
@@ -569,6 +581,10 @@ namespace BuzzLockGui
             => base.keyboard_Click(sender, e);
         protected new void keyboardClose_Leave(object sender, EventArgs e)
             => base.keyboardClose_Leave(sender, e);
+        protected new List<BluetoothDevice> getBTDevicesInRange()
+            => base.getBTDevicesInRange();
+        protected new List<BluetoothDevice> getBTDevicesInRangeAndRecognized()
+            => base.getBTDevicesInRangeAndRecognized();
     }
 
 }

@@ -237,5 +237,28 @@ namespace BuzzLockGui
         }
 
         protected virtual void OnValidate() { }
+
+
+        // For debugging bluetooth authentication
+        protected List<BluetoothDevice> getBTDevicesInRange()
+        {
+            List<BluetoothDevice> inRange = new List<BluetoothDevice>
+            {
+                new BluetoothDevice(new BluetoothAddress("00:11:22:33:44:55"), "Andrew's iPhone")
+            };
+            return inRange;
+        }
+
+        protected List<BluetoothDevice> getBTDevicesInRangeAndRecognized()
+        {
+            List<BluetoothDevice> inRange = getBTDevicesInRange();
+            List<BluetoothDevice> inRangeAndRecognized = new List<BluetoothDevice>();
+            foreach (BluetoothDevice bt in inRange)
+            {
+                if (AuthenticationSequence.Start(bt) != null) inRangeAndRecognized.Add(bt);
+            }
+            return inRangeAndRecognized;
+        }
+
     }
 }
