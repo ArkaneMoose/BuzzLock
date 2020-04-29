@@ -19,9 +19,10 @@ namespace BuzzLockGui.Backend
         private const short RSSI_THRESHOLD_BT_LOW_ENERGY = -60;
 
         private const string busName = "org.bluez";
-        private static readonly Connection system = Bus.System;
-        private static ObjectManager objectManager
-            = system.GetObject<ObjectManager>(busName, new ObjectPath("/"));
+        private static readonly Connection system = FormBuzzLock.IS_LINUX
+            ? Bus.System : null;
+        private static ObjectManager objectManager = FormBuzzLock.IS_LINUX
+            ? system.GetObject<ObjectManager>(busName, new ObjectPath("/")) : null;
         private static HashSet<IAdapter1> adaptersDiscovering = new HashSet<IAdapter1>();
         private static Dictionary<BluetoothAddress, BluetoothConnection> connections
             = new Dictionary<BluetoothAddress, BluetoothConnection>();
@@ -137,9 +138,6 @@ namespace BuzzLockGui.Backend
         public static IEnumerable<BluetoothDevice> GetAvailableBluetoothDevices()
         {
             Mode? mode = GetMode();
-            Console.Write($"Mode is null: {mode is null}");
-            Console.Write($"Mode switch task is null: {modeSwitchTask is null}");
-            Console.Write($"Mode switch task: {modeSwitchTask}");
             switch (mode)
             {
                 case Mode.SCANNING:
@@ -206,6 +204,13 @@ namespace BuzzLockGui.Backend
         private static IEnumerable<BluetoothDevice>
             GetAvailableBluetoothDevicesFromScan()
         {
+            if (!FormBuzzLock.IS_LINUX)
+            {
+                return Enumerable.Range(1, 16)
+                    .Select(i => new BluetoothDevice(
+                        0xAABBCCDDEE00 + i, $"Dummy Device {i}"));
+            }
+
             string iface = GetDBusInterfaceName<IDevice1>();
             return objectManager.GetManagedObjects()
                 .Where(pair => pair.Value.ContainsKey(iface))
@@ -222,48 +227,44 @@ namespace BuzzLockGui.Backend
         private static IEnumerable<BluetoothDevice>
             GetAvailableBluetoothDevicesFromMonitoring()
         {
-            Console.WriteLine("GetAvailableBluetoothDevicesFromMonitoring"); // !!DEBUG!!
+            if (!FormBuzzLock.IS_LINUX)
+            {
+                return Backend.GetAllBluetoothAddresses()
+                    .Select(address => new BluetoothDevice(address));
+            }
+
             var known = new HashSet<BluetoothAddress>(
                 Backend.GetAllBluetoothAddresses());
             var hcis = new Dictionary
                 <int, List<(BluetoothAddress address, ushort handle)>>();
 
-            Console.WriteLine("Get...FromMonitoring: calling hci_for_each_dev"); // !!DEBUG!!
             Libbluetooth.hci_for_each_dev(Libbluetooth.HCI_UP, (sockfd, hci, arg) =>
             {
-                Console.WriteLine("Get...FromMonitoring: in hci_for_each_dev"); // !!DEBUG!!
                 var request = new Libbluetooth.hci_conn_list_req
                 {
                     dev_id = (ushort)hci,
                     conn_num = 32,
                     conn_info = new Libbluetooth.hci_conn_info[32]
                 };
-                Console.WriteLine($"Get...FromMonitoring: making ioctl HCIGETCONNLIST for hci {hci}"); // !!DEBUG!!
                 if (Libbluetoothext.hci_get_conn_list(sockfd, ref request) < 0)
                 {
                     Libc.perror("Can't get connection list");
                     return 0;
                 }
-                Console.WriteLine($"Get...FromMonitoring: got {request.conn_num} results"); // !!DEBUG!!
                 for (int i = 0; i < request.conn_num; i++)
                 {
                     var connInfo = request.conn_info[i];
                     var address = new BluetoothAddress(connInfo.bdaddr);
-                    Console.WriteLine($"Get...FromMonitoring: got addr {address}"); // !!DEBUG!!
                     if (known.Remove(address))
                     {
-                        Console.WriteLine($"Get...FromMonitoring: this addr is known"); // !!DEBUG!!
                         if (!hcis.ContainsKey(hci))
                         {
-                            Console.WriteLine($"Get...FromMonitoring: this addr is first for hci"); // !!DEBUG!!
                             hcis[hci] = new List
                                 <(BluetoothAddress address, ushort handle)>();
                         }
-                        Console.WriteLine($"Get...FromMonitoring: adding addr {address} and handle {connInfo.handle}"); // !!DEBUG!!
                         hcis[hci].Add((address, connInfo.handle));
                         if (known.Count == 0)
                         {
-                            Console.WriteLine($"Get...FromMonitoring: this was last known device, exiting hci_for_each_dev"); // !!DEBUG!!
                             return 1;
                         }
                     }
@@ -271,10 +272,8 @@ namespace BuzzLockGui.Backend
                 return 0;
             }, 0);
 
-            Console.WriteLine($"Get...FromMonitoring: classicInRange"); // !!DEBUG!!
             IEnumerable<BluetoothDevice> classicInRange = hcis.SelectMany(pair =>
             {
-                Console.WriteLine($"Get...FromMonitoring: hci_open_dev {pair.Key}"); // !!DEBUG!!
                 int hciFd = Libbluetooth.hci_open_dev(pair.Key);
                 if (hciFd < 0)
                 {
@@ -295,7 +294,9 @@ namespace BuzzLockGui.Backend
                                 Libc.perror("Can't read RSSI");
                                 return false;
                             }
-                            Console.WriteLine($"RSSI {addressHandlePair.address}: {rssi}"); // !!DEBUG!!
+                            Console.WriteLine("Found RSSI for Bluetooth "
+                                + "classic device "
+                                + $"{addressHandlePair.address}: {rssi}");
                             return rssi >= RSSI_THRESHOLD_BT_CLASSIC;
                         })
                         .Select(addressHandlePair =>
@@ -311,13 +312,8 @@ namespace BuzzLockGui.Backend
                 }
             }).ToList();
 
-            Console.WriteLine($"Get...FromMonitoring: get iface"); // !!DEBUG!!
             string iface = GetDBusInterfaceName<IDevice1>();
-            Console.WriteLine($"Get...FromMonitoring: iface is {iface}. GetManagedObjectsAsync"); // !!DEBUG!!
-            try
-            { // !!DEBUG!!
             var objects = objectManager.GetManagedObjects();
-            Console.WriteLine($"Get...FromMonitoring: got {objects.Count} objects"); // !!DEBUG!!
             IEnumerable<BluetoothDevice> bleInRange = objects
                 .Where(pair => pair.Value.ContainsKey(iface))
                 .Select(pair => pair.Value[iface])
@@ -328,49 +324,52 @@ namespace BuzzLockGui.Backend
                 .Where(address => known.Remove(address))
                 .Select(address => new BluetoothDevice(address));
 
-            Console.WriteLine($"Get...FromMonitoring: return"); // !!DEBUG!!
             return new IEnumerable<BluetoothDevice>[]
             {
                 classicInRange,
                 bleInRange
             }.SelectMany(devices => devices);
-            }
-            catch (Exception e) { Console.WriteLine(e); } // !!DEBUG!!
-            return new BluetoothDevice[0];
         }
 
         private static async Task ChangeMode(Mode fromMode)
         {
+            Console.WriteLine($"Exiting..."); // !!DEBUG!!
             await ExitMode(fromMode);
             Mode toMode = mode;
+            Console.WriteLine($"Entering..."); // !!DEBUG!!
             EnterMode(toMode);
+            Console.WriteLine($"Done"); // !!DEBUG!!
         }
 
         private static void EnterMode(Mode mode)
         {
+            Console.WriteLine($"Changing Bluetooth mode to {mode}");
+            if (!FormBuzzLock.IS_LINUX)
+            {
+                return;
+            }
             switch (mode)
             {
                 case Mode.SCANNING:
-                    Console.WriteLine("EnterMode: entering SCANNING mode"); // !!DEBUG!!
                     StartDiscovery(new Dictionary<string, object>());
-                    Console.WriteLine("EnterMode: started discovery"); // !!DEBUG!!
                     break;
                 case Mode.MONITORING:
-                    Console.WriteLine("EnterMode: entering MONITORING mode"); // !!DEBUG!!
                     OpenConnections();
                     Backend.Update += OnDatabaseUpdate;
-                    Console.WriteLine("EnterMode: start discovery"); // !!DEBUG!!
                     StartDiscovery(new Dictionary<string, object>
                     {
                         ["Transport"] = "le"
                     });
-                    Console.WriteLine("EnterMode: started LE discovery"); // !!DEBUG!!
                     break;
             }
         }
 
         private static async Task ExitMode(Mode mode)
         {
+            if (!FormBuzzLock.IS_LINUX)
+            {
+                return;
+            }
             switch (mode)
             {
                 case Mode.SCANNING:
@@ -430,8 +429,24 @@ namespace BuzzLockGui.Backend
         private static void StartDiscovery(
             IAdapter1 adapter, IDictionary<string, object> filter)
         {
-            adapter.SetDiscoveryFilter(filter);
-            adapter.StartDiscovery();
+            try
+            {
+                adapter.SetDiscoveryFilter(filter);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error setting Bluetooth discovery filter:");
+                Console.WriteLine(e);
+            }
+            try
+            {
+                adapter.StartDiscovery();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error starting Bluetooth discovery:");
+                Console.WriteLine(e);
+            }
             adaptersDiscovering.Add(adapter);
         }
 
@@ -450,7 +465,15 @@ namespace BuzzLockGui.Backend
 
         private static void StopDiscovery(IAdapter1 adapter)
         {
-            adapter.StopDiscovery();
+            try
+            {
+                adapter.StopDiscovery();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error stopping Bluetooth discovery:");
+                Console.WriteLine(e);
+            }
             adaptersDiscovering.Remove(adapter);
         }
 
@@ -484,7 +507,6 @@ namespace BuzzLockGui.Backend
 
         private static BluetoothConnection OpenConnection(BluetoothAddress address)
         {
-            Console.WriteLine($"OpenConnection({address})"); // !!DEBUG!!
             return BluetoothConnection.Start(address);
         }
 
@@ -496,10 +518,12 @@ namespace BuzzLockGui.Backend
             IEnumerable<BluetoothAddress> added = after.Except(before);
             foreach (BluetoothAddress address in removed)
             {
+                Console.WriteLine($"Bluetooth device {address} removed from database");
                 CloseConnection(address);
             }
             foreach (BluetoothAddress address in added)
             {
+                Console.WriteLine($"Bluetooth device {address} added to database");
                 OpenConnection(address);
             }
         }
@@ -514,7 +538,6 @@ namespace BuzzLockGui.Backend
 
             private BluetoothConnection(BluetoothAddress address)
             {
-                Console.WriteLine($"new BluetoothConnection({address})"); // !!DEBUG!!
                 startInfo = new ProcessStartInfo
                 {
                     FileName = "sudo",
@@ -539,12 +562,14 @@ namespace BuzzLockGui.Backend
             private async Task StartProcessLoop()
             {
                 connections[address] = this;
+                Console.WriteLine($"Starting Bluetooth ping process for {address}");
                 while (!StopRequested)
                 {
                     StartProcessOnce();
                     await task;
                 }
                 connections.Remove(address);
+                Console.WriteLine($"Stopping Bluetooth ping process for {address}");
             }
 
             private void StartProcessOnce()

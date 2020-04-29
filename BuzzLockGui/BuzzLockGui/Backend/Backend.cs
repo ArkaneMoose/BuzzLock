@@ -152,7 +152,6 @@ namespace BuzzLockGui.Backend
                     bluetoothAddresses.Add(reader.GetInt64(0));
                 }
             }
-            Console.WriteLine($"GetAllBluetoothAddresses: Found {bluetoothAddresses.Count}"); // !!DEBUG!!
             return bluetoothAddresses;
         }
 
