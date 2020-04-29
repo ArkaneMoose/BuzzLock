@@ -71,7 +71,7 @@ Upon correct entry of the second authentication method and sufficient permission
 
 If the authenticated user had full permissions they will be able to add and remove users from the options menu.  
 
-<H2> Further Work </H2>
+<H2> Future Work </H2>
 
 This semester came with significant limitations, but we have many ideas for future expansions on the project:
 <ul>
