@@ -430,6 +430,7 @@
             // 
             // tbxSecFactorPinOrCard
             // 
+            this.tbxSecFactorPinOrCard.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.tbxSecFactorPinOrCard.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbxSecFactorPinOrCard.Location = new System.Drawing.Point(18, 101);
             this.tbxSecFactorPinOrCard.MaximumSize = new System.Drawing.Size(559, 20);
