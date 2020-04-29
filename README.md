@@ -63,12 +63,20 @@ We have detailed documentation of the classes and methods used in our backend av
 ## User Instructions
 ### Initialization
 
-Upon startup, no devices will be uninitialized and the display will show the status message "Hello! Please swipe your BuzzCard to begin set up." Once the user swipes a magstripe card, the initialization screen will display, allowing the owner of the system to input their information and preferences. Clicking the 'Save' button will save the user to the database. <br/>
+Upon startup, no devices will be uninitialized and the display will show the status message "Hello! Please swipe your BuzzCard to begin set up." Once the user swipes a magstripe card, the initialization screen will display, allowing the owner of the system to input their information and preferences. Clicking the 'Save' button will save the user to the database.
 
-The screen will now be in idle until an authentication method (card swipe or Bluetooth selected) is performed.  If the authentication method is already in the database, the user will be prompted for a second authentication method.  If the authentication method is not know, the user will be prompted to create a user account, but will not be able to open the door.  
-Upon correct entry of the second authentication method and sufficient permissions (full or limited) the user will be able to open the lock and enter the the options menu to edit fields such as name, phone number, authentication methods, etc.  <br/>
+### Idle
 
-If the authenticated user had full permissions they will be able to add and remove users from the options menu.  
+The screen will now be in idle until a primary authentication method (card swipe or Bluetooth selected) is performed. If the primary authentication method is already in the database, the user will be prompted for a secondary authentication method. If the primary authentication method is not known, the user will be prompted to create a new account. 
+
+### Authenticated
+
+Upon correct entry of the secondary authentication method and sufficient permissions (full or limited), the user will be able to open the lock. From here, the user has the ability to enter the options menu or lock the door immediately. If no action is taken, the door will automatically lock in 10 seconds.
+
+### Options
+A user with limited permissions can edit fields such as name, phone number, and authentication methods related to their profile as well as delete their profile.
+
+A user has full permissions is able to add, remove and adjust any user profile within the database from the options menu.
 
 ## Future Work
 
