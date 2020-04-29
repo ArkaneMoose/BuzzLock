@@ -60,6 +60,10 @@ In further detail, we approach this problem with an object oriented mindset. We 
 
 We have detailed documentation of the classes and methods used in our backend available at [this website](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend). 
 
+### Servo
+
+When the user reaches the authenticated state the servo will rotate clockwise using Unosquare's wiring pi software PWM function on GPIO pin 13.  Upon reenterance to the idle state or all the users are deleted the servo will rotate the opposite way, returning to a locked state.  
+
 ## User Instructions
 ### Initialization
 
