@@ -32,7 +32,7 @@ namespace BuzzLockGui
         protected static State _globalState;
         protected static User _currentUser;
         protected bool NoErrors => errorControls.Count == 0;
-        protected static readonly bool IS_LINUX = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+        public static readonly bool IS_LINUX = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
         private static int keyboard_on = 0; //1 means on 0 means off
         private static int numberpad_on = 0; //1 means on 0 means off
         protected static bool acceptMagStripeInput = false;

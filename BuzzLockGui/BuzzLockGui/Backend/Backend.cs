@@ -28,6 +28,11 @@ namespace BuzzLockGui.Backend
                 return conn;
             });
         private static SQLiteConnection conn => _conn.Value;
+        internal static event SQLiteUpdateEventHandler Update
+        {
+            add => conn.Update += value;
+            remove => conn.Update -= value;
+        }
 
         private static void InitializeDatabase(SQLiteConnection conn)
         {
@@ -133,6 +138,21 @@ namespace BuzzLockGui.Backend
                 }
             }
             return userIds;
+        }
+
+        internal static List<BluetoothAddress> GetAllBluetoothAddresses()
+        {
+            SQLiteCommand cmd = new SQLiteCommand(
+                "SELECT bluetoothId FROM users WHERE bluetoothId IS NOT NULL", conn);
+            List<BluetoothAddress> bluetoothAddresses = new List<BluetoothAddress>();
+            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    bluetoothAddresses.Add(reader.GetInt64(0));
+                }
+            }
+            return bluetoothAddresses;
         }
 
         internal static long? GetUserIdForCard(string cardId)

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BuzzLockGui.Backend
 {
@@ -65,6 +67,44 @@ namespace BuzzLockGui.Backend
         public override int GetHashCode()
         {
             return Address.GetHashCode();
+        }
+
+        /// <summary>
+        /// Gets all available Bluetooth devices in range. This is an alias for
+        /// <see cref="BluetoothService.GetAvailableBluetoothDevices"/>.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IEnumerable{T}"/> of the available
+        /// <see cref="BluetoothDevice"/>s.
+        /// </returns>
+        /// <remarks>
+        /// See the documentation for
+        /// <see cref="BluetoothService.GetAvailableBluetoothDevices"/> for
+        /// details.
+        /// </remarks>
+        public static IEnumerable<BluetoothDevice> GetAllAvailable()
+        {
+            return BluetoothService.GetAvailableBluetoothDevices();
+        }
+
+        /// <summary>
+        /// Asynchronously gets all available Bluetooth devices in range. This
+        /// is an alias for
+        /// <see cref="BluetoothService.GetAvailableBluetoothDevicesAsync"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> that resolves to an
+        /// <see cref="IEnumerable{T}"/> of the available
+        /// <see cref="BluetoothDevice"/>s.
+        /// </returns>
+        /// <remarks>
+        /// See the documentation for
+        /// <see cref="BluetoothService.GetAvailableBluetoothDevicesAsync"/> for
+        /// details.
+        /// </remarks>
+        public static Task<IEnumerable<BluetoothDevice>> GetAllAvailableAsync()
+        {
+            return BluetoothService.GetAvailableBluetoothDevicesAsync();
         }
     }
 }

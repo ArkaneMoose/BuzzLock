@@ -66,6 +66,9 @@
     <Reference Include="ModernMessageBoxLib, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ModernMessageBoxLib.1.3.0\lib\net45\ModernMessageBoxLib.dll</HintPath>
     </Reference>
+    <Reference Include="NDesk.DBus, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f6716e4f9b2ed099, processorArchitecture=MSIL">
+      <HintPath>..\packages\NDesk.DBus.0.15.0\lib\NDesk.DBus.dll</HintPath>
+    </Reference>
     <Reference Include="Raspberry-GPIO-Manager, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\Raspberry-GPIO-Manager.dll</HintPath>
@@ -103,6 +106,9 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.6.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Principal.Windows.4.5.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Text.Encoding.CodePages, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Encoding.CodePages.4.6.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
@@ -133,6 +139,11 @@
     <Compile Include="Backend\Backend.cs" />
     <Compile Include="Backend\BluetoothAddress.cs" />
     <Compile Include="Backend\BluetoothDevice.cs" />
+    <Compile Include="Backend\BluetoothService.cs" />
+    <Compile Include="Backend\DBus\org.bluez.cs" />
+    <Compile Include="Backend\Native\Libbluetooth.cs" />
+    <Compile Include="Backend\Native\Libbluetoothext.cs" />
+    <Compile Include="Backend\Native\Libc.cs" />
     <Compile Include="Backend\Pin.cs" />
     <Compile Include="Backend\Card.cs" />
     <Compile Include="FormUserManagement.cs">
@@ -215,7 +226,9 @@
     <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.targets'))" />
     <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.112.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.112.0\build\net46\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\packages\NDesk.DBus.0.15.0\build\NDesk.DBus.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NDesk.DBus.0.15.0\build\NDesk.DBus.targets'))" />
   </Target>
   <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.112.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.112.0\build\net46\System.Data.SQLite.Core.targets')" />
+  <Import Project="..\packages\NDesk.DBus.0.15.0\build\NDesk.DBus.targets" Condition="Exists('..\packages\NDesk.DBus.0.15.0\build\NDesk.DBus.targets')" />
 </Project>
