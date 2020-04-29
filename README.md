@@ -73,8 +73,10 @@ If the authenticated user had full permissions they will be able to add and remo
 ## Future Work
 
 This semester came with significant limitations, but we have many ideas for future expansions on the project:
-  - Have users will FULL permissions be notified by text message when a user with NONE permissions attemps to enter the system
+  - Have users with permissions "FULL" be notified by text message or email when a user with permissions "NONE" attempts to enter the system
   - Implement encryption of user data and other security features
   - Connecting it to a real dorm style door
-  - Implementing a logging system of every attempt to access the system
+  - Implementing a logging system of every attempt to access the system (audit log).
   - Sensing when the door is actually closed to better synchronize the auto-lock feature
+  - Sleep/Wake functionality
+  - Enable the ability for the user to add a profile picture using the Raspberry Pi Camera
