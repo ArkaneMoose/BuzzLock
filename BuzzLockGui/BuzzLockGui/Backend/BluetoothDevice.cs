@@ -70,7 +70,7 @@ namespace BuzzLockGui.Backend
         }
 
         /// <summary>
-        /// Gets all available Bluetooth devices in range. This is an alias for
+        /// Gets all available Bluetooth devices. This is an alias for
         /// <see cref="BluetoothService.GetAvailableBluetoothDevices"/>.
         /// </summary>
         /// <returns>
@@ -80,7 +80,8 @@ namespace BuzzLockGui.Backend
         /// <remarks>
         /// See the documentation for
         /// <see cref="BluetoothService.GetAvailableBluetoothDevices"/> for
-        /// details.
+        /// details, including how the <see cref="BluetoothService.Mode"/>
+        /// changes what is considered available by this method.
         /// </remarks>
         public static IEnumerable<BluetoothDevice> GetAllAvailable()
         {

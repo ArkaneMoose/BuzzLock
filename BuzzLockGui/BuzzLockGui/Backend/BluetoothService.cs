@@ -15,8 +15,16 @@ namespace BuzzLockGui.Backend
     /// </summary>
     public static class BluetoothService
     {
-        private const short RSSI_THRESHOLD_BT_CLASSIC = 0;
-        private const short RSSI_THRESHOLD_BT_LOW_ENERGY = -60;
+        /// <summary>
+        /// The minimum RSSI for a classic Bluetooth device to be considered
+        /// present when the <see cref="Mode"/> is <see cref="BluetoothMode.MONITORING"/>.
+        /// </summary>
+        public const short RSSI_THRESHOLD_BT_CLASSIC = 0;
+        /// <summary>
+        /// The minimum RSSI for a Bluetooth Low Energy device to be considered
+        /// present when the <see cref="Mode"/> is <see cref="BluetoothMode.MONITORING"/>.
+        /// </summary>
+        public const short RSSI_THRESHOLD_BT_LOW_ENERGY = -60;
 
         private const string busName = "org.bluez";
         private static readonly Connection system = FormBuzzLock.IS_LINUX
@@ -27,6 +35,14 @@ namespace BuzzLockGui.Backend
         private static Dictionary<BluetoothAddress, BluetoothConnection> connections
             = new Dictionary<BluetoothAddress, BluetoothConnection>();
         private static BluetoothMode _Mode = BluetoothMode.UNINITIALIZED;
+        /// <summary>
+        /// The current state of the Bluetooth service.
+        /// </summary>
+        /// <remarks>
+        /// The value of this field determines what Bluetooth devices are considered
+        /// available by <see cref="GetAvailableBluetoothDevices"/>. See that method
+        /// for details on the behavior of the different modes.
+        /// </remarks>
         public static BluetoothMode Mode
         {
             get => _Mode;
@@ -42,18 +58,27 @@ namespace BuzzLockGui.Backend
         }
 
         /// <summary>
-        /// The state of the Bluetooth discovery and monitoring service.
+        /// A possible state of the Bluetooth discovery and monitoring service.
         /// </summary>
         public enum BluetoothMode
         {
+            /// <summary>
+            /// The Bluetooth service is not active.
+            /// </summary>
             UNINITIALIZED,
+            /// <summary>
+            /// The Bluetooth service is looking for discoverable devices.
+            /// </summary>
             SCANNING,
+            /// <summary>
+            /// The Bluetooth service is checking for the presence of known devices.
+            /// </summary>
             MONITORING
         }
 
         /// <summary>
         /// Gets all available Bluetooth devices in range. What counts as
-        /// available depends on the mode as reported by <see cref="GetMode"/>.
+        /// available depends on the <see cref="Mode"/>.
         /// </summary>
         /// <returns>
         /// An <see cref="IEnumerable{T}"/> of the available
@@ -61,25 +86,25 @@ namespace BuzzLockGui.Backend
         /// </returns>
         /// <remarks>
         /// <para>
-        /// When the mode is <see cref="BluetoothMode.SCANNING"/>, all discoverable
+        /// When the <see cref="Mode"/> is <see cref="BluetoothMode.SCANNING"/>, all discoverable
         /// Bluetooth devices are returned. Discoverable Bluetooth devices are
         /// the ones with visible names.
         /// </para>
         /// <para>
-        /// When the mode is <see cref="BluetoothMode.MONITORING"/>, the behavior
+        /// When the <see cref="Mode"/> is <see cref="BluetoothMode.MONITORING"/>, the behavior
         /// differs for classic Bluetooth devices and BLE devices. The service
         /// tries to connect to all known classic Bluetooth devices constantly.
         /// The RSSI can be fetched for any connected classic Bluetooth device,
         /// so classic Bluetooth devices are returned if they are connected and
         /// their RSSI is greater than <see cref="RSSI_THRESHOLD_BT_CLASSIC"/>.
-        /// In contrast, BLE devices are scanned using the same discovery
+        /// In contrast, Bluetooth Low Energy devices are scanned using the same discovery
         /// procedure as for <see cref="BluetoothMode.SCANNING"/>, but only devices with
         /// addresses in the database are considered, and the service does not
         /// require them to have their names discoverable at time of
-        /// monitoring.
+        /// monitoring. Their RSSI must exceed the <see cref="RSSI_THRESHOLD_BT_LOW_ENERGY"/>.
         /// </para>
         /// <para>
-        /// Any other mode, in particular <see cref="BluetoothMode.UNINITIALIZED"/>,
+        /// Any other <see cref="Mode"/>, in particular <see cref="BluetoothMode.UNINITIALIZED"/>,
         /// causes an <see cref="InvalidOperationException"/> to be thrown.
         /// </para>
         /// </remarks>

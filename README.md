@@ -24,7 +24,7 @@ Schematic with servo connecting to Raspberry Pi
 
 ## Code Description
 
-Our GUI is implemented with Windows Forms (.NET/C#) and designed in Microsoft Visual Studio. [Mono](https://www.mono-project.com/) is used to open the GUI on the Raspberry Pi. We used C# for the base functionality, along with SQL for the backend database to store user data during runtime and across power cycles. [Unosquare's](https://unosquare.github.io/raspberryio/) soft PWM function was used to control the servo for opening and closing the lock. The automatic on-screen keyboard for editing text fields such as name, phone number, PIN, etc. is provided by calling [xvkbd](http://t-sato.in.coocan.jp/xvkbd/) using shell calls directly from C#. 
+Our GUI is implemented with Windows Forms (.NET/C#) and designed in Microsoft Visual Studio. [Mono](https://www.mono-project.com/) is used to open the GUI on the Raspberry Pi. We used C# for the base functionality, along with SQLite for the backend database to store user data during runtime and across power cycles. [Unosquare's](https://unosquare.github.io/raspberryio/) soft PWM function was used to control the servo for opening and closing the lock. The automatic on-screen keyboard for editing text fields such as name, phone number, PIN, etc. is provided by calling [xvkbd](http://t-sato.in.coocan.jp/xvkbd/) using shell calls directly from C#. 
 
 The USB magnetic stripe card reader acts as a keyboard. We use the unique formatting of magnetic card strings to identify a card swipe during any point in the program's execution. 
 
@@ -58,29 +58,75 @@ In further detail, we approach this problem with an object oriented mindset. We 
 
 ### Backend
 
-We have detailed documentation of the classes and methods used in our backend available at [this website](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend). 
+The backend uses a SQLite database for persistent storage using the [System.Data.SQLite](https://system.data.sqlite.org/index.html/doc/trunk/www/index.wiki) library.
+
+We have detailed documentation of the classes and methods used in our backend available at [this website](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend).
+
+#### Authentication
+
+Authentication is performed by using the concept of an [**AuthenticationSequence**](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence). An AuthenticationSequence is [Start](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_Start_BuzzLockGui_Backend_AuthenticationMethod_)ed using the first [AuthenticationMethod](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationmethod) the user presents, such as a [Card](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.card) or a [BluetoothDevice](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.bluetoothdevice).
+
+If the AuthenticationMethod is recognized as belonging to a [User](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_User), the AuthenticationSequence indicates what should be the [NextAuthenticationMethod](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_NextAuthenticationMethod) the user presents, such as a [Card](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.card), [BluetoothDevice](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.bluetoothdevice), or [Pin](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.pin). This [Continue](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_Continue_BuzzLockGui_Backend_AuthenticationMethod_)s until the user has been successfully authenticated.
+
+In our system, we use this paradigm only to implement two-factor authentication, but the concept is powerful enough to implement authentication systems of any desired complexity. For instance, one could design an authentication system that requires only one authentication method of one type or two authentication methods of two other types.
+
+For details on this authentication system, see our AuthenticationSequence documentation [here](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence).
+
+#### Bluetooth
+
+We make use of the [BlueZ](http://www.bluez.org/) library to provide Bluetooth functionality. We use a combination of methods to ensure maximum reliability for all Bluetooth use cases with minimal UX friction.
+
+- In **SCANNING** mode, used when adding a new user or Bluetooth device, device discovery is performed using the [BlueZ D-Bus API](https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/adapter-api.txt#n12). Any discoverable Bluetooth device is available in this mode.
+- In **MONITORING** mode, used for checking when known Bluetooth devices are nearby, we spawn [l2ping](https://linux.die.net/man/1/l2ping) processes to keep open Bluetooth connections to each known device. We then use the [P/Invoke](https://docs.microsoft.com/en-us/dotnet/standard/native-interop/pinvoke) facility to call a [C function to read the RSSI](https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/lib/hci.c#n2836) for each connection to determine how near the device is to the lock.
+
+Our system maximizes ease of use by *never* requiring the user to pair or connect to the smart lock device. The software simply detects the presence of the device using the methods described above.
+
+For documentation on these Bluetooth modes and how to use them, see our documentation for the BluetoothService class [here](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.bluetoothservice).
 
 ### Servo
 
 When the user reaches the authenticated state the servo will rotate clockwise using Unosquare's wiring pi software PWM function on GPIO pin 13.  Upon reenterance to the idle state or all the users are deleted the servo will rotate the opposite way, returning to a locked state.  The servo lock vs unlock functionality can be see in the red and green highlighting in the above state diagram.  
 
 ## User Instructions
+The Buzzlock goes through a series of setup stages when it is first set up. The steps for use are outlined below.  
+
+![uninitialized](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Uninitialized.png)  
+This is where a user will start when no users have been added.  There are instruction to swipe their card and are taken to the initializing state.
+
 ### Initialization
 
-Upon startup, no devices will be uninitialized and the display will show the status message "Hello! Please swipe your BuzzCard to begin set up." Once the user swipes a magstripe card, the initialization screen will display, allowing the owner of the system to input their information and preferences. Clicking the 'Save' button will save the user to the database.
+![initilization](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Initializing%20-%20Card%20Entered.png)  
+This screen allows the owner of the system to input their information and preferences. Clicking the 'Save' button will save the user to the database.
 
 ### Idle
 
+![idle](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Idle%20-%20Multiple%20Bluetooth%20Devices.png)  
 The screen will now be in idle until a primary authentication method (card swipe or Bluetooth selected) is performed. If the primary authentication method is already in the database, the user will be prompted for a secondary authentication method. If the primary authentication method is not known, the user will be prompted to create a new account. 
+
+### Second Factor
+
+![secondary authentication](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Second%20Factor%20-%20Pin.png)  
+When a known primary authentication is performed something similar to the above screen will be shown asking for their second authentication method (**card or pin**). The user has their tries total to correctly enter their secondary authentication method.  
 
 ### Authenticated
 
+![authenticated](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Authenticated%20-%2010%20sec.png)  
 Upon correct entry of the secondary authentication method and sufficient permissions (full or limited), the user will be able to open the lock. From here, the user has the ability to enter the options menu or lock the door immediately. If no action is taken, the door will automatically lock in 10 seconds.
 
-### Options
+### Options - Limited User
+
+![options limited](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Options%20-%20Limited%20User.png)  
 A user with limited permissions can edit fields such as name, phone number, and authentication methods related to their profile as well as delete their profile.
 
-A user has full permissions is able to add, remove and adjust any user profile within the database from the options menu.
+### Options - User Management
+
+![options user management](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/User%20Management%20-%20Full%2C%20Limited%2C%20None.png)  
+A user with full permissions is able to add, remove and adjust any user profile within the database from the options menu.  They can also delete all users by deleting themselves. This will direct them back to the uninitialized screen, the system will be reset.  
+
+### Access Denied
+
+![access denied](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Access%20Denied%20-%2010%20sec.png)  
+If a user with no permissions logs in they will be shown the access denied screen. This screen will also apprear if the second factor is entered incorretly three times.  
 
 ## Future Work
 
