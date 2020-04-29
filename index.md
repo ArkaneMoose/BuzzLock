@@ -1,10 +1,14 @@
 # BuzzLock
-<b> Team members: Rishov Sarkar, Joshua Shafran, Andrew Gauker, and Celeste Smith</b><br/>
-The most secure door lock. <br/>
+**Team members: Rishov Sarkar, Joshua Shafran, Andrew Gauker, and Celeste Smith**  
+The most secure door lock.
 
 Living in the dorms and having to carry around a key can be annoying. Students lose their keys all the time and they take up space. So with the BuzzLock you can use Bluetooth and/or a BuzzCard** to unlock your door, no key required!
 
 ** Any magnetic stripe card can be used for authentication. **
+
+## Demo Video
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/KP3C9oYE0SQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Components Used
  
