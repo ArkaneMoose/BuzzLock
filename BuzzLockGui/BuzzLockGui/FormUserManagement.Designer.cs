@@ -85,10 +85,10 @@
             // txtStatus
             // 
             this.txtStatus.AutoSize = true;
-            this.txtStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.5F);
+            this.txtStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtStatus.Location = new System.Drawing.Point(164, 13);
             this.txtStatus.Name = "txtStatus";
-            this.txtStatus.Size = new System.Drawing.Size(492, 26);
+            this.txtStatus.Size = new System.Drawing.Size(421, 24);
             this.txtStatus.TabIndex = 42;
             this.txtStatus.Text = "Click on a User to see details and perform actions";
             // 

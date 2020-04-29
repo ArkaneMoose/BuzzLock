@@ -183,6 +183,7 @@ namespace BuzzLockGui
 
             btnAddNewUser.Enabled = _globalState != State.UserManagement_AddUser;
             btnRemoveUserOrCancel.Enabled = true;
+            listUsers.Enabled = _globalState == State.UserManagement;
             //btnClose.Enabled = _globalState != State.UserManagement_AddUser;
 
             // Multiple States

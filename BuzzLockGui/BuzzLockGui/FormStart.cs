@@ -244,7 +244,7 @@ namespace BuzzLockGui
                 } 
                 else
                 {
-                    if (numTriesLeftSecondFactor == 0)
+                    if (--numTriesLeftSecondFactor == 0)
                     {
                         _globalState = State.AccessDenied;
                         UpdateComponents();
@@ -254,7 +254,6 @@ namespace BuzzLockGui
                         txtSecondFactorStatus.Visible = true;
                         string pluralTries = numTriesLeftSecondFactor == 1 ? "try" : "tries";
                         txtSecondFactorStatus.Text = "Secondary authentication failed. You have " + numTriesLeftSecondFactor + " " + pluralTries + " left. Please try again.";
-                        --numTriesLeftSecondFactor;
                         tbxSecFactorPinOrCard.Text = "";
                         cardInput = ""; // just in case
                     }
@@ -528,6 +527,7 @@ namespace BuzzLockGui
                     // Reset Errors
                     errorControls.Clear();
                     userError.Clear();
+                    OnValidate();
 
                     btnOptionsSave.Text = "Options";
                     txtStatus.Text = "Hello! Please swipe your card or choose your device.";
@@ -584,6 +584,7 @@ namespace BuzzLockGui
                     // Reset Errors
                     errorControls.Clear();
                     userError.Clear();
+                    OnValidate();
 
                     // Timeout stopwatch
                     txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, the door will lock in 10 seconds.";
@@ -705,18 +706,10 @@ namespace BuzzLockGui
                     Console.WriteLine(cardInput);
 
                     Card card = new Card(cardInput);
-                    if (_globalState == State.SecondFactor)
+                    if (_globalState == State.SecondFactor && _currentAuthSequence.NextAuthenticationMethod is Card)
                     {
-                        if (_currentAuthSequence.Continue(card))
-                        {
-                            _globalState = State.Authenticated;
-                            _currentUser = _currentAuthSequence.User;
-                        }
-                        else
-                        {
-                            --numTriesLeftSecondFactor;
-                        }
-                        UpdateComponents();
+                        tbxSecFactorPinOrCard.Text = cardInput;
+                        btnOptionsSave_Click(sender, EventArgs.Empty);
                     }
                     else
                     {
@@ -805,6 +798,7 @@ namespace BuzzLockGui
             {
                 // request second factor authentication
                 _globalState = State.SecondFactor;
+                numTriesLeftSecondFactor = NUM_TRIES;
             }
             UpdateComponents();
         }
