@@ -24,7 +24,7 @@ Schematic with servo connecting to Raspberry Pi
 
 ## Code Description
 
-Our GUI is implemented with Windows Forms (.NET/C#) and designed in Microsoft Visual Studio. [Mono](https://www.mono-project.com/) is used to open the GUI on the Raspberry Pi. We used C# for the base functionality, along with SQL for the backend database to store user data during runtime and across power cycles. [Unosquare's](https://unosquare.github.io/raspberryio/) soft PWM function was used to control the servo for opening and closing the lock. The automatic on-screen keyboard for editing text fields such as name, phone number, PIN, etc. is provided by calling [xvkbd](http://t-sato.in.coocan.jp/xvkbd/) using shell calls directly from C#. 
+Our GUI is implemented with Windows Forms (.NET/C#) and designed in Microsoft Visual Studio. [Mono](https://www.mono-project.com/) is used to open the GUI on the Raspberry Pi. We used C# for the base functionality, along with SQLite for the backend database to store user data during runtime and across power cycles. [Unosquare's](https://unosquare.github.io/raspberryio/) soft PWM function was used to control the servo for opening and closing the lock. The automatic on-screen keyboard for editing text fields such as name, phone number, PIN, etc. is provided by calling [xvkbd](http://t-sato.in.coocan.jp/xvkbd/) using shell calls directly from C#. 
 
 The USB magnetic stripe card reader acts as a keyboard. We use the unique formatting of magnetic card strings to identify a card swipe during any point in the program's execution. 
 
@@ -58,7 +58,30 @@ In further detail, we approach this problem with an object oriented mindset. We 
 
 ### Backend
 
-We have detailed documentation of the classes and methods used in our backend available at [this website](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend). 
+The backend uses a SQLite database for persistent storage using the [System.Data.SQLite](https://system.data.sqlite.org/index.html/doc/trunk/www/index.wiki) library.
+
+We have detailed documentation of the classes and methods used in our backend available at [this website](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend).
+
+#### Authentication
+
+Authentication is performed by using the concept of an [**AuthenticationSequence**](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence). An AuthenticationSequence is [Start](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_Start_BuzzLockGui_Backend_AuthenticationMethod_)ed using the first [AuthenticationMethod](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationmethod) the user presents, such as a [Card](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.card) or a [BluetoothDevice](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.bluetoothdevice).
+
+If the AuthenticationMethod is recognized as belonging to a [User](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_User), the AuthenticationSequence indicates what should be the [NextAuthenticationMethod](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_NextAuthenticationMethod) the user presents, such as a [Card](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.card), [BluetoothDevice](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.bluetoothdevice), or [Pin](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.pin). This [Continue](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_Continue_BuzzLockGui_Backend_AuthenticationMethod_)s until the user has been successfully authenticated.
+
+In our system, we use this paradigm only to implement two-factor authentication, but the concept is powerful enough to implement authentication systems of any desired complexity. For instance, one could design an authentication system that requires only one authentication method of one type or two authentication methods of two other types.
+
+For details on this authentication system, see our AuthenticationSequence documentation [here](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence).
+
+#### Bluetooth
+
+We make use of the [BlueZ](http://www.bluez.org/) library to provide Bluetooth functionality. We use a combination of methods to ensure maximum reliability for all Bluetooth use cases with minimal UX friction.
+
+- In **SCANNING** mode, used when adding a new user or Bluetooth device, device discovery is performed using the [BlueZ D-Bus API](https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/adapter-api.txt#n12). Any discoverable Bluetooth device is available in this mode.
+- In **MONITORING** mode, used for checking when known Bluetooth devices are nearby, we spawn [l2ping](https://linux.die.net/man/1/l2ping) processes to keep open Bluetooth connections to each known device. We then use the [P/Invoke](https://docs.microsoft.com/en-us/dotnet/standard/native-interop/pinvoke) facility to call a [C function to read the RSSI](https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/lib/hci.c#n2836) for each connection to determine how near the device is to the lock.
+
+Our system maximizes ease of use by *never* requiring the user to pair or connect to the smart lock device. The software simply detects the presence of the device using the methods described above.
+
+For documentation on these Bluetooth modes and how to use them, see our documentation for the BluetoothService class [here](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.bluetoothservice).
 
 ### Servo
 
