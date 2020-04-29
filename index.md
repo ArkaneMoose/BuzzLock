@@ -126,7 +126,7 @@ A user with full permissions is able to add, remove and adjust any user profile 
 ### Access Denied
 
 ![access denied](Documentation/Screenshots/Access%20Denied%20-%2010%20sec.png)  
-If a user with no permissions logs in they will be shown the access denied screen. This screen will also apprear if the second factor is entered incorretly three times.  
+If a user with no permissions logs in they will be shown the access denied screen. This screen will also apprear if the second factor is entered incorrectly three times.  
 
 ## Future Work
 
