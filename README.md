@@ -65,9 +65,10 @@ We have detailed documentation of the classes and methods used in our backend av
 When the user reaches the authenticated state the servo will rotate clockwise using Unosquare's wiring pi software PWM function on GPIO pin 13.  Upon reenterance to the idle state or all the users are deleted the servo will rotate the opposite way, returning to a locked state.  The servo lock vs unlock functionality can be see in the red and green highlighting in the above state diagram.  
 
 ## User Instructions
+The Buzzlock goes through a series of setup stages when it is first set up. The steps for use are outlined below.  
 
 ![uninitialized](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Uninitialized.png)  
-This is where a user will start when no users have been added.  They are instruction to swipe their card and are taken to the initializing state.
+This is where a user will start when no users have been added.  There are instruction to swipe their card and are taken to the initializing state.
 
 ### Initialization
 
@@ -82,7 +83,7 @@ The screen will now be in idle until a primary authentication method (card swipe
 ### Second Factor
 
 ![secondary authentication](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Second%20Factor%20-%20Pin.png)  
-When a know primary authentication is performed something similar to the above screen will be shown asking for their second authentication method (**card or pin**). The user has their tries total to correctly enter their secondary authentication method.  
+When a known primary authentication is performed something similar to the above screen will be shown asking for their second authentication method (**card or pin**). The user has their tries total to correctly enter their secondary authentication method.  
 
 ### Authenticated
 
