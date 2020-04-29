@@ -105,8 +105,10 @@ The screen will now be in idle until a primary authentication method (card swipe
 
 ### Second Factor
 
-![secondary authentication](Documentation/Screenshots/Second%20Factor%20-%20Pin.png)  
-When a known primary authentication is performed something similar to the above screen will be shown asking for their second authentication method (**card or pin**). The user has their tries total to correctly enter their secondary authentication method.  
+
+<img src="Documentation/Screenshots/Second%20Factor%20-%20Pin.png" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;"><img src="Documentation/Screenshots/Second Factor - Card Swipe.png" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;">
+<p style="clear: both;">
+When a known primary authentication is performed something similar to the above screen will be shown asking for their second authentication method (card or pin).  Bluetooth will be automatically detected so no action is required. The user has their tries total to correctly enter their secondary authentication method.  
 
 ### Authenticated
 
