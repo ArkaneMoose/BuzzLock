@@ -543,7 +543,7 @@ namespace BuzzLockGui
 
                 if (isBluetooth)
                 {
-                    txtSecChooseDevOrPin.Text = "Choose device:";
+                    txtSecChooseDevOrPin.Text = "Bluetooth \r\ndevice:";
                     if (cbxPrimAuth.SelectedItem.ToString() != "Card")
                     {
                         userError.SetError(tbxCard, null);
@@ -555,7 +555,7 @@ namespace BuzzLockGui
                 }
                 else if (isPin)
                 {
-                    txtSecChooseDevOrPin.Text = "Insert PIN:";
+                    txtSecChooseDevOrPin.Text = "Insert \r\nPIN:";
                     if (cbxPrimAuth.SelectedItem.ToString() != "Card")
                     {
                         userError.SetError(cbxBTSelect2, null);

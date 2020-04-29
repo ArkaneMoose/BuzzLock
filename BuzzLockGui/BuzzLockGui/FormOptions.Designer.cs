@@ -240,9 +240,9 @@
             this.txtSecChooseDevOrPin.Location = new System.Drawing.Point(382, 177);
             this.txtSecChooseDevOrPin.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.txtSecChooseDevOrPin.Name = "txtSecChooseDevOrPin";
-            this.txtSecChooseDevOrPin.Size = new System.Drawing.Size(84, 20);
+            this.txtSecChooseDevOrPin.Size = new System.Drawing.Size(82, 40);
             this.txtSecChooseDevOrPin.TabIndex = 33;
-            this.txtSecChooseDevOrPin.Text = "Insert PIN:";
+            this.txtSecChooseDevOrPin.Text = "Bluetooth \r\ndevice:";
             this.txtSecChooseDevOrPin.Visible = false;
             // 
             // txtPrimChooseDev
@@ -253,9 +253,9 @@
             this.txtPrimChooseDev.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.txtPrimChooseDev.Name = "txtPrimChooseDev";
             this.txtPrimChooseDev.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtPrimChooseDev.Size = new System.Drawing.Size(117, 20);
+            this.txtPrimChooseDev.Size = new System.Drawing.Size(82, 40);
             this.txtPrimChooseDev.TabIndex = 30;
-            this.txtPrimChooseDev.Text = "Choose device:";
+            this.txtPrimChooseDev.Text = "Bluetooth \r\ndevice:";
             this.txtPrimChooseDev.Visible = false;
             // 
             // txtSecAuth
@@ -319,7 +319,7 @@
             this.cbxBTSelect1.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.cbxBTSelect1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBTSelect1.FormattingEnabled = true;
-            this.cbxBTSelect1.Location = new System.Drawing.Point(174, 177);
+            this.cbxBTSelect1.Location = new System.Drawing.Point(174, 190);
             this.cbxBTSelect1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.cbxBTSelect1.Name = "cbxBTSelect1";
             this.cbxBTSelect1.Size = new System.Drawing.Size(138, 21);
@@ -329,7 +329,7 @@
             // 
             // tbxPin
             // 
-            this.tbxPin.Location = new System.Drawing.Point(499, 177);
+            this.tbxPin.Location = new System.Drawing.Point(499, 190);
             this.tbxPin.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tbxPin.MaxLength = 6;
             this.tbxPin.Name = "tbxPin";
@@ -343,7 +343,7 @@
             // 
             this.cbxBTSelect2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBTSelect2.FormattingEnabled = true;
-            this.cbxBTSelect2.Location = new System.Drawing.Point(499, 177);
+            this.cbxBTSelect2.Location = new System.Drawing.Point(499, 189);
             this.cbxBTSelect2.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.cbxBTSelect2.Name = "cbxBTSelect2";
             this.cbxBTSelect2.Size = new System.Drawing.Size(138, 21);

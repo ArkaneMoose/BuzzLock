@@ -232,12 +232,12 @@
             // 
             this.txtPrimChooseDev.AutoSize = true;
             this.txtPrimChooseDev.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPrimChooseDev.Location = new System.Drawing.Point(15, 206);
+            this.txtPrimChooseDev.Location = new System.Drawing.Point(18, 189);
             this.txtPrimChooseDev.Name = "txtPrimChooseDev";
             this.txtPrimChooseDev.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtPrimChooseDev.Size = new System.Drawing.Size(117, 20);
+            this.txtPrimChooseDev.Size = new System.Drawing.Size(82, 40);
             this.txtPrimChooseDev.TabIndex = 21;
-            this.txtPrimChooseDev.Text = "Choose device:";
+            this.txtPrimChooseDev.Text = "Bluetooth \r\ndevice:";
             this.txtPrimChooseDev.Visible = false;
             // 
             // cbxBTSelect1
@@ -245,7 +245,7 @@
             this.cbxBTSelect1.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.cbxBTSelect1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBTSelect1.FormattingEnabled = true;
-            this.cbxBTSelect1.Location = new System.Drawing.Point(138, 208);
+            this.cbxBTSelect1.Location = new System.Drawing.Point(138, 204);
             this.cbxBTSelect1.Name = "cbxBTSelect1";
             this.cbxBTSelect1.Size = new System.Drawing.Size(137, 21);
             this.cbxBTSelect1.TabIndex = 22;
@@ -254,7 +254,7 @@
             // 
             // tbxPin
             // 
-            this.tbxPin.Location = new System.Drawing.Point(470, 208);
+            this.tbxPin.Location = new System.Drawing.Point(470, 204);
             this.tbxPin.MaxLength = 6;
             this.tbxPin.Name = "tbxPin";
             this.tbxPin.Size = new System.Drawing.Size(138, 20);
@@ -268,7 +268,7 @@
             this.cbxBTSelect2.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.cbxBTSelect2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBTSelect2.FormattingEnabled = true;
-            this.cbxBTSelect2.Location = new System.Drawing.Point(470, 208);
+            this.cbxBTSelect2.Location = new System.Drawing.Point(470, 204);
             this.cbxBTSelect2.Name = "cbxBTSelect2";
             this.cbxBTSelect2.Size = new System.Drawing.Size(138, 21);
             this.cbxBTSelect2.TabIndex = 24;
@@ -279,11 +279,11 @@
             // 
             this.txtSecChooseDevOrPin.AutoSize = true;
             this.txtSecChooseDevOrPin.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSecChooseDevOrPin.Location = new System.Drawing.Point(349, 206);
+            this.txtSecChooseDevOrPin.Location = new System.Drawing.Point(349, 189);
             this.txtSecChooseDevOrPin.Name = "txtSecChooseDevOrPin";
-            this.txtSecChooseDevOrPin.Size = new System.Drawing.Size(84, 20);
+            this.txtSecChooseDevOrPin.Size = new System.Drawing.Size(82, 40);
             this.txtSecChooseDevOrPin.TabIndex = 25;
-            this.txtSecChooseDevOrPin.Text = "Insert PIN:";
+            this.txtSecChooseDevOrPin.Text = "Bluetooth \r\ndevice:";
             this.txtSecChooseDevOrPin.Visible = false;
             // 
             // txtDate
@@ -524,7 +524,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ClientSize = new System.Drawing.Size(800, 480);
-            this.Controls.Add(this.txtSecondFactorStatus);
             this.Controls.Add(this.btnCancelAddNewUser);
             this.Controls.Add(this.txtAddNewUserStatus);
             this.Controls.Add(this.txtSecAuth);
@@ -552,7 +551,6 @@
             this.Controls.Add(this.cbxBTSelect1);
             this.Controls.Add(this.txtUserName);
             this.Controls.Add(this.txtAuthStatus);
-            this.Controls.Add(this.cbxBTSelect2);
             this.Controls.Add(this.tbxPin);
             this.Controls.Add(this.txtTime);
             this.Controls.Add(this.tbxSecFactorPinOrCard);
@@ -560,6 +558,8 @@
             this.Controls.Add(this.btnConfirmBTDevices);
             this.Controls.Add(this.btnLockNow);
             this.Controls.Add(this.txtSecFactorPinOrCard);
+            this.Controls.Add(this.txtSecondFactorStatus);
+            this.Controls.Add(this.cbxBTSelect2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Margin = new System.Windows.Forms.Padding(8);
             this.Name = "FormStart";

@@ -109,7 +109,7 @@
             this.cbxPrimAuth.Items.AddRange(new object[] {
             "Card",
             "Bluetooth"});
-            this.cbxPrimAuth.Location = new System.Drawing.Point(274, 145);
+            this.cbxPrimAuth.Location = new System.Drawing.Point(274, 143);
             this.cbxPrimAuth.Name = "cbxPrimAuth";
             this.cbxPrimAuth.Size = new System.Drawing.Size(133, 21);
             this.cbxPrimAuth.TabIndex = 44;
@@ -133,7 +133,7 @@
             this.cbxSecAuth.Items.AddRange(new object[] {
             "Bluetooth",
             "PIN"});
-            this.cbxSecAuth.Location = new System.Drawing.Point(533, 145);
+            this.cbxSecAuth.Location = new System.Drawing.Point(533, 143);
             this.cbxSecAuth.Name = "cbxSecAuth";
             this.cbxSecAuth.Size = new System.Drawing.Size(133, 21);
             this.cbxSecAuth.TabIndex = 45;
@@ -147,16 +147,17 @@
             this.txtPrimChooseDev.Location = new System.Drawing.Point(166, 171);
             this.txtPrimChooseDev.Name = "txtPrimChooseDev";
             this.txtPrimChooseDev.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtPrimChooseDev.Size = new System.Drawing.Size(68, 34);
+            this.txtPrimChooseDev.Size = new System.Drawing.Size(72, 34);
             this.txtPrimChooseDev.TabIndex = 47;
-            this.txtPrimChooseDev.Text = "Bluetooth\r\ndevice:";
+            this.txtPrimChooseDev.Text = "Bluetooth \r\ndevice:";
+            this.txtPrimChooseDev.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.txtPrimChooseDev.Visible = false;
             // 
             // cbxBTSelect1
             // 
             this.cbxBTSelect1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBTSelect1.FormattingEnabled = true;
-            this.cbxBTSelect1.Location = new System.Drawing.Point(274, 186);
+            this.cbxBTSelect1.Location = new System.Drawing.Point(274, 182);
             this.cbxBTSelect1.Name = "cbxBTSelect1";
             this.cbxBTSelect1.Size = new System.Drawing.Size(133, 21);
             this.cbxBTSelect1.TabIndex = 48;
@@ -168,11 +169,11 @@
             // 
             this.txtSecChooseDevOrPin.AutoSize = true;
             this.txtSecChooseDevOrPin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSecChooseDevOrPin.Location = new System.Drawing.Point(428, 188);
+            this.txtSecChooseDevOrPin.Location = new System.Drawing.Point(428, 171);
             this.txtSecChooseDevOrPin.Name = "txtSecChooseDevOrPin";
-            this.txtSecChooseDevOrPin.Size = new System.Drawing.Size(68, 17);
+            this.txtSecChooseDevOrPin.Size = new System.Drawing.Size(72, 34);
             this.txtSecChooseDevOrPin.TabIndex = 49;
-            this.txtSecChooseDevOrPin.Text = "User PIN:";
+            this.txtSecChooseDevOrPin.Text = "Bluetooth \r\ndevice:";
             this.txtSecChooseDevOrPin.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.txtSecChooseDevOrPin.Visible = false;
             // 
@@ -180,7 +181,7 @@
             // 
             this.cbxBTSelect2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxBTSelect2.FormattingEnabled = true;
-            this.cbxBTSelect2.Location = new System.Drawing.Point(533, 186);
+            this.cbxBTSelect2.Location = new System.Drawing.Point(533, 182);
             this.cbxBTSelect2.Name = "cbxBTSelect2";
             this.cbxBTSelect2.Size = new System.Drawing.Size(133, 21);
             this.cbxBTSelect2.TabIndex = 50;
@@ -189,7 +190,7 @@
             // 
             // tbxPin
             // 
-            this.tbxPin.Location = new System.Drawing.Point(533, 187);
+            this.tbxPin.Location = new System.Drawing.Point(533, 183);
             this.tbxPin.MaxLength = 6;
             this.tbxPin.Name = "tbxPin";
             this.tbxPin.Size = new System.Drawing.Size(133, 20);

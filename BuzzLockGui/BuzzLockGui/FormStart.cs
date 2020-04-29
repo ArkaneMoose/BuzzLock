@@ -364,6 +364,7 @@ namespace BuzzLockGui
                     }
                 }
             }
+            SetupSecondaryAuthConfiguration(cbxSecAuth, EventArgs.Empty);
             OnValidate();
         }
 
@@ -373,6 +374,7 @@ namespace BuzzLockGui
             if (sender is ComboBox comboBox)
             {
                 ValidateComboBox(comboBox, e);
+                cbxBTSelect2.Visible = false;
 
                 // Null check
                 if (comboBox.SelectedItem == null)
@@ -393,7 +395,7 @@ namespace BuzzLockGui
                     ValidatePinBox(tbxPin, EventArgs.Empty);
 
                     // Show bluetooth combo box
-                    txtSecChooseDevOrPin.Text = "Choose device:";
+                    txtSecChooseDevOrPin.Text = "Bluetooth \r\ndevice:";
                     txtSecChooseDevOrPin.Visible = true;
                     cbxBTSelect2.Visible = true;
                     ValidateComboBox(cbxBTSelect2, EventArgs.Empty);
@@ -405,7 +407,7 @@ namespace BuzzLockGui
                     ValidateComboBox(cbxBTSelect2, EventArgs.Empty);
 
                     // Show pin box
-                    txtSecChooseDevOrPin.Text = "Insert PIN:";
+                    txtSecChooseDevOrPin.Text = "Insert \r\nPIN:";
                     txtSecChooseDevOrPin.Visible = true;
                     tbxPin.Visible = true;
                     ValidatePinBox(tbxPin, EventArgs.Empty);
