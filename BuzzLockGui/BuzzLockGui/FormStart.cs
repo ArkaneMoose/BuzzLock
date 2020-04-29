@@ -17,6 +17,7 @@ namespace BuzzLockGui
     public partial class FormStart : FormBuzzLock
     {
         private FormOptions _formOptions;
+        private FormUserManagement _formUserManagement;
         private AuthenticationSequence _currentAuthSequence;
         private Stopwatch stopWatchAuthStatus = new Stopwatch();
         private Stopwatch stopWatchAccessDeniedStatus = new Stopwatch();
@@ -25,6 +26,9 @@ namespace BuzzLockGui
         private bool bluetoothFound = false;
         private GpioPin servo;
         private bool lock_open = false;
+        private int numTriesLeftSecondFactor;
+
+        private const int NUM_TRIES = 3;
 
         public FormStart()
         {
@@ -37,6 +41,7 @@ namespace BuzzLockGui
             this.KeyPreview = true;
 
             _formOptions = new FormOptions(this);
+            _formUserManagement = new FormUserManagement(this, _formOptions);
 
             // Query database and set state
             // Check to see if there's at least one user in the database
@@ -48,12 +53,16 @@ namespace BuzzLockGui
                 _globalState = State.Idle;
             }
 
+            // Initialize Servo Code
             if (IS_LINUX)
             {
                 Pi.Init<BootstrapWiringPi>();
                 servo = (GpioPin)Pi.Gpio[13];
                 servo.PinMode = GpioPinDriveMode.Output;
                 servo.StartSoftPwm(0, 100);
+                // Assume lock is open and close it
+                lock_open = true;
+                close_lock();
             }
 
             // Update visibility of form components
@@ -63,23 +72,42 @@ namespace BuzzLockGui
             {
                 control.MouseClick += OnAnyMouseClick;
             }
+
+            // Close keypad upon selection of most components
+            foreach (Control control in Controls)
+            {
+                if (control != tbxPin && control != tbxUserPhone && control != btnClearTextBox
+                    && control != tbxUserName && control != tbxSecFactorPinOrCard)
+                {
+                    control.MouseClick += keyboardClose_Leave;
+                }
+            }
+            this.MouseClick += keyboardClose_Leave;
+
+            // Initialize timer that refreshes the bluetooth device lists every 5 seconds
+            base.InitializeBTRefreshBTDeviceListsTimer();
+        }
+
+        private void AttemptKeyboardClose(object sender, EventArgs e)
+        {
+            if (this.ActiveControl != lastActiveTextBox && this.ActiveControl != btnClearTextBox)
+            {
+                keyboardClose_Leave(sender, e);
+            }
         }
 
         private void FormStart_Load(object sender, EventArgs e)
         {
-
-            this.WindowState = FormWindowState.Normal;
             loseFocus();
-            // this.TopMost = true;
-            // this.FormBorderStyle = FormBorderStyle.None;
-            // this.WindowState = FormWindowState.Maximized;
         }
 
         public new void Show()
         {
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
             this.UpdateComponents();
             RestartTimer();
-            RestartAccessDeniedTimer();
+            //RestartAccessDeniedTimer();
             base.Show();
         }
 
@@ -87,6 +115,8 @@ namespace BuzzLockGui
         {
             StopTimer();
             StopAccessDeniedTimer();
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
             base.Hide();
         }
 
@@ -184,7 +214,7 @@ namespace BuzzLockGui
                 // Go to idle state
                 _globalState = State.Idle;
                 UpdateComponents();
-
+                tbxCard.Text = "";
             }
             else if (_globalState == State.SecondFactor)
             {
@@ -208,83 +238,41 @@ namespace BuzzLockGui
                 if (success && _currentAuthSequence.NextAuthenticationMethod == null)
                 {
                     // Successful Authentication
-                    _globalState = State.Authenticated;
                     _currentUser = _currentAuthSequence.User;
+                    _globalState = State.Authenticated;
                     UpdateComponents();
                 } 
                 else
                 {
-                    txtSecondFactorStatus.Visible = true;
-                    txtSecondFactorStatus.Text = "Secondary authentication failed. Please try again.";
-                    tbxSecFactorPinOrCard.Text = "";
-                    cardInput = ""; // just in case
+                    if (numTriesLeftSecondFactor == 0)
+                    {
+                        _globalState = State.AccessDenied;
+                        UpdateComponents();
+                    }
+                    else
+                    {
+                        txtSecondFactorStatus.Visible = true;
+                        string pluralTries = numTriesLeftSecondFactor == 1 ? "try" : "tries";
+                        txtSecondFactorStatus.Text = "Secondary authentication failed. You have " + numTriesLeftSecondFactor + " " + pluralTries + " left. Please try again.";
+                        --numTriesLeftSecondFactor;
+                        tbxSecFactorPinOrCard.Text = "";
+                        cardInput = ""; // just in case
+                    }
                 }
-
-                //bool primaryAuthenticated = false;
-                //AuthenticationMethod primary = _currentAuthSequence.User.AuthenticationMethods.Primary;
-                //switch (primary)
-                //{
-                //    case Card card:
-                //        if (tbxCard.Text == card.Id)
-                //        {
-                //            primaryAuthenticated = true;
-                //        }
-                //        break;
-                //    case BluetoothDevice btDevice:
-                //        if (cbxBTSelect1.SelectedItem.ToString() == btDevice.Address)
-                //        {
-                //            primaryAuthenticated = true;
-                //        }
-                //        break;
-                //}
-
-                //bool secondaryAuthenticated = false;
-                //AuthenticationMethod secondary = _currentAuthSequence.User.AuthenticationMethods.Secondary;
-                //switch (secondary)
-                //{
-                //    case BluetoothDevice btDevice:
-                //        if (cbxBTSelect2.SelectedItem.ToString() == btDevice.Address)
-                //        {
-                //            secondaryAuthenticated = true;
-                //        }
-                //        break;
-                //    case Pin pin:
-                //        if (tbxPin.Text == pin.PinValue)
-                //        {
-                //            secondaryAuthenticated = true;
-                //        }
-                //        break;
-                //}
-
-                //if (primaryAuthenticated && secondaryAuthenticated)
-                //{
-                //    // Succesful authentication
-                //    _globalState = State.Authenticated;
-                //    _currentUser = _currentAuthSequence.User;
-                //    UpdateComponents();
-                //}
-                //else
-                //{
-                //    txtSecondFactorStatus.Visible = true;
-                //    if (!primaryAuthenticated && !secondaryAuthenticated)
-                //    {
-                //        txtSecondFactorStatus.Text = "Both primary and secondary authentication failed. Please try again.";
-                //    }
-                //    else if (!primaryAuthenticated)
-                //    {
-                //        txtSecondFactorStatus.Text = "Primary authentication failed. Please try again.";
-                //    }
-                //    else if (!secondaryAuthenticated)
-                //    {
-                //        txtSecondFactorStatus.Text = "Secondary authentication failed. Please try again.";
-                //    }
-                //}
             }
             else if (_globalState == State.Authenticated)
             {
-                _globalState = State.UserOptions;
+                if (_currentUser.PermissionLevel == User.PermissionLevels.FULL)
+                {
+                    _globalState = State.UserManagement;
+                    _formUserManagement.Show();
+                }
+                else
+                {
+                    _globalState = State.UserOptions;
+                    _formOptions.Show();
+                }
                 UpdateComponents();
-                _formOptions.Show();
                 this.Hide();
             }
 
@@ -298,8 +286,6 @@ namespace BuzzLockGui
             cbxSecAuth.Tag = "Please choose a secondary authentication method.";
             cbxBTSelect1.Tag = cbxBTSelect2.Tag = "Please choose your Bluetooth device.";
             tbxPin.Tag = "Please enter a 6-digit PIN you will remember.";
-
-            errNewUser.BlinkStyle = ErrorBlinkStyle.NeverBlink;
 
             // Call these so that the red exclamations will appear immediately
             ValidateTextBox(tbxUserName, EventArgs.Empty);
@@ -378,6 +364,7 @@ namespace BuzzLockGui
                     }
                 }
             }
+            SetupSecondaryAuthConfiguration(cbxSecAuth, EventArgs.Empty);
             OnValidate();
         }
 
@@ -387,6 +374,7 @@ namespace BuzzLockGui
             if (sender is ComboBox comboBox)
             {
                 ValidateComboBox(comboBox, e);
+                cbxBTSelect2.Visible = false;
 
                 // Null check
                 if (comboBox.SelectedItem == null)
@@ -407,7 +395,7 @@ namespace BuzzLockGui
                     ValidatePinBox(tbxPin, EventArgs.Empty);
 
                     // Show bluetooth combo box
-                    txtSecChooseDevOrPin.Text = "Choose device:";
+                    txtSecChooseDevOrPin.Text = "Bluetooth \r\ndevice:";
                     txtSecChooseDevOrPin.Visible = true;
                     cbxBTSelect2.Visible = true;
                     ValidateComboBox(cbxBTSelect2, EventArgs.Empty);
@@ -419,7 +407,7 @@ namespace BuzzLockGui
                     ValidateComboBox(cbxBTSelect2, EventArgs.Empty);
 
                     // Show pin box
-                    txtSecChooseDevOrPin.Text = "Insert PIN:";
+                    txtSecChooseDevOrPin.Text = "Insert \r\nPIN:";
                     txtSecChooseDevOrPin.Visible = true;
                     tbxPin.Visible = true;
                     ValidatePinBox(tbxPin, EventArgs.Empty);
@@ -459,6 +447,8 @@ namespace BuzzLockGui
         //TODO: Find out a way to make this private, like placing this functions inside of BuzzLock class instead
         public void UpdateComponents()
         {
+            loseFocus();
+
             // Reset card input buffer when we change state. This intends to avoid things the user types
             // from incorrectly getting added to the start of a card string, which was happening. 
             cardInput = "";
@@ -487,6 +477,8 @@ namespace BuzzLockGui
             listIdleBTDevices.Visible = _globalState == State.Idle;
             btnConfirmBTDevices.Visible = _globalState == State.Idle;
             txtChooseBTDevice.Visible = _globalState == State.Idle;
+            txtAddNewUserStatus.Visible = false;
+            btnAddNewUser.Visible = _globalState == State.Idle;
 
             // Second Factor State
             txtSecondFactorStatus.Visible = false;
@@ -497,6 +489,7 @@ namespace BuzzLockGui
             txtAuthStatus.Visible = _globalState == State.Authenticated;
             timerAuthTimeout.Enabled = _globalState == State.Authenticated;
             timerTxtAuthStatus.Enabled = _globalState == State.Authenticated;
+            btnLockNow.Visible = _globalState == State.Authenticated;
 
             // AccessDenied State
             timerAccessDeniedTimeout.Enabled = _globalState == State.AccessDenied;
@@ -506,10 +499,9 @@ namespace BuzzLockGui
             btnOptionsSave.Visible = _globalState == State.Initializing 
                                   || _globalState == State.SecondFactor 
                                   || _globalState == State.Authenticated;
-            acceptMagStripeInput = _globalState == State.Uninitialized
-                                || _globalState == State.Initializing
-                                || _globalState == State.Idle 
-                                || _globalState == State.UserOptions_EditAuth;
+            acceptMagStripeInput = checkIfMagStripeNeeded();
+            btnCancelAddNewUser.Visible = _globalState == State.Initializing
+                                  || _globalState == State.SecondFactor;
 
             _ = BluetoothService.SetModeAsync(
                 _globalState == State.Uninitialized
@@ -520,8 +512,12 @@ namespace BuzzLockGui
             switch (_globalState)
             {
                 case State.Uninitialized:
+                    // Reset Errors
+                    errorControls.Clear();
+                    userError.Clear();
                     _currentUser = null;
                     bluetoothFound = false;
+                    close_lock();
                     // Message for tbxStatus.Text for when the system is uninitialized
                     txtStatus.Text = "Hello! Please swipe your BuzzCard to begin set up.";
                     break;
@@ -554,6 +550,10 @@ namespace BuzzLockGui
                     // Reset _currentUser since we are in Idle State
                     _currentUser = null;
                     bluetoothFound = false;
+
+                    // Reset Errors
+                    errorControls.Clear();
+                    userError.Clear();
 
                     btnOptionsSave.Text = "Options";
                     txtStatus.Text = "Hello! Please swipe your card or choose your device.";
@@ -600,59 +600,29 @@ namespace BuzzLockGui
                             btnOptionsSave_Click(btnOptionsSave, EventArgs.Empty);
                             break;
                     }
-
-                    //switch(primary)
-                    //{
-                    //    case Card card:
-                    //        cbxPrimAuth.Items.Insert(0, "Card");
-                    //        txtCard.Visible = true;
-                    //        tbxCard.Visible = true;
-                    //        tbxCard.Text = card.Id;
-                    //        break;
-                    //    case BluetoothDevice btDevice:
-                    //        cbxPrimAuth.Items.Insert(0, "Bluetooth");
-                    //        txtPrimChooseDev.Visible = true;
-                    //        cbxBTSelect1.Visible = true;
-                    //        // TODO: Populate with all bluetooth devices associated with this user
-                    //        cbxBTSelect1.Items.Insert(0, btDevice.Address);
-                    //        cbxBTSelect1.SelectedIndex = 0;
-                    //        break;
-                    //}
-                    //cbxPrimAuth.SelectedIndex = 0;
-
-                    //cbxSecAuth.Items.Clear();
-                    //AuthenticationMethod secondary = _currentAuthSequence.User.AuthenticationMethods.Secondary;
-                    //txtSecChooseDevOrPin.Visible = true;
-                    //switch(secondary)
-                    //{
-                    //    case BluetoothDevice btDevice:
-                    //        cbxSecAuth.Items.Insert(0, "Bluetooth");
-                    //        txtSecChooseDevOrPin.Text = "Choose device: ";
-                    //        cbxBTSelect2.Visible = true;
-                    //        // TODO: Populate with all bluetooth devices associated with this user
-                    //        cbxBTSelect2.Items.Insert(0, btDevice.Address);
-                    //        break;
-                    //    case Pin pin:
-                    //        cbxSecAuth.Items.Insert(0, "PIN");
-                    //        txtSecChooseDevOrPin.Text = "Insert PIN:";
-                    //        tbxPin.Visible = true;
-                    //        break;
-                    //}
-                    //cbxSecAuth.SelectedIndex = 0;
+                    loseFocus();
                     break;
                 case State.Authenticated:
                     btnOptionsSave.Text = "Options";
-
                     txtStatus.Text = $"Welcome, {_currentUser.Name}. Door is unlocked.";
 
+                    // Reset Errors
+                    errorControls.Clear();
+                    userError.Clear();
+
                     // Timeout stopwatch
-                    txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, this screen will timeout in 10 seconds.";
+                    txtAuthStatus.Text = "If you wish to edit your account, click Options. Otherwise, the door will lock in 10 seconds.";
                     stopWatchAuthStatus.Reset();
                     stopWatchAuthStatus.Start();
                     open_lock();
                     loseFocus();
                     break;
                 case State.AccessDenied:
+
+                    // Reset Errors
+                    errorControls.Clear();
+                    userError.Clear();
+
                     //Timeout stopwatch
                     stopWatchAccessDeniedStatus.Reset();
                     stopWatchAccessDeniedStatus.Start();
@@ -691,7 +661,7 @@ namespace BuzzLockGui
         private void timerTxtAuthStatus_Tick(object sender, EventArgs e)
         {
             txtAuthStatus.Text = "If you wish to edit your account, click Options."
-                    + "Otherwise, this screen will timeout in "
+                    + " Otherwise, the door will lock in "
                     + Utility.Pluralize((10 - stopWatchAuthStatus.Elapsed.Seconds), "second") + ".";
         }
 
@@ -710,6 +680,8 @@ namespace BuzzLockGui
         private void FormStart_MouseClick(object sender, MouseEventArgs e)
         {
             Console.WriteLine("Form Start Clicked");
+            txtAddNewUserStatus.Visible = false;
+            txtSecondFactorStatus.Visible = false;
             // If the user clicks on the form, then active control leaves whatever it was and goes to default
             loseFocus();
             RestartTimer();
@@ -723,14 +695,7 @@ namespace BuzzLockGui
         private void btnDebugAuthUser_Click(object sender, EventArgs e)
         {
             _globalState = State.Authenticated;
-            _currentUser = new User(1);
-            UpdateComponents();
-        }
-
-        private void btnDebugAccessDenied_Click(object sender, EventArgs e)
-        {
-            _globalState = State.AccessDenied;
-            _currentUser = new User(1);
+            _currentUser = User.GetAll().First();
             UpdateComponents();
         }
 
@@ -741,6 +706,7 @@ namespace BuzzLockGui
             //Console.WriteLine("Shift: " + shift);
             //Console.WriteLine("New Card Entry: " + newCardEntry);
 
+            if (_globalState == State.AccessDenied) return;
             RestartTimer();
             RestartAccessDeniedTimer(); //??
             
@@ -782,6 +748,9 @@ namespace BuzzLockGui
                         {
                             _globalState = State.Initializing;
                             UpdateComponents();
+                        } else
+                        {
+                            txtAddNewUserStatus.Visible = false;
                         }
                     }
                     else
@@ -790,6 +759,11 @@ namespace BuzzLockGui
                         if (_globalState == State.Initializing)
                         {
                             // Error: Two separate users cannot use the same card for authentication
+                            txtAddNewUserStatus.Visible = true;
+                            txtAddNewUserStatus.Text = "Cannot add an authentication method which already exists in the database. Please try again.";
+                            tbxCard.Text = "";
+                            cardInput = ""; // just in case
+                            loseFocus();
                             // TODO: Set Validation of some kind telling them to swipe a different card
                         }
                         else if (_currentAuthSequence.User.PermissionLevel == User.PermissionLevels.NONE)
@@ -801,6 +775,7 @@ namespace BuzzLockGui
                         else
                         {
                             // request second factor authentication
+                            numTriesLeftSecondFactor = NUM_TRIES; // Give the user NUM_TRIES tries before denying access
                             _globalState = State.SecondFactor;
                             UpdateComponents();
                         }
@@ -821,23 +796,7 @@ namespace BuzzLockGui
         private void enableBtnConfirmBTDevice(object sender, EventArgs e)
         {
             ListBox listBox = (ListBox)sender;
-            btnConfirmBTDevices.Enabled = listBox.Items.Count > 0;
-        }
-
-        private void btnDebugBluetooth_Click(object sender, EventArgs e)
-        {
-            var btDevicesInRange = getBTDevicesInRange();
-            BluetoothDevice device = btDevicesInRange.First();
-            if (_globalState == State.Initializing)
-            {
-                cbxBTSelect1.Items.Add(device);
-                cbxBTSelect2.Items.Add(device);
-            }
-            else
-            {
-                listIdleBTDevices.Items.Add(device);
-            }
-            
+            btnConfirmBTDevices.Enabled = listBox.Items.Count > 0 && listBox.SelectedItem != null;
         }
 
         private void btnConfirmBTDevices_Click(object sender, EventArgs e)
@@ -873,7 +832,6 @@ namespace BuzzLockGui
                 Thread.Sleep(850);
                 servo.SoftPwmValue = 0;
                 lock_open = true;
-
             }
         }
 
@@ -888,12 +846,7 @@ namespace BuzzLockGui
             }
         }
 
-        private void btnDebugSecondFactor_Click(object sender, EventArgs e)
-        {
-            _globalState = State.SecondFactor;
-            _currentUser = new User(1);
-            UpdateComponents();
-        }
+        // Validation Stuff
 
         protected override void OnValidate()
         {
@@ -937,14 +890,42 @@ namespace BuzzLockGui
             => base.ValidatePinBox(sender, e);
         protected new void ValidateComboBox(object sender, EventArgs e)
             => base.ValidateComboBox(sender, e);
-        protected new void keyboard_Click(object sender, EventArgs e)
-            => base.keyboard_Click(sender, e);
-        protected new void keyboardClose_Leave(object sender, EventArgs e)
-            => base.keyboardClose_Leave(sender, e);
-        protected new void numberpad_Click(object sender, EventArgs e)
-            => base.numberpad_Click(sender, e);
 
-        private void RefreshBTDeviceLists(object sender, EventArgs e)
+        // Virtual Keyboard Stuff
+
+        protected new void keyboard_Click(object sender, EventArgs e)
+        {
+            base.keyboard_Click(sender, e);
+            lastActiveTextBox = (TextBox)sender;
+            btnClearTextBox.Visible = true;
+        }
+        protected new void keyboardClose_Leave(object sender, EventArgs e)
+        {
+            base.keyboardClose_Leave(sender, e);
+            btnClearTextBox.Visible = false;
+        }
+        protected new void numberpad_Click(object sender, EventArgs e)
+        {
+            base.numberpad_Click(sender, e);
+            lastActiveTextBox = (TextBox)sender;
+            btnClearTextBox.Visible = true;
+        }
+
+        private void btnClearTextBox_Click(object sender, EventArgs e)
+        {
+            lastActiveTextBox.Text = "";
+            this.ActiveControl = lastActiveTextBox;
+        }
+
+        // Bluetooth Stuff
+
+        protected new List<BluetoothDevice> getBTDevicesInRange()
+            => base.getBTDevicesInRange();
+
+        protected new List<BluetoothDevice> getBTDevicesInRangeAndRecognized()
+            => base.getBTDevicesInRangeAndRecognized();
+
+        protected override void RefreshBTDeviceLists(object sender, EventArgs e)
         {
             
             switch (_globalState)
@@ -959,41 +940,55 @@ namespace BuzzLockGui
                     var inRange = getBTDevicesInRange();
                     foreach (BluetoothDevice bt in inRange)
                     {
-                        cbxBTSelect1.Items.Add(bt);
-                        cbxBTSelect2.Items.Add(bt);
-                        if (bt.Equals(selected1)) cbxBTSelect1.SelectedItem = selected1;
-                        if (bt.Equals(selected2)) cbxBTSelect2.SelectedItem = selected2;
+                        // Only add device to list if not in database
+                        if (AuthenticationSequence.Start(bt) == null)
+                        {
+                            cbxBTSelect1.Items.Add(bt);
+                            cbxBTSelect2.Items.Add(bt);
+                            if (bt.Equals(selected1)) cbxBTSelect1.SelectedItem = selected1;
+                            if (bt.Equals(selected2)) cbxBTSelect2.SelectedItem = selected2;
+                        }
                     }
                     break;
                 case State.Idle:
+                    // Backup selected item to reselect after refresh:
+                    var backupSelectedBT = listIdleBTDevices.SelectedItem;
                     listIdleBTDevices.Items.Clear();
                     var inRangeAndRecognized = getBTDevicesInRangeAndRecognized();
                     foreach (BluetoothDevice bt in inRangeAndRecognized)
                     {
                         listIdleBTDevices.Items.Add(bt);
                     }
+                    listIdleBTDevices.SelectedItem = backupSelectedBT;
                     break;
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnLockNow_Click(object sender, EventArgs e)
         {
-            if (IS_LINUX)
-            {
-                servo.SoftPwmValue = 25;
-                Thread.Sleep(850);
-                servo.SoftPwmValue = 0;
-            }
+            timeoutAuth_Tick(null, EventArgs.Empty);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnAddNewUser_Click(object sender, EventArgs e)
         {
-            if (IS_LINUX)
-            {
-                servo.SoftPwmValue = 5;
-                Thread.Sleep(850);
-                servo.SoftPwmValue = 0;
-            }
+            _globalState = State.Initializing;
+            UpdateComponents();
         }
+
+        private void btnCancelAddNewUser_Click(object sender, EventArgs e)
+        {
+            if (User.GetAll().Count == 0) 
+                _globalState = State.Uninitialized;
+            else 
+                _globalState = State.Idle;
+
+            // Reset error hashset upon cancelled new user addition
+            errorControls.Clear();
+            userError.Clear();
+            // Update Stuff
+            OnValidate();
+            UpdateComponents();
+        }
+
     }
 }

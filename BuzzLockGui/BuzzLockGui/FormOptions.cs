@@ -40,16 +40,31 @@ namespace BuzzLockGui
 
             foreach (Control control in Controls)
             {
+                if (control.Name == "btnUserManagement") break;
                 control.MouseClick += OnAnyMouseClick;
             }
+
+            // Close keypad upon selection of most components
+            foreach (Control control in Controls)
+            {
+                if (control != tbxPin && control != tbxNewPhone && control != btnClearTextBox
+                    && control != tbxNewName)
+                {
+                    control.MouseClick += keyboardClose_Leave;
+                }
+            }
+            this.MouseClick += keyboardClose_Leave;
         }
         private void FormOptions_Load(object sender, EventArgs e)
         {
-            // this.TopMost = true;
-            // this.FormBorderStyle = FormBorderStyle.None;
-            // this.WindowState = FormWindowState.Maximized;
+            this.TopMost = true;
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
         }
-
+        private void FormOptions_Activated(object sender, EventArgs e)
+        {
+            loseFocus();
+        }
 
         public new void Show()
         {
@@ -129,6 +144,8 @@ namespace BuzzLockGui
             }
             else if (_globalState == State.UserOptions_EditAuth)
             {
+                
+
                 AuthenticationMethod primary = null;
                 AuthenticationMethod secondary = null;
                 switch (cbxPrimAuth.SelectedItem.ToString())
@@ -189,49 +206,21 @@ namespace BuzzLockGui
 
         private void btnRemoveUser_Click(object sender, EventArgs e)
         {
-            // Check to see if this is the last user with FULL permissions
-            List<User> userList = User.GetAll();
-            int numUsersFULLPermission = 0;
-            foreach (User user in userList)
-            {
-                if (!user.Equals(_currentUser))
-                {
-                    numUsersFULLPermission += 1;
-                }
-            }
-
             string removalMsg = "Are you sure you want to remove your user? This cannot be undone.";
-            if (numUsersFULLPermission == 0)
-            {
-                removalMsg = "Are you sure you want to remove your user? This cannot be undone. \n\n" +
-                    "You are the last user with FULL permissions. Deleting yourself will also delete any other users.";
-            } 
-            
 
-            // Initializes and displays the AutoClosingMessageBox.
-            var result = AutoClosingMessageBox.Show(
+            // Stop Timer
+            StopTimer();
+
+            // Initializes and displays the MessageBox.
+            var result = MessageBox.Show(
                 text: removalMsg,
                 caption: "Remove User",
-                timeout: 5000, //5 seconds
-                buttons: MessageBoxButtons.YesNo,
-                defaultResult: DialogResult.No);
+                buttons: MessageBoxButtons.YesNo);
 
             if (result == DialogResult.Yes)
             {
                 // Remove the current user from the database
                 _currentUser.Delete();
-
-                // Delete all other users if needed
-                if (numUsersFULLPermission == 0) 
-                {
-                    foreach (User user in userList)
-                    {
-                        if (!user.Equals(_currentUser))
-                        {
-                            user.Delete();
-                        }
-                    }
-                }
 
                 // Close options and stop both timers. Go back to IDLE or UNINITIALIZED depending on number of users
                 // registered in database after this user removal.
@@ -242,7 +231,12 @@ namespace BuzzLockGui
                 _formStart.UpdateComponents();
                 _formStart.Show();
                 this.Hide();
+            } else
+            {
+                RestartTimer();
             }
+
+            loseFocus();
         }
 
         private void FormOptions_MouseClick(object sender, EventArgs e)
@@ -301,7 +295,7 @@ namespace BuzzLockGui
                     {
                         // Don't allow duplicate cards in the database
                         AuthenticationSequence authSeq = AuthenticationSequence.Start(new Card(cardInput));
-                        bool cardNotAlreadyInDatabase = authSeq.NextAuthenticationMethod == null;
+                        bool cardNotAlreadyInDatabase = authSeq == null;
                         if (cardNotAlreadyInDatabase)
                         {
                             tbxCard.Text = cardInput;
@@ -326,8 +320,6 @@ namespace BuzzLockGui
             btnEditAuth.Visible = _globalState == State.UserOptions;
             btnEditProfile.Visible = _globalState == State.UserOptions;
             btnRemoveUser.Visible = _globalState == State.UserOptions;
-            btnUserManagement.Visible = _globalState == State.UserOptions 
-                && _currentUser.PermissionLevel == User.PermissionLevels.FULL;
             txtEditAuth.Visible = _globalState == State.UserOptions;
             txtEditProfile.Visible = _globalState == State.UserOptions;
             txtRemoveUser.Visible = _globalState == State.UserOptions;
@@ -357,13 +349,22 @@ namespace BuzzLockGui
 
             //UserManagement
 
+            // Multiple States
+            acceptMagStripeInput = checkIfMagStripeNeeded();
 
             //Set the welcome textbox with user name and permissions
-            tbxStatus.Text = $"Welcome, {_currentUser.Name}. You have {_currentUser.PermissionLevel} permissions.";
+            txtStatus.Text = $"Welcome, {_currentUser.Name}. You have {_currentUser.PermissionLevel} permissions.";
+
+            loseFocus();
 
             switch (_globalState)
             {
                 case State.UserOptions:
+
+                    // Reset Errors
+                    errorControls.Clear();
+                    userError.Clear();
+
                     txtOptionsTitle.Text = "BuzzLock Options Menu";
                     break;
                 case State.UserOptions_EditProfile:
@@ -380,6 +381,8 @@ namespace BuzzLockGui
                     break;
                 case State.UserOptions_EditAuth:
                     txtOptionsTitle.Text = "Edit your authentication methods:";
+                    // Update BT Devices list
+                    RefreshBTDeviceLists(timerBTIdleBTDeviceListUpdate, EventArgs.Empty);
                     // Query database for current primary and secondary authentication method.
                     AuthenticationMethod primary = _currentUser.AuthenticationMethods.Primary;
                     origPrimary = primary;
@@ -391,7 +394,13 @@ namespace BuzzLockGui
                             break;
                         case BluetoothDevice btDevice:
                             cbxPrimAuth.SelectedIndex = 1;
-                            cbxBTSelect1.Items.Insert(0, btDevice.Address);
+                            if (!cbxBTSelect2.Items.Contains(btDevice))
+                            {
+                                cbxBTSelect1.Items.Insert(0, btDevice);
+                                cbxBTSelect1.SelectedIndex = 0;
+                                cbxBTSelect2.Items.Insert(0, btDevice);
+                                cbxBTSelect2.SelectedIndex = 0;
+                            }
                             break;
                     }
                     ModifyPrimaryAuthConfiguration(cbxPrimAuth, EventArgs.Empty);
@@ -402,7 +411,13 @@ namespace BuzzLockGui
                     {
                         case BluetoothDevice btDevice:
                             cbxSecAuth.SelectedIndex = 0;
-                            cbxBTSelect2.Items.Insert(0, btDevice.Address);
+                            if (!cbxBTSelect2.Items.Contains(btDevice))
+                            {
+                                cbxBTSelect1.Items.Insert(0, btDevice);
+                                cbxBTSelect1.SelectedIndex = 0;
+                                cbxBTSelect2.Items.Insert(0, btDevice);
+                                cbxBTSelect2.SelectedIndex = 0;
+                            }
                             break;
                         case Pin pin:
                             cbxSecAuth.SelectedIndex = 1;
@@ -424,6 +439,14 @@ namespace BuzzLockGui
             if (sender is ComboBox comboBox)
             {
                 ValidateComboBox(comboBox, e);
+
+                // Null check
+                if (comboBox.SelectedItem == null)
+                {
+                    cbxBTSelect1.Visible = false;
+                    txtPrimChooseDev.Visible = false;
+                    return;
+                }
 
                 string selected = comboBox.SelectedItem.ToString();
                 bool isCard = selected == "Card";
@@ -485,6 +508,7 @@ namespace BuzzLockGui
                     }
                 }
             }
+            ModifySecondaryAuthConfiguration(cbxSecAuth, EventArgs.Empty);
             OnValidate();
         }
 
@@ -493,6 +517,18 @@ namespace BuzzLockGui
             if (sender is ComboBox comboBox)
             {
                 ValidateComboBox(comboBox, e);
+
+                // Null check
+                if (comboBox.SelectedItem == null)
+                {
+                    // Reset to default
+                    txtSecChooseDevOrPin.Visible = false;
+                    cbxBTSelect2.Visible = false;
+                    tbxPin.Visible = false;
+                    ValidateComboBox(cbxBTSelect2, EventArgs.Empty);
+                    ValidatePinBox(tbxPin, EventArgs.Empty);
+                    return;
+                }
 
                 string selected = comboBox.SelectedItem.ToString();
                 bool isCard = selected == "Card";
@@ -507,23 +543,33 @@ namespace BuzzLockGui
 
                 if (isBluetooth)
                 {
-                    txtSecChooseDevOrPin.Text = "Choose device:";
+                    txtSecChooseDevOrPin.Text = "Bluetooth \r\ndevice:";
                     if (cbxPrimAuth.SelectedItem.ToString() != "Card")
+                    {
+                        userError.SetError(tbxCard, null);
                         errorControls.Remove(tbxCard);
+                    }
+                    userError.SetError(tbxPin, null);
                     errorControls.Remove(tbxPin);
                     ValidateComboBox(cbxBTSelect2, EventArgs.Empty);
                 }
                 else if (isPin)
                 {
-                    txtSecChooseDevOrPin.Text = "Insert PIN:";
+                    txtSecChooseDevOrPin.Text = "Insert \r\nPIN:";
                     if (cbxPrimAuth.SelectedItem.ToString() != "Card")
+                    {
+                        userError.SetError(cbxBTSelect2, null);
                         errorControls.Remove(tbxCard);
+                    }
+                    userError.SetError(cbxBTSelect2, null);
                     errorControls.Remove(cbxBTSelect2);
                     ValidatePinBox(tbxPin, EventArgs.Empty);
                 }
                 else if (isCard)
                 {
+                    userError.SetError(cbxBTSelect2, null);
                     errorControls.Remove(cbxBTSelect2);
+                    userError.SetError(tbxPin, null);
                     errorControls.Remove(tbxPin);
                     ValidateTextBox(tbxCard, EventArgs.Empty);
                 }
@@ -533,7 +579,7 @@ namespace BuzzLockGui
 
         private void loseFocus()
         {
-            this.ActiveControl = tbxStatus;
+            this.ActiveControl = txtStatus;
         }
 
         protected override void OnValidate()
@@ -553,9 +599,66 @@ namespace BuzzLockGui
         private void btnUserManagement_Click(object sender, EventArgs e)
         {
             _globalState = State.UserManagement;
+            StopTimer();
             _formUserManagement.Show();
             this.Hide();
         }
+
+        protected override void RefreshBTDeviceLists(object sender, EventArgs e)
+        {
+            if (_globalState == State.UserOptions_EditAuth)
+            {
+                // Backup user's already selected devices
+                BluetoothDevice selected1 = (BluetoothDevice)cbxBTSelect1.SelectedItem;
+                BluetoothDevice selected2 = (BluetoothDevice)cbxBTSelect2.SelectedItem;
+                // Refresh combo box lists
+                cbxBTSelect1.Items.Clear();
+                cbxBTSelect2.Items.Clear();
+                var inRange = getBTDevicesInRange();
+                foreach (BluetoothDevice bt in inRange)
+                {
+                    // Only add device to list if not in database
+                    if (AuthenticationSequence.Start(bt) == null)
+                    {
+                        cbxBTSelect1.Items.Add(bt);
+                        cbxBTSelect2.Items.Add(bt);
+                        if (bt.Equals(selected1)) cbxBTSelect1.SelectedItem = selected1;
+                        if (bt.Equals(selected2)) cbxBTSelect2.SelectedItem = selected2;
+                    }
+                }
+            }
+        }
+
+        // Virtual Keyboard Stuff
+
+        protected new void keyboard_Click(object sender, EventArgs e)
+        {
+            base.keyboard_Click(sender, e);
+            base.lastActiveTextBox = (TextBox)sender;
+            btnClearTextBox.Visible = true;
+        }
+        protected new void keyboardClose_Leave(object sender, EventArgs e)
+        {
+            base.keyboardClose_Leave(sender, e);
+            btnClearTextBox.Visible = false;
+        }
+        protected new void numberpad_Click(object sender, EventArgs e)
+        {
+            base.numberpad_Click(sender, e);
+            base.lastActiveTextBox = (TextBox)sender;
+            btnClearTextBox.Visible = true;
+        }
+        private void btnClearTextBox_Click(object sender, EventArgs e)
+        {
+            base.lastActiveTextBox.Text = "";
+            this.ActiveControl = base.lastActiveTextBox;
+        }
+
+        // Bluetooth Stuff
+        protected new List<BluetoothDevice> getBTDevicesInRange()
+            => base.getBTDevicesInRange();
+        protected new List<BluetoothDevice> getBTDevicesInRangeAndRecognized()
+            => base.getBTDevicesInRangeAndRecognized();
     }
 
 }
