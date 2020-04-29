@@ -16,10 +16,10 @@ Living in the dorms and having to carry around a key can be annoying. Students l
 ## Schematic and Block Diagram
 
 Schematic with servo connecting to Raspberry Pi
-![BuzzLock Schematic](/Documentation/4180%20Schematic%20Window.png)
+![BuzzLock Schematic](Documentation/4180%20Schematic%20Window.png)
 
  Block diagram of all component connections
- ![BuzzLock Block Diagram](/Documentation/4180%20Block%20Diagram.png)
+ ![BuzzLock Block Diagram](Documentation/4180%20Block%20Diagram.png)
 
 
 ## Code Description
@@ -46,7 +46,7 @@ The first user to initialize the system receives a FULL permission level. Subseq
 
 The program is implemented as a state machine with 11 states, whose diagram you can see below. During runtime, each state transition updates the GUI accordingly. 
 
-![State Diagram](/Documentation/4180%20State%20Diagram.png)
+![State Diagram](Documentation/4180%20State%20Diagram.png)
 
 ### Windows Forms
 
@@ -90,42 +90,42 @@ When the user reaches the authenticated state the servo will rotate clockwise us
 ## User Instructions
 The Buzzlock goes through a series of setup stages when it is first set up. The steps for use are outlined below.  
 
-![uninitialized](/Documentation/Screenshots/Uninitialized.png)  
+![uninitialized](Documentation/Screenshots/Uninitialized.png)  
 This is where a user will start when no users have been added.  There are instruction to swipe their card and are taken to the initializing state.
 
 ### Initialization
 
-![initilization](/Documentation/Screenshots/Initializing%20-%20Card%20Entered.png)  
+![initilization](Documentation/Screenshots/Initializing%20-%20Card%20Entered.png)  
 This screen allows the owner of the system to input their information and preferences. Clicking the 'Save' button will save the user to the database.
 
 ### Idle
 
-![idle](/Documentation/Screenshots/Idle%20-%20Multiple%20Bluetooth%20Devices.png)  
+![idle](Documentation/Screenshots/Idle%20-%20Multiple%20Bluetooth%20Devices.png)  
 The screen will now be in idle until a primary authentication method (card swipe or Bluetooth selected) is performed. If the primary authentication method is already in the database, the user will be prompted for a secondary authentication method. If the primary authentication method is not known, the user will be prompted to create a new account. 
 
 ### Second Factor
 
-![secondary authentication](/Documentation/Screenshots/Second%20Factor%20-%20Pin.png)  
+![secondary authentication](Documentation/Screenshots/Second%20Factor%20-%20Pin.png)  
 When a known primary authentication is performed something similar to the above screen will be shown asking for their second authentication method (**card or pin**). The user has their tries total to correctly enter their secondary authentication method.  
 
 ### Authenticated
 
-![authenticated](/Documentation/Screenshots/Authenticated%20-%2010%20sec.png)  
+![authenticated](Documentation/Screenshots/Authenticated%20-%2010%20sec.png)  
 Upon correct entry of the secondary authentication method and sufficient permissions (full or limited), the user will be able to open the lock. From here, the user has the ability to enter the options menu or lock the door immediately. If no action is taken, the door will automatically lock in 10 seconds.
 
 ### Options - Limited User
 
-![options limited](/Documentation/Screenshots/Options%20-%20Limited%20User.png)  
+![options limited](Documentation/Screenshots/Options%20-%20Limited%20User.png)  
 A user with limited permissions can edit fields such as name, phone number, and authentication methods related to their profile as well as delete their profile.
 
 ### Options - User Management
 
-![options user management](/Documentation/Screenshots/User%20Management%20-%20Full%2C%20Limited%2C%20None.png)  
+![options user management](Documentation/Screenshots/User%20Management%20-%20Full%2C%20Limited%2C%20None.png)  
 A user with full permissions is able to add, remove and adjust any user profile within the database from the options menu.  They can also delete all users by deleting themselves. This will direct them back to the uninitialized screen, the system will be reset.  
 
 ### Access Denied
 
-![access denied](/Documentation/Screenshots/Access%20Denied%20-%2010%20sec.png)  
+![access denied](Documentation/Screenshots/Access%20Denied%20-%2010%20sec.png)  
 If a user with no permissions logs in they will be shown the access denied screen. This screen will also apprear if the second factor is entered incorretly three times.  
 
 ## Future Work
