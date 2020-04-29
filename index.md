@@ -105,9 +105,7 @@ The screen will now be in idle until a primary authentication method (card swipe
 
 ### Second Factor
 
-
-<img src="Documentation/Screenshots/Second%20Factor%20-%20Pin.png" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;"><img src="Documentation/Screenshots/Second Factor - Card Swipe.png" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;">
-<p style="clear: both;">
+![second factor](Documentation/2 factor side by side .png)
 When a known primary authentication is performed something similar to the above screen will be shown asking for their second authentication method (card or pin).  Bluetooth will be automatically detected so no action is required. The user has their tries total to correctly enter their secondary authentication method.  
 
 ### Authenticated
@@ -140,3 +138,5 @@ This semester came with significant limitations, but we have many ideas for futu
   - Sensing when the door is actually closed to better synchronize the auto-lock feature
   - Sleep/Wake functionality
   - Enable the ability for the user to add a profile picture using the Raspberry Pi Camera
+  - Allow user management through text message
+  - Allowing a limited user access only during certain times of the day 
