@@ -382,7 +382,7 @@ namespace BuzzLockGui
                     txtSecChooseDevOrPin.Text = "Insert \r\nPIN:";
                     if (cbxPrimAuth.SelectedItem.ToString() != "Card")
                     {
-                        userError.SetError(cbxBTSelect2, null);
+                        userError.SetError(tbxCard, null);
                         errorControls.Remove(tbxCard);
                     }
                     userError.SetError(cbxBTSelect2, null);

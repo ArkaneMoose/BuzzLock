@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             this.btnOptionsSave = new System.Windows.Forms.Button();
             this.txtStatus = new System.Windows.Forms.Label();
-            this.btnDebugSwipe = new System.Windows.Forms.Button();
             this.txtCard = new System.Windows.Forms.Label();
             this.txtUserName = new System.Windows.Forms.Label();
             this.txtUserPhone = new System.Windows.Forms.Label();
@@ -50,11 +49,9 @@
             this.txtDate = new System.Windows.Forms.Label();
             this.txtTime = new System.Windows.Forms.Label();
             this.timerDateTime = new System.Windows.Forms.Timer(this.components);
-            this.btnExit = new System.Windows.Forms.Button();
             this.listIdleBTDevices = new System.Windows.Forms.ListBox();
             this.btnConfirmBTDevices = new System.Windows.Forms.Button();
             this.txtChooseBTDevice = new System.Windows.Forms.Label();
-            this.btnDebugAuthUser = new System.Windows.Forms.Button();
             this.txtAuthStatus = new System.Windows.Forms.Label();
             this.timerAuthTimeout = new System.Windows.Forms.Timer(this.components);
             this.timerTxtAuthStatus = new System.Windows.Forms.Timer(this.components);
@@ -90,22 +87,12 @@
             // txtStatus
             // 
             this.txtStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtStatus.Location = new System.Drawing.Point(8, 10);
+            this.txtStatus.Location = new System.Drawing.Point(0, 9);
             this.txtStatus.Name = "txtStatus";
-            this.txtStatus.Size = new System.Drawing.Size(770, 32);
+            this.txtStatus.Size = new System.Drawing.Size(668, 32);
             this.txtStatus.TabIndex = 5;
             this.txtStatus.Text = "Hello! Please swipe your BuzzCard to begin set up.";
-            // 
-            // btnDebugSwipe
-            // 
-            this.btnDebugSwipe.CausesValidation = false;
-            this.btnDebugSwipe.Location = new System.Drawing.Point(611, 76);
-            this.btnDebugSwipe.Name = "btnDebugSwipe";
-            this.btnDebugSwipe.Size = new System.Drawing.Size(109, 23);
-            this.btnDebugSwipe.TabIndex = 6;
-            this.btnDebugSwipe.Text = "Debug: Swipe card";
-            this.btnDebugSwipe.UseVisualStyleBackColor = true;
-            this.btnDebugSwipe.Click += new System.EventHandler(this.btnDebugSwipe_Click);
+            this.txtStatus.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // txtCard
             // 
@@ -289,10 +276,10 @@
             // txtDate
             // 
             this.txtDate.AutoSize = true;
-            this.txtDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDate.Location = new System.Drawing.Point(70, 124);
             this.txtDate.Name = "txtDate";
-            this.txtDate.Size = new System.Drawing.Size(106, 36);
+            this.txtDate.Size = new System.Drawing.Size(99, 31);
             this.txtDate.TabIndex = 26;
             this.txtDate.Text = "<date>";
             this.txtDate.Visible = false;
@@ -300,10 +287,10 @@
             // txtTime
             // 
             this.txtTime.AutoSize = true;
-            this.txtTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTime.Location = new System.Drawing.Point(70, 158);
             this.txtTime.Name = "txtTime";
-            this.txtTime.Size = new System.Drawing.Size(103, 36);
+            this.txtTime.Size = new System.Drawing.Size(97, 31);
             this.txtTime.TabIndex = 27;
             this.txtTime.Text = "<time>";
             this.txtTime.Visible = false;
@@ -313,16 +300,6 @@
             this.timerDateTime.Enabled = true;
             this.timerDateTime.Interval = 1000;
             this.timerDateTime.Tick += new System.EventHandler(this.timerDateTime_Tick);
-            // 
-            // btnExit
-            // 
-            this.btnExit.Location = new System.Drawing.Point(611, 49);
-            this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(75, 23);
-            this.btnExit.TabIndex = 28;
-            this.btnExit.Text = "Exit";
-            this.btnExit.UseVisualStyleBackColor = true;
-            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // listIdleBTDevices
             // 
@@ -360,16 +337,6 @@
             this.txtChooseBTDevice.TabIndex = 31;
             this.txtChooseBTDevice.Text = "Choose bluetooth device:";
             this.txtChooseBTDevice.Visible = false;
-            // 
-            // btnDebugAuthUser
-            // 
-            this.btnDebugAuthUser.Location = new System.Drawing.Point(611, 105);
-            this.btnDebugAuthUser.Name = "btnDebugAuthUser";
-            this.btnDebugAuthUser.Size = new System.Drawing.Size(144, 23);
-            this.btnDebugAuthUser.TabIndex = 32;
-            this.btnDebugAuthUser.Text = "Debug: Authenticate User";
-            this.btnDebugAuthUser.UseVisualStyleBackColor = true;
-            this.btnDebugAuthUser.Click += new System.EventHandler(this.btnDebugAuthUser_Click);
             // 
             // txtAuthStatus
             // 
@@ -533,17 +500,13 @@
             this.Controls.Add(this.btnAddNewUser);
             this.Controls.Add(this.txtAccessDeniedStatus);
             this.Controls.Add(this.tbxAccessDenied);
-            this.Controls.Add(this.btnDebugAuthUser);
             this.Controls.Add(this.txtChooseBTDevice);
             this.Controls.Add(this.txtDate);
-            this.Controls.Add(this.btnExit);
             this.Controls.Add(this.txtCard);
-            this.Controls.Add(this.btnDebugSwipe);
             this.Controls.Add(this.tbxCard);
             this.Controls.Add(this.txtStatus);
             this.Controls.Add(this.txtSecChooseDevOrPin);
             this.Controls.Add(this.txtPrimChooseDev);
-            this.Controls.Add(this.txtPrimAuth);
             this.Controls.Add(this.cbxSecAuth);
             this.Controls.Add(this.cbxPrimAuth);
             this.Controls.Add(this.tbxUserPhone);
@@ -561,6 +524,7 @@
             this.Controls.Add(this.txtSecFactorPinOrCard);
             this.Controls.Add(this.txtSecondFactorStatus);
             this.Controls.Add(this.cbxBTSelect2);
+            this.Controls.Add(this.txtPrimAuth);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Margin = new System.Windows.Forms.Padding(8);
             this.Name = "FormStart";
@@ -581,7 +545,6 @@
 
         private System.Windows.Forms.Button btnOptionsSave;
         private System.Windows.Forms.Label txtStatus;
-        private System.Windows.Forms.Button btnDebugSwipe;
         private System.Windows.Forms.Label txtCard;
         private System.Windows.Forms.Label txtUserName;
         private System.Windows.Forms.Label txtUserPhone;
@@ -600,11 +563,9 @@
         private System.Windows.Forms.Label txtTime;
         private System.Windows.Forms.Label txtDate;
         private System.Windows.Forms.Timer timerDateTime;
-        private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.ListBox listIdleBTDevices;
         private System.Windows.Forms.Label txtChooseBTDevice;
         private System.Windows.Forms.Button btnConfirmBTDevices;
-        private System.Windows.Forms.Button btnDebugAuthUser;
         private System.Windows.Forms.Label txtAuthStatus;
         private System.Windows.Forms.Timer timerAuthTimeout;
         private System.Windows.Forms.Timer timerTxtAuthStatus;

@@ -425,25 +425,6 @@ namespace BuzzLockGui
             OnValidate();
         }
 
-        private void btnDebugSwipe_Click(object sender, EventArgs e)
-        {
-            tbxCard.Text = "Test Card for people without card swipers";
-            if (_globalState == State.Uninitialized)
-            {
-                _globalState = State.Initializing;
-                UpdateComponents();
-
-                // Open initial setup page
-            }
-            else if (_globalState == State.Idle)
-            {
-                // Test authentication
-                _globalState = State.SecondFactor;
-                _currentUser = new User(1);
-                UpdateComponents();
-            }
-        }
-
         //TODO: Find out a way to make this private, like placing this functions inside of BuzzLock class instead
         public void UpdateComponents()
         {
@@ -471,7 +452,6 @@ namespace BuzzLockGui
             cbxBTSelect2.Visible = false;
 
             // Idle State
-            btnDebugAuthUser.Enabled = (_globalState == State.Idle);
             txtDate.Visible = _globalState == State.Idle;
             txtTime.Visible = _globalState == State.Idle;
             listIdleBTDevices.Visible = _globalState == State.Idle;
@@ -517,7 +497,7 @@ namespace BuzzLockGui
                     break;
                 case State.Initializing:
                     btnOptionsSave.Text = "Save";
-                    txtStatus.Text = "Create your profile and choose how you want to unlock the door:";
+                    txtStatus.Text = "Create your profile and choose how to unlock the door:";
                     UserInputValidation();
 
                     // Update BT Devices list
@@ -561,6 +541,7 @@ namespace BuzzLockGui
                     btnOptionsSave.Text = "Authenticate";
                     tbxSecFactorPinOrCard.Text = "";
                     AuthenticationMethod next = _currentAuthSequence.NextAuthenticationMethod;
+                    Console.WriteLine(next);
                     tbxSecFactorPinOrCard.ReadOnly = next is Card;
                     acceptMagStripeInput = next is Card;
                     switch (next)
@@ -582,7 +563,7 @@ namespace BuzzLockGui
                         case BluetoothDevice btDevice:
                             tbxSecFactorPinOrCard.Visible = false;
                             txtSecFactorPinOrCard.Visible = false;
-                            List<BluetoothDevice> btDevicesInRange = getBTDevicesInRange();
+                            List<BluetoothDevice> btDevicesInRange = getBTDevicesInRangeAndRecognized();
                             if (btDevicesInRange.Contains(btDevice))
                             {
                                 bluetoothFound = true;
@@ -686,13 +667,6 @@ namespace BuzzLockGui
             Console.WriteLine("Form Start Activated");
         }
 
-        private void btnDebugAuthUser_Click(object sender, EventArgs e)
-        {
-            _globalState = State.Authenticated;
-            _currentUser = User.GetAll().First();
-            UpdateComponents();
-        }
-
         private void FormStart_KeyPress(object sender, KeyPressEventArgs e)
         {
             Console.WriteLine("Form Start Key Pressed");
@@ -730,48 +704,66 @@ namespace BuzzLockGui
 
                     Console.WriteLine(cardInput);
 
-                    // Check database to see if this is a new card entry or a recognized card associated with a user.
-                    _currentAuthSequence = AuthenticationSequence.Start(new Card(cardInput));
-                    bool cardRecognized = (_currentAuthSequence != null);
-
-                    if (!cardRecognized)
+                    Card card = new Card(cardInput);
+                    if (_globalState == State.SecondFactor)
                     {
-                        // this is a new card
-                        tbxCard.Text = cardInput;
-                        if (_globalState != State.Initializing)
+                        if (_currentAuthSequence.Continue(card))
                         {
-                            _globalState = State.Initializing;
-                            UpdateComponents();
-                        } else
-                        {
-                            txtAddNewUserStatus.Visible = false;
-                        }
-                    }
-                    else
-                    {
-                        // this card is already in the database
-                        if (_globalState == State.Initializing)
-                        {
-                            // Error: Two separate users cannot use the same card for authentication
-                            txtAddNewUserStatus.Visible = true;
-                            txtAddNewUserStatus.Text = "Cannot add an authentication method which already exists in the database. Please try again.";
-                            tbxCard.Text = "";
-                            cardInput = ""; // just in case
-                            loseFocus();
-                            // TODO: Set Validation of some kind telling them to swipe a different card
-                        }
-                        else if (_currentAuthSequence.User.PermissionLevel == User.PermissionLevels.NONE)
-                        {
-                            // user does not have door unlocking permission
-                            _globalState = State.AccessDenied;
-                            UpdateComponents();
+                            _globalState = State.Authenticated;
+                            _currentUser = _currentAuthSequence.User;
                         }
                         else
                         {
-                            // request second factor authentication
-                            numTriesLeftSecondFactor = NUM_TRIES; // Give the user NUM_TRIES tries before denying access
-                            _globalState = State.SecondFactor;
-                            UpdateComponents();
+                            --numTriesLeftSecondFactor;
+                        }
+                        UpdateComponents();
+                    }
+                    else
+                    {
+                        // Check database to see if this is a new card entry or a recognized card associated with a user.
+                        _currentAuthSequence = AuthenticationSequence.Start(card);
+                        bool cardRecognized = (_currentAuthSequence != null);
+
+                        if (!cardRecognized)
+                        {
+                            // this is a new card
+                            tbxCard.Text = cardInput;
+                            if (_globalState != State.Initializing)
+                            {
+                                _globalState = State.Initializing;
+                                UpdateComponents();
+                            }
+                            else
+                            {
+                                txtAddNewUserStatus.Visible = false;
+                            }
+                        }
+                        else
+                        {
+                            // this card is already in the database
+                            if (_globalState == State.Initializing)
+                            {
+                                // Error: Two separate users cannot use the same card for authentication
+                                txtAddNewUserStatus.Visible = true;
+                                txtAddNewUserStatus.Text = "Cannot add an authentication method which already exists in the database. Please try again.";
+                                tbxCard.Text = "";
+                                cardInput = ""; // just in case
+                                loseFocus();
+                                // TODO: Set Validation of some kind telling them to swipe a different card
+                            }
+                            else if (_currentAuthSequence.User.PermissionLevel == User.PermissionLevels.NONE)
+                            {
+                                // user does not have door unlocking permission
+                                _globalState = State.AccessDenied;
+                                UpdateComponents();
+                            }
+                            else
+                            {
+                                // request second factor authentication
+                                numTriesLeftSecondFactor = NUM_TRIES; // Give the user NUM_TRIES tries before denying access
+                                _globalState = State.SecondFactor;
+                                UpdateComponents();
+                            }
                         }
                     }
                     
