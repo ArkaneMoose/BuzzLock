@@ -64,9 +64,9 @@ We have detailed documentation of the classes and methods used in our backend av
 
 #### Authentication
 
-Authentication is performed by using the concept of an [**AuthenticationSequence**](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence). An AuthenticationSequence is [Start](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_Start_BuzzLockGui_Backend_AuthenticationMethod_)ed using the first [AuthenticationMethod](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationmethod) the user presents, such as a [Card](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.card) or a [BluetoothDevice](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.bluetoothdevice).
+Authentication is performed by using the concept of an [**AuthenticationSequence**](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence). An AuthenticationSequence will [Start](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_Start_BuzzLockGui_Backend_AuthenticationMethod_) with the first [AuthenticationMethod](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationmethod) the user presents, such as a [Card](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.card) or a [BluetoothDevice](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.bluetoothdevice).
 
-If the AuthenticationMethod is recognized as belonging to a [User](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_User), the AuthenticationSequence indicates what should be the [NextAuthenticationMethod](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_NextAuthenticationMethod) the user presents, such as a [Card](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.card), [BluetoothDevice](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.bluetoothdevice), or [Pin](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.pin). This [Continue](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_Continue_BuzzLockGui_Backend_AuthenticationMethod_)s until the user has been successfully authenticated.
+If the AuthenticationMethod is recognized as belonging to a [User](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_User), the AuthenticationSequence indicates what should be the [NextAuthenticationMethod](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_NextAuthenticationMethod) the user presents, such as a [Card](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.card), [BluetoothDevice](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.bluetoothdevice), or [Pin](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.pin). This will [Continue](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_Continue_BuzzLockGui_Backend_AuthenticationMethod_) until the user has been successfully authenticated.
 
 In our system, we use this paradigm only to implement two-factor authentication, but the concept is powerful enough to implement authentication systems of any desired complexity. For instance, one could design an authentication system that requires only one authentication method of one type or two authentication methods of two other types.
 
@@ -113,12 +113,12 @@ When a known primary authentication is performed something similar to the above 
 ![authenticated](Documentation/Screenshots/Authenticated%20-%2010%20sec.png)  
 Upon correct entry of the secondary authentication method and sufficient permissions (full or limited), the user will be able to open the lock. From here, the user has the ability to enter the options menu or lock the door immediately. If no action is taken, the door will automatically lock in 10 seconds.
 
-### Options - Limited User
+### Options &mdash; Limited User
 
 ![options limited](Documentation/Screenshots/Options%20-%20Limited%20User.png)  
 A user with limited permissions can edit fields such as name, phone number, and authentication methods related to their profile as well as delete their profile.
 
-### Options - User Management
+### Options &mdash; User Management
 
 ![options user management](Documentation/Screenshots/User%20Management%20-%20Full%2C%20Limited%2C%20None.png)  
 A user with full permissions is able to add, remove and adjust any user profile within the database from the options menu.  They can also delete all users by deleting themselves. This will direct them back to the uninitialized screen, the system will be reset.  
