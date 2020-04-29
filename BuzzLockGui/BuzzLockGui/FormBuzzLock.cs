@@ -255,23 +255,28 @@ namespace BuzzLockGui
         // For debugging bluetooth authentication
         protected List<BluetoothDevice> getBTDevicesInRange()
         {
-            List<BluetoothDevice> inRange = new List<BluetoothDevice>
+            BluetoothService.Mode = BluetoothService.BluetoothMode.SCANNING;
+            try
             {
-                new BluetoothDevice(new BluetoothAddress("00:11:22:33:44:55"), "Andrew's iPhone"),
-                new BluetoothDevice(new BluetoothAddress("99:99:99:99:99:99"), "Big Bad Watch")
-            };
-            return inRange;
+                return BluetoothService.GetAvailableBluetoothDevices().ToList();
+            }
+            catch (InvalidOperationException)
+            {
+                return new List<BluetoothDevice>();
+            }
         }
 
         protected List<BluetoothDevice> getBTDevicesInRangeAndRecognized()
         {
-            List<BluetoothDevice> inRange = getBTDevicesInRange();
-            List<BluetoothDevice> inRangeAndRecognized = new List<BluetoothDevice>();
-            foreach (BluetoothDevice bt in inRange)
+            BluetoothService.Mode = BluetoothService.BluetoothMode.MONITORING;
+            try
             {
-                if (AuthenticationSequence.Start(bt) != null) inRangeAndRecognized.Add(bt);
+                return BluetoothService.GetAvailableBluetoothDevices().ToList();
             }
-            return inRangeAndRecognized;
+            catch (InvalidOperationException)
+            {
+                return new List<BluetoothDevice>();
+            }
         }
 
         protected bool checkIfMagStripeNeeded()

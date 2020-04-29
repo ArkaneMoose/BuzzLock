@@ -503,12 +503,6 @@ namespace BuzzLockGui
             btnCancelAddNewUser.Visible = _globalState == State.Initializing
                                   || _globalState == State.SecondFactor;
 
-            _ = BluetoothService.SetModeAsync(
-                _globalState == State.Uninitialized
-                || _globalState == State.Initializing
-                ? BluetoothService.Mode.SCANNING
-                : BluetoothService.Mode.MONITORING);
-
             switch (_globalState)
             {
                 case State.Uninitialized:
@@ -851,35 +845,6 @@ namespace BuzzLockGui
         protected override void OnValidate()
         {
             btnOptionsSave.Enabled = NoErrors;
-        }
-
-        // For debugging bluetooth authentication
-        private List<BluetoothDevice> getBTDevicesInRange()
-        {
-            List<BluetoothDevice> dummyList = new List<BluetoothDevice>
-            {
-                new BluetoothDevice(new BluetoothAddress("00:11:22:33:44:55"), "Andrew's iPhone")
-            };
-            try
-            {
-                return BluetoothDevice.GetAllAvailable().ToList();
-            }
-            catch (InvalidOperationException)
-            {
-                return new List<BluetoothDevice>();
-            }
-        }
-
-        private List<BluetoothDevice> getBTDevicesInRangeAndRecognized()
-        {
-            /*List<BluetoothDevice> inRange = getBTDevicesInRange();
-            List<BluetoothDevice> inRangeAndRecognized = new List<BluetoothDevice>();
-            foreach (BluetoothDevice bt in inRange)
-            {
-                if (AuthenticationSequence.Start(bt) != null) inRangeAndRecognized.Add(bt);
-            }
-            return inRangeAndRecognized;*/
-            return getBTDevicesInRange();
         }
 
         protected new void ValidateTextBox(object sender, EventArgs e)

@@ -26,78 +26,29 @@ namespace BuzzLockGui.Backend
         private static HashSet<IAdapter1> adaptersDiscovering = new HashSet<IAdapter1>();
         private static Dictionary<BluetoothAddress, BluetoothConnection> connections
             = new Dictionary<BluetoothAddress, BluetoothConnection>();
-        private static Mode mode = Mode.UNINITIALIZED;
-        private static Task modeSwitchTask = Task.CompletedTask;
+        private static BluetoothMode _Mode = BluetoothMode.UNINITIALIZED;
+        public static BluetoothMode Mode
+        {
+            get => _Mode;
+            set
+            {
+                if (Mode != value)
+                {
+                    ExitMode(Mode);
+                    _Mode = value;
+                    EnterMode(Mode);
+                }
+            }
+        }
 
         /// <summary>
         /// The state of the Bluetooth discovery and monitoring service.
         /// </summary>
-        public enum Mode
+        public enum BluetoothMode
         {
             UNINITIALIZED,
             SCANNING,
             MONITORING
-        }
-
-        /// <summary>
-        /// Immediately gets the current state of the Bluetooth discovery and
-        /// monitoring service, or <c>null</c> if currently switching states.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="Mode"/> if no mode switch is pending, or <c>null</c>
-        /// otherwise.
-        /// </returns>
-        public static Mode? GetMode()
-        {
-            return modeSwitchTask.IsCompleted ? (Mode?)mode : null;
-        }
-
-        /// <summary>
-        /// Asynchronously gets the state of the Bluetooth discovery and
-        /// monitoring service after any pending mode switches are completed.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="Task{TResult}"/> that results in a <see cref="Mode"/>.
-        /// </returns>
-        public static async Task<Mode> GetModeAsync()
-        {
-            await modeSwitchTask;
-            return mode;
-        }
-
-        /// <summary>
-        /// Asynchronously changes the state of the Bluetooth discovery and
-        /// monitoring service to the given mode.
-        /// </summary>
-        /// <param name="desiredMode">
-        /// The desired <see cref="Mode"/> to switch to.
-        /// </param>
-        /// <returns>
-        /// A <see cref="Task{TResult}"/> that resolves to a <see cref="bool"/>
-        /// that is <c>true</c> if the mode switch was successful or <c>false</c>
-        /// otherwise (e.g. if the mode switch was interrupted by a request to
-        /// change to a different mode).
-        /// </returns>
-        /// <remarks>
-        /// <para>
-        /// See the remarks for <see cref="GetAvailableBluetoothDevices"/> for
-        /// a description of how the different modes behave.
-        /// </para>
-        /// <para>
-        /// If the desired mode is already set, this method acts as a harmless
-        /// no-op.
-        /// </para>
-        /// </remarks>
-        public static async Task<bool> SetModeAsync(Mode desiredMode)
-        {
-            Mode prevMode = mode;
-            mode = desiredMode;
-            if (modeSwitchTask.IsCompleted && prevMode != desiredMode)
-            {
-                modeSwitchTask = ChangeMode(prevMode);
-            }
-            await modeSwitchTask;
-            return mode == desiredMode;
         }
 
         /// <summary>
@@ -110,94 +61,40 @@ namespace BuzzLockGui.Backend
         /// </returns>
         /// <remarks>
         /// <para>
-        /// When the mode is <see cref="Mode.SCANNING"/>, all discoverable
+        /// When the mode is <see cref="BluetoothMode.SCANNING"/>, all discoverable
         /// Bluetooth devices are returned. Discoverable Bluetooth devices are
         /// the ones with visible names.
         /// </para>
         /// <para>
-        /// When the mode is <see cref="Mode.MONITORING"/>, the behavior
+        /// When the mode is <see cref="BluetoothMode.MONITORING"/>, the behavior
         /// differs for classic Bluetooth devices and BLE devices. The service
         /// tries to connect to all known classic Bluetooth devices constantly.
         /// The RSSI can be fetched for any connected classic Bluetooth device,
         /// so classic Bluetooth devices are returned if they are connected and
         /// their RSSI is greater than <see cref="RSSI_THRESHOLD_BT_CLASSIC"/>.
         /// In contrast, BLE devices are scanned using the same discovery
-        /// procedure as for <see cref="Mode.SCANNING"/>, but only devices with
+        /// procedure as for <see cref="BluetoothMode.SCANNING"/>, but only devices with
         /// addresses in the database are considered, and the service does not
         /// require them to have their names discoverable at time of
         /// monitoring.
         /// </para>
         /// <para>
-        /// Any other mode, in particular <see cref="Mode.UNINITIALIZED"/>,
-        /// causes an <see cref="InvalidOperationException"/> to be thrown. The
-        /// same is also thrown if a mode switch is in progress. To wait until
-        /// all mode switches are complete before completing, use
-        /// <see cref="GetAvailableBluetoothDevicesAsync"/>.
+        /// Any other mode, in particular <see cref="BluetoothMode.UNINITIALIZED"/>,
+        /// causes an <see cref="InvalidOperationException"/> to be thrown.
         /// </para>
         /// </remarks>
         public static IEnumerable<BluetoothDevice> GetAvailableBluetoothDevices()
         {
-            Mode? mode = GetMode();
-            switch (mode)
+            switch (Mode)
             {
-                case Mode.SCANNING:
+                case BluetoothMode.SCANNING:
                     return GetAvailableBluetoothDevicesFromScan();
-                case Mode.MONITORING:
+                case BluetoothMode.MONITORING:
                     return GetAvailableBluetoothDevicesFromMonitoring();
                 default:
                     throw new InvalidOperationException(
                         "Must set mode for Bluetooth service or wait for mode "
                         + "change to complete");
-            }
-        }
-
-        /// <summary>
-        /// Asynchronously gets all available Bluetooth devices in range. What
-        /// counts as available depends on the mode as reported by
-        /// <see cref="GetMode"/>.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="Task{TResult}"/> that resolves to an
-        /// <see cref="IEnumerable{T}"/> of the available
-        /// <see cref="BluetoothDevice"/>s.
-        /// </returns>
-        /// <remarks>
-        /// <para>
-        /// When the mode is <see cref="Mode.SCANNING"/>, all discoverable
-        /// Bluetooth devices are returned. Discoverable Bluetooth devices are
-        /// the ones with visible names.
-        /// </para>
-        /// <para>
-        /// When the mode is <see cref="Mode.MONITORING"/>, the behavior
-        /// differs for classic Bluetooth devices and BLE devices. The service
-        /// tries to connect to all known classic Bluetooth devices constantly.
-        /// The RSSI can be fetched for any connected classic Bluetooth device,
-        /// so classic Bluetooth devices are returned if they are connected and
-        /// their RSSI is greater than <see cref="RSSI_THRESHOLD_BT_CLASSIC"/>.
-        /// In contrast, BLE devices are scanned using the same discovery
-        /// procedure as for <see cref="Mode.SCANNING"/>, but only devices with
-        /// addresses in the database are considered, and the service does not
-        /// require them to have their names discoverable at time of
-        /// monitoring.
-        /// </para>
-        /// <para>
-        /// Any other mode, in particular <see cref="Mode.UNINITIALIZED"/>,
-        /// causes an <see cref="InvalidOperationException"/> to be thrown.
-        /// </para>
-        /// </remarks>
-        public static async Task<IEnumerable<BluetoothDevice>>
-            GetAvailableBluetoothDevicesAsync()
-        {
-            Mode mode = await GetModeAsync();
-            switch (mode)
-            {
-                case Mode.SCANNING:
-                    return GetAvailableBluetoothDevicesFromScan();
-                case Mode.MONITORING:
-                    return GetAvailableBluetoothDevicesFromMonitoring();
-                default:
-                    throw new InvalidOperationException(
-                        "Must set mode for Bluetooth service");
             }
         }
 
@@ -331,17 +228,7 @@ namespace BuzzLockGui.Backend
             }.SelectMany(devices => devices);
         }
 
-        private static async Task ChangeMode(Mode fromMode)
-        {
-            Console.WriteLine($"Exiting..."); // !!DEBUG!!
-            await ExitMode(fromMode);
-            Mode toMode = mode;
-            Console.WriteLine($"Entering..."); // !!DEBUG!!
-            EnterMode(toMode);
-            Console.WriteLine($"Done"); // !!DEBUG!!
-        }
-
-        private static void EnterMode(Mode mode)
+        private static void EnterMode(BluetoothMode mode)
         {
             Console.WriteLine($"Changing Bluetooth mode to {mode}");
             if (!FormBuzzLock.IS_LINUX)
@@ -350,10 +237,10 @@ namespace BuzzLockGui.Backend
             }
             switch (mode)
             {
-                case Mode.SCANNING:
+                case BluetoothMode.SCANNING:
                     StartDiscovery(new Dictionary<string, object>());
                     break;
-                case Mode.MONITORING:
+                case BluetoothMode.MONITORING:
                     OpenConnections();
                     Backend.Update += OnDatabaseUpdate;
                     StartDiscovery(new Dictionary<string, object>
@@ -364,7 +251,7 @@ namespace BuzzLockGui.Backend
             }
         }
 
-        private static async Task ExitMode(Mode mode)
+        private static void ExitMode(BluetoothMode mode)
         {
             if (!FormBuzzLock.IS_LINUX)
             {
@@ -372,13 +259,13 @@ namespace BuzzLockGui.Backend
             }
             switch (mode)
             {
-                case Mode.SCANNING:
+                case BluetoothMode.SCANNING:
                     StopDiscovery();
                     break;
-                case Mode.MONITORING:
+                case BluetoothMode.MONITORING:
                     Backend.Update -= OnDatabaseUpdate;
                     StopDiscovery();
-                    await CloseConnections();
+                    CloseConnections();
                     break;
             }
         }
@@ -420,7 +307,7 @@ namespace BuzzLockGui.Backend
         private static void StartDiscovery(
             IEnumerable<IAdapter1> adapters, IDictionary<string, object> filter)
         {
-            foreach (IAdapter1 adapter in adapters)
+            foreach (IAdapter1 adapter in adapters.ToList())
             {
                 StartDiscovery(adapter, filter);
             }
@@ -457,7 +344,7 @@ namespace BuzzLockGui.Backend
 
         private static void StopDiscovery(IEnumerable<IAdapter1> adapters)
         {
-            foreach (IAdapter1 adapter in adapters)
+            foreach (IAdapter1 adapter in adapters.ToList())
             {
                 StopDiscovery(adapter);
             }
@@ -477,25 +364,30 @@ namespace BuzzLockGui.Backend
             adaptersDiscovering.Remove(adapter);
         }
 
-        private static Task CloseConnections()
+        private static void CloseConnections()
         {
-            return Task.WhenAll(connections.Select(connection =>
-                CloseConnection(connection.Value)));
+            try
+            {
+                foreach (var connection in connections)
+                {
+                    CloseConnection(connection.Value);
+                }
+            }
+            catch (Exception e) { Console.WriteLine(e); }
         }
 
-        private static Task CloseConnection(BluetoothAddress address)
+        private static void CloseConnection(BluetoothAddress address)
         {
             BluetoothConnection connection;
             if (connections.TryGetValue(address, out connection))
             {
-                return CloseConnection(connection);
+                CloseConnection(connection);
             }
-            return Task.CompletedTask;
         }
 
-        private static Task CloseConnection(BluetoothConnection connection)
+        private static void CloseConnection(BluetoothConnection connection)
         {
-            return connection.Stop();
+            connection.Stop();
         }
 
         private static IEnumerable<BluetoothConnection> OpenConnections()
@@ -589,7 +481,7 @@ namespace BuzzLockGui.Backend
                 process.Start();
             }
 
-            internal Task Stop()
+            internal void Stop()
             {
                 if (!StopRequested)
                 {
@@ -599,15 +491,15 @@ namespace BuzzLockGui.Backend
                         StartInfo = new ProcessStartInfo
                         {
                             FileName = "sudo",
-                            Arguments = $"kill {process.Id}",
+                            Arguments = "killall l2ping",
                             UseShellExecute = false,
                             CreateNoWindow = true,
                             WindowStyle = ProcessWindowStyle.Hidden,
-                        }
+                        },
                     };
                     kill.Start();
+                    kill.WaitForExit();
                 }
-                return task;
             }
         }
     }
