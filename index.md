@@ -1,6 +1,6 @@
 # BuzzLock
 **Team members: Rishov Sarkar, Joshua Shafran, Andrew Gauker, and Celeste Smith**  
-The most convenient secure door lock.
+The most convenient and secure door lock.
 
 Living in the dorms and having to carry around a key can be annoying. Students lose their keys all the time and they take up space. So with the BuzzLock you can use Bluetooth and/or a BuzzCard** to unlock your door, no key required!
 
@@ -8,11 +8,11 @@ Living in the dorms and having to carry around a key can be annoying. Students l
 
 ## Presentation Video
 
-<iframe width="660" height="415" src="https://www.youtube-nocookie.com/embed/SVnwgas-XJQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="860" height="615" src="https://www.youtube-nocookie.com/embed/SVnwgas-XJQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Demo Video
 
-<iframe width="660" height="415" src="https://www.youtube-nocookie.com/embed/KP3C9oYE0SQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="860" height="615" src="https://www.youtube-nocookie.com/embed/KP3C9oYE0SQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Components Used
  
