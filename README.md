@@ -8,11 +8,11 @@ Living in the dorms and having to carry around a key can be annoying. Students l
 
 ## Presentation Video
 
-[Presentation Video on YouTube](https://youtu.be/SVnwgas-XJQ)
+[![Presentation Video on YouTube](Documentation/Thumbnails/BuzzLock%20Presentation.png)](https://youtu.be/SVnwgas-XJQ)
 
 ## Demo Video
 
-[Demo Video on YouTube](https://youtu.be/KP3C9oYE0SQ)
+[![Demo Video on YouTube](Documentation/Thumbnails/BuzzLock%20Demo.png)](https://youtu.be/KP3C9oYE0SQ)
 
 ## Components Used
  
