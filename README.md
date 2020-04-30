@@ -8,11 +8,11 @@ Living in the dorms and having to carry around a key can be annoying. Students l
 
 ## Presentation Video
 
-<iframe width="757" height="454" src="https://www.youtube-nocookie.com/embed/SVnwgas-XJQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[Presentation Video on YouTube](https://youtu.be/SVnwgas-XJQ)
 
 ## Demo Video
 
-<iframe width="757" height="454" src="https://www.youtube-nocookie.com/embed/KP3C9oYE0SQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[Demo Video on YouTube](https://youtu.be/KP3C9oYE0SQ)
 
 ## Components Used
  
