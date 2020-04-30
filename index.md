@@ -142,10 +142,10 @@ If a user with no permissions logs in they will be shown the access denied scree
 This semester came with significant limitations, but we have many ideas for future expansions on the project:
   - Have users with permissions "FULL" be notified by text message or email when a user with permissions "NONE" attempts to enter the system
   - Implement encryption of user data and other security features
-  - Connecting it to a real dorm style door
+  - Connecting it to a real apartment door lock
   - Implementing a logging system of every attempt to access the system (audit log).
   - Sensing when the door is actually closed to better synchronize the auto-lock feature
-  - Sleep/Wake functionality
+  - Screen sleep until motion is detected
   - Enable the ability for the user to add a profile picture using the Raspberry Pi Camera
   - Allow user management through text message
   - Allowing a limited user access only during certain times of the day 
