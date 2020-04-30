@@ -44,13 +44,13 @@ For finer granularity in who is able to use the system, we have a permission sys
 - **LIMITED:** Can unlock the door and access the options menu, but cannot change other user's information.
 - **FULL:** Can unlock the door, access the user management system, and change any user's information.
 
-The first user to initialize the system receives a FULL permission level. Subsequent users receive NONE permissions by default, though an administrator can later upgrade a user's permission level. 
+The first user to initialize the system receives a FULL permission level. Subsequent users receive NONE permissions by default, though a user with FULL permission level can later upgrade a user's permission level. 
 
 ### State Diagram
 
 The program is implemented as a state machine with 11 states, whose diagram you can see below. During runtime, each state transition updates the GUI accordingly. 
 
-![State Diagram](Documentation/4180%20State%20Diagram.png)
+![State Diagram](https://arkanemoose.github.io/BuzzLock/Documentation/4180%20State%20Diagram.png)
 
 ### Windows Forms
 
