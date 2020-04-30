@@ -99,12 +99,12 @@ This is where a user will start when no users have been added.  There are instru
 
 ### Initialization
 
-![initilization](Documentation/Screenshots/Initializing%20-%20Card%20Entered.png)  
+![initialization](Documentation/Screenshots/Initializing%20-%20Card%20Entered.png)  
 This screen allows the owner of the system to input their information and preferences. Clicking the 'Save' button will save the user to the database.  
 
 #### Duplicate Authentication Method
 
-<img src="https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Add%20New%20User%20-%20Cannot%20Add%20Duplicate%20Auth%20Method.png" alt="Duplicate Authentication Method">
+![duplicate authentication method](Documentation/Screenshots/Add%20New%20User%20-%20Cannot%20Add%20Duplicate%20Auth%20Method.png)  
 If a card or Bluetooth device is already registered to a user in the database it is not allowed to be associated to a new user in the user set up screen.  
 
 ### Idle
@@ -114,7 +114,7 @@ The screen will now be in idle until a primary authentication method (card swipe
 
 ### Second Factor
 
-<img src="https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/2%20factor%20side%20by%20side%20.png" alt="Second factor side by side">
+![second factor side by side](Documentation/2%20factor%20side%20by%20side%20.png)  
 When a known primary authentication is performed something similar to the above screen will be shown asking for their second authentication method (card or pin).  Bluetooth will be automatically detected so no action is required. The user has their tries total to correctly enter their secondary authentication method.  
 
 ### Authenticated
