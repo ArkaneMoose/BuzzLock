@@ -6,7 +6,7 @@ Living in the dorms and having to carry around a key can be annoying. Students l
 
 ** Any magnetic stripe card can be used for authentication. **
 
-<iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRtybTdnEYg0nYnokzpXmdX-BRFHMhoSqfTdMyd9qdl8yBKM3mwUocjZQYbg_CNyn-YjQeg4Lne3Df_/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+<iframe src="https://youtu.be/SVnwgas-XJQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Demo Video
 
