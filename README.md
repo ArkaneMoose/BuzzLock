@@ -1,10 +1,18 @@
 # BuzzLock
-<b> Team members: Rishov Sarkar, Joshua Shafran, Andrew Gauker, and Celeste Smith</b><br/>
-The most secure door lock. <br/>
+**Team members: Rishov Sarkar, Joshua Shafran, Andrew Gauker, and Celeste Smith**  
+The most convenient and secure door lock.
 
 Living in the dorms and having to carry around a key can be annoying. Students lose their keys all the time and they take up space. So with the BuzzLock you can use Bluetooth and/or a BuzzCard** to unlock your door, no key required!
 
 ** Any magnetic stripe card can be used for authentication. **
+
+## Presentation Video
+
+<iframe width="757" height="454" src="https://www.youtube-nocookie.com/embed/SVnwgas-XJQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+## Demo Video
+
+<iframe width="757" height="454" src="https://www.youtube-nocookie.com/embed/KP3C9oYE0SQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Components Used
  
@@ -16,10 +24,10 @@ Living in the dorms and having to carry around a key can be annoying. Students l
 ## Schematic and Block Diagram
 
 Schematic with servo connecting to Raspberry Pi
-![BuzzLock Schematic](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/4180%20Schematic%20Window.png)
+![BuzzLock Schematic](Documentation/4180%20Schematic%20Window.png)
 
  Block diagram of all component connections
- ![BuzzLock Block Diagram](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/4180%20Block%20Diagram.png)
+ ![BuzzLock Block Diagram](Documentation/4180%20Block%20Diagram.png)
 
 
 ## Code Description
@@ -40,13 +48,13 @@ For finer granularity in who is able to use the system, we have a permission sys
 - **LIMITED:** Can unlock the door and access the options menu, but cannot change other user's information.
 - **FULL:** Can unlock the door, access the user management system, and change any user's information.
 
-The first user to initialize the system receives a FULL permission level. Subsequent users receive NONE permissions by default, though an administrator can later upgrade a user's permission level. 
+The first user to initialize the system receives a FULL permission level. Subsequent users receive NONE permissions by default, though a user with FULL permission level can later upgrade a user's permission level. 
 
 ### State Diagram
 
 The program is implemented as a state machine with 11 states, whose diagram you can see below. During runtime, each state transition updates the GUI accordingly. 
 
-![State Diagram](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/4180%20State%20Diagram.png)
+[![State Diagram](Documentation/4180%20State%20Diagram.png)](Documentation/4180%20State%20Diagram.png)
 
 ### Windows Forms
 
@@ -64,9 +72,9 @@ We have detailed documentation of the classes and methods used in our backend av
 
 #### Authentication
 
-Authentication is performed by using the concept of an [**AuthenticationSequence**](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence). An AuthenticationSequence is [Start](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_Start_BuzzLockGui_Backend_AuthenticationMethod_)ed using the first [AuthenticationMethod](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationmethod) the user presents, such as a [Card](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.card) or a [BluetoothDevice](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.bluetoothdevice).
+Authentication is performed by using the concept of an [**AuthenticationSequence**](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence). An AuthenticationSequence will [Start](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_Start_BuzzLockGui_Backend_AuthenticationMethod_) with the first [AuthenticationMethod](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationmethod) the user presents, such as a [Card](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.card) or a [BluetoothDevice](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.bluetoothdevice).
 
-If the AuthenticationMethod is recognized as belonging to a [User](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_User), the AuthenticationSequence indicates what should be the [NextAuthenticationMethod](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_NextAuthenticationMethod) the user presents, such as a [Card](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.card), [BluetoothDevice](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.bluetoothdevice), or [Pin](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.pin). This [Continue](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_Continue_BuzzLockGui_Backend_AuthenticationMethod_)s until the user has been successfully authenticated.
+If the AuthenticationMethod is recognized as belonging to a [User](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_User), the AuthenticationSequence indicates what should be the [NextAuthenticationMethod](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_NextAuthenticationMethod) the user presents, such as a [Card](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.card), [BluetoothDevice](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.bluetoothdevice), or [Pin](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.pin). This will [Continue](https://buzzlock-docs.netlify.app/api/buzzlockgui.backend.authenticationsequence#BuzzLockGui_Backend_AuthenticationSequence_Continue_BuzzLockGui_Backend_AuthenticationMethod_) until the user has been successfully authenticated.
 
 In our system, we use this paradigm only to implement two-factor authentication, but the concept is powerful enough to implement authentication systems of any desired complexity. For instance, one could design an authentication system that requires only one authentication method of one type or two authentication methods of two other types.
 
@@ -90,51 +98,58 @@ When the user reaches the authenticated state the servo will rotate clockwise us
 ## User Instructions
 The Buzzlock goes through a series of setup stages when it is first set up. The steps for use are outlined below.  
 
-![uninitialized](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Uninitialized.png)  
+![uninitialized](Documentation/Screenshots/Uninitialized.png)  
 This is where a user will start when no users have been added.  There are instruction to swipe their card and are taken to the initializing state.
 
 ### Initialization
 
-![initilization](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Initializing%20-%20Card%20Entered.png)  
-This screen allows the owner of the system to input their information and preferences. Clicking the 'Save' button will save the user to the database.
+![initialization](Documentation/Screenshots/Initializing%20-%20Card%20Entered.png)  
+This screen allows the owner of the system to input their information and preferences. Clicking the 'Save' button will save the user to the database.  
+
+#### Duplicate Authentication Method
+
+![duplicate authentication method](Documentation/Screenshots/Add%20New%20User%20-%20Cannot%20Add%20Duplicate%20Auth%20Method.png)  
+If a card or Bluetooth device is already registered to a user in the database it is not allowed to be associated to a new user in the user set up screen.  
 
 ### Idle
 
-![idle](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Idle%20-%20Multiple%20Bluetooth%20Devices.png)  
+![idle](Documentation/Screenshots/Idle%20-%20Multiple%20Bluetooth%20Devices.png)  
 The screen will now be in idle until a primary authentication method (card swipe or Bluetooth selected) is performed. If the primary authentication method is already in the database, the user will be prompted for a secondary authentication method. If the primary authentication method is not known, the user will be prompted to create a new account. 
 
 ### Second Factor
 
-![secondary authentication](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Second%20Factor%20-%20Pin.png)  
-When a known primary authentication is performed something similar to the above screen will be shown asking for their second authentication method (**card or pin**). The user has their tries total to correctly enter their secondary authentication method.  
+![second factor side by side](Documentation/2%20factor%20side%20by%20side%20.png)  
+When a known primary authentication is performed one of the above screen will be shown asking for their second authentication method (card or pin).  Bluetooth will be automatically detected so no action is required. The user has three tries total to correctly enter their secondary authentication method.  
 
 ### Authenticated
 
-![authenticated](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Authenticated%20-%2010%20sec.png)  
+![authenticated](Documentation/Screenshots/Authenticated%20-%2010%20sec.png)  
 Upon correct entry of the secondary authentication method and sufficient permissions (full or limited), the user will be able to open the lock. From here, the user has the ability to enter the options menu or lock the door immediately. If no action is taken, the door will automatically lock in 10 seconds.
 
-### Options - Limited User
+### Options &mdash; Limited User
 
-![options limited](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Options%20-%20Limited%20User.png)  
+![options limited](Documentation/Screenshots/Options%20-%20Limited%20User.png)  
 A user with limited permissions can edit fields such as name, phone number, and authentication methods related to their profile as well as delete their profile.
 
-### Options - User Management
+### Options &mdash; User Management
 
-![options user management](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/User%20Management%20-%20Full%2C%20Limited%2C%20None.png)  
+![options user management](Documentation/Screenshots/User%20Management%20-%20Full%2C%20Limited%2C%20None.png)  
 A user with full permissions is able to add, remove and adjust any user profile within the database from the options menu.  They can also delete all users by deleting themselves. This will direct them back to the uninitialized screen, the system will be reset.  
 
 ### Access Denied
 
-![access denied](https://github.com/ArkaneMoose/BuzzLock/blob/master/Documentation/Screenshots/Access%20Denied%20-%2010%20sec.png)  
-If a user with no permissions logs in they will be shown the access denied screen. This screen will also apprear if the second factor is entered incorretly three times.  
+![access denied](Documentation/Screenshots/Access%20Denied%20-%2010%20sec.png)  
+If a user with no permissions logs in they will be shown the access denied screen. This screen will also apprear if the second factor is entered incorrectly three times.  
 
 ## Future Work
 
 This semester came with significant limitations, but we have many ideas for future expansions on the project:
   - Have users with permissions "FULL" be notified by text message or email when a user with permissions "NONE" attempts to enter the system
   - Implement encryption of user data and other security features
-  - Connecting it to a real dorm style door
+  - Connecting it to a real apartment door lock
   - Implementing a logging system of every attempt to access the system (audit log).
   - Sensing when the door is actually closed to better synchronize the auto-lock feature
-  - Sleep/Wake functionality
+  - Screen sleep until motion is detected
   - Enable the ability for the user to add a profile picture using the Raspberry Pi Camera
+  - Allow user management through text message
+  - Allowing a limited user access only during certain times of the day 
