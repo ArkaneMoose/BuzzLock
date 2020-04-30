@@ -50,7 +50,7 @@ The first user to initialize the system receives a FULL permission level. Subseq
 
 The program is implemented as a state machine with 11 states, whose diagram you can see below. During runtime, each state transition updates the GUI accordingly. 
 
-![State Diagram](https://arkanemoose.github.io/BuzzLock/Documentation/4180%20State%20Diagram.png)
+[![State Diagram](Documentation/4180%20State%20Diagram.png)](Documentation/4180%20State%20Diagram.png)
 
 ### Windows Forms
 
